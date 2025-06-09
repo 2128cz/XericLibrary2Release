@@ -87,7 +87,7 @@ namespace SesothoLine
                 foreach (var index in indexs.Indexs)
                 {
                     MacroDebugDraw.DrawDownArrow(
-                        index.GetCellWorldIndexPosition() + MacroMath.RandomVector3(0.1f, Identifier), 
+                        index.GetCellWorldIndexPosition() + MacroMath.RandomVector3(0.1f, Identifier), Quaternion.identity,
                         Color.red);
                 }
             }

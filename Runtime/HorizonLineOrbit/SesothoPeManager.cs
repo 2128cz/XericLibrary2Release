@@ -176,8 +176,8 @@ namespace SesothoLine
             // 绘制一下吸附的目标位置
             if (TrackingTool.EnableTool || TrackingTool._enableAuxiliaryTool)
             {
-                MacroDebugDraw.DrawDownArrow(NearestPoint, Color.magenta);
-                MacroDebugDraw.DrawDownArrow(NearestLineTangentPoint, Color.green);
+                MacroDebugDraw.DrawDownArrow(NearestPoint, Quaternion.identity, Color.magenta);
+                MacroDebugDraw.DrawDownArrow(NearestLineTangentPoint, Quaternion.identity, Color.green);
             }
         }
 
