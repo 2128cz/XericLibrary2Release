@@ -3,18 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using XericLibrary.Runtime.CustomEditor;
-using Object = UnityEngine.Object;
 
+#if ODIN_INSPECTOR
 using Sirenix.OdinInspector;
-#if UNITY_EDITOR
+#endif
+
+#if UNITY_EDITOR && ODIN_INSPECTOR
 using Sirenix.Utilities.Editor;
 #endif
+
+using Object = UnityEngine.Object;
 
 namespace XericLibrary.Runtime.MacroLibrary
 {
@@ -25,27 +28,28 @@ namespace XericLibrary.Runtime.MacroLibrary
     {
         #region toggle 扩展
 
-        private static FieldInfo togglesFieldInfo = typeof(ToggleGroup).GetField("m_Toggles", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        private static FieldInfo togglesFieldInfo = typeof(ToggleGroup).GetField("m_Toggles",
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
         public static List<Toggle> GetToggles(this ToggleGroup toggleGroup)
         {
-            if (toggleGroup == null)  
-            {  
-                throw new ArgumentNullException(nameof(toggleGroup));  
-            }  
- 
-            if (togglesFieldInfo == null)  
-            {  
-                throw new InvalidOperationException("Unable to access the 'm_Toggles' field.");  
-            }  
- 
-            var toggles = togglesFieldInfo.GetValue(toggleGroup) as List<Toggle>;  
-            if (toggles == null)  
-            {  
-                throw new InvalidCastException("The 'm_Toggles' field is not of type List<Toggle>.");  
-            }  
- 
-            return toggles;  
+            if (toggleGroup == null)
+            {
+                throw new ArgumentNullException(nameof(toggleGroup));
+            }
+
+            if (togglesFieldInfo == null)
+            {
+                throw new InvalidOperationException("Unable to access the 'm_Toggles' field.");
+            }
+
+            var toggles = togglesFieldInfo.GetValue(toggleGroup) as List<Toggle>;
+            if (toggles == null)
+            {
+                throw new InvalidCastException("The 'm_Toggles' field is not of type List<Toggle>.");
+            }
+
+            return toggles;
             // return (List<Toggle>)togglesFieldInfo.GetValue(toggleGroup);
         }
 
@@ -78,7 +82,6 @@ namespace XericLibrary.Runtime.MacroLibrary
             return toggleGroup.GetToggles().Count;
         }
 
-        
 
         /// <summary>
         /// 在单选项组上注册一个事件，当组中的任意成员变成激活状态时调用（其他的不会发生调用）。
@@ -96,6 +99,7 @@ namespace XericLibrary.Runtime.MacroLibrary
                 });
             }
         }
+
         /// <summary>
         /// 清空单选项组中的所有事件（与注册所有事件对应，但那个事件没法单独注销）
         /// </summary>
@@ -107,7 +111,7 @@ namespace XericLibrary.Runtime.MacroLibrary
                 toggle.onValueChanged.RemoveAllListeners();
             }
         }
- 
+
         #region toggle 索引
 
         /// <summary>
@@ -134,45 +138,43 @@ namespace XericLibrary.Runtime.MacroLibrary
             #endregion
 
             #region 字段属性
-
-            [LabelText("单选组")] public ToggleGroup ToggleGroup;
-            
-            [SerializeField, LabelText("编辑单选项目顺序")]
-            [ListDrawerSettings(OnTitleBarGUI = "GetAndSortToggle")]
+#if ODIN_INSPECTOR
+            [LabelText("单选组")] 
+#endif
+            public ToggleGroup ToggleGroup;
+#if ODIN_INSPECTOR  
+            [SerializeField, LabelText("编辑单选项目顺序")] [ListDrawerSettings(OnTitleBarGUI = "GetAndSortToggle")]
+#endif
             private List<Toggle> toggleList = new List<Toggle>();
-            
+
             // 当前选中的项目
             private int nowSelectToggleIndex = 0;
             private Toggle nowSelectToggle = null;
-            
-            
+
+
             public Transform TogglesContext => ToggleGroup.transform;
-            
+
             /// <summary>
             /// 当前选中的toggle索引
             /// </summary>
             public int NowSelectToggleIndex => nowSelectToggleIndex;
-            
+
             /// <summary>
             /// 当前选中的toggle
             /// </summary>
             public Toggle NowSelectToggle => nowSelectToggle;
 
-            
+
             /// <summary>
             /// 获取并给列表排序(顺序不一定与拼音有关)
             /// </summary>
             public void GetAndSortToggle()
             {
-#if UNITY_EDITOR
+#if UNITY_EDITOR && ODIN_INSPECTOR
                 // 自动获取并排序
                 if (SirenixEditorGUI.ToolbarButton(EditorIcons.Refresh))
                 {
-                    var newToggleList = MacroSort.FullCharacterOrderSort(ToggleGroup.GetToggles(), a => a.name).ToList();
-                    if (newToggleList.Count <= 0 || newToggleList == null)
-                        Debug.LogError("如果无法更新获取自动排序toggle，可能是因为toggleGroup被隐藏了，手动将其激活后再获取即可。");
-                    else
-                        toggleList = newToggleList;
+                    GetSortToggle();
                 }
                 // 反转顺序
                 if (SirenixEditorGUI.ToolbarButton(EditorIcons.TriangleDown))
@@ -180,12 +182,17 @@ namespace XericLibrary.Runtime.MacroLibrary
                     toggleList.Reverse();
                 }
 #else
-                 var newToggleList = MacroSort.FullCharacterOrderSort(ToggleGroup.GetToggles(), a => a.name).ToList();
+                 GetSortToggle();
+#endif
+                void GetSortToggle()
+                {
+                    var newToggleList = MacroSort.FullCharacterOrderSort(ToggleGroup.GetToggles(), a => a.name)
+                        .ToList();
                     if (newToggleList.Count <= 0 || newToggleList == null)
                         Debug.LogError("如果无法更新获取自动排序toggle，可能是因为toggleGroup被隐藏了，手动将其激活后再获取即可。");
                     else
                         toggleList = newToggleList;
-#endif
+                }
             }
 
             #endregion
@@ -226,7 +233,7 @@ namespace XericLibrary.Runtime.MacroLibrary
                 // 未指定组时，说明压根没用这部分功能，用不着初始化。
                 if (ToggleGroup == null)
                     return;
-                
+
                 // 防呆警告
                 if (toggleList.Count <= 0)
                 {
@@ -237,13 +244,14 @@ namespace XericLibrary.Runtime.MacroLibrary
                         Debug.LogWarning($"在初始化单选项组时，{ToggleGroup.name}并未预先指定索引顺序，将默认使用大纲顺序。");
                     }
                 }
+
                 // 事件初始化
                 for (int i = 0; i < toggleList.Count; i++)
                 {
                     var toggle = toggleList[i];
-                    
+
                     ToggleAddEvent(toggle);
-                    
+
                     if (toggle.isOn)
                     {
                         nowSelectToggleIndex = i;
@@ -263,12 +271,12 @@ namespace XericLibrary.Runtime.MacroLibrary
             public int AddToggle(Toggle t)
             {
                 ToggleAddEvent(t);
-                
+
                 var resultIndex = toggleList.Count;
                 toggleList.Add(t);
                 return resultIndex;
             }
-            
+
             /// <summary>
             /// 移除一个toggle，这不会影响其他toggle的索引，但此处移除的位置会为空。
             /// <code>
@@ -282,12 +290,12 @@ namespace XericLibrary.Runtime.MacroLibrary
                 var index = toggleList.IndexOf(t);
                 if (index < 0)
                     return false;
-                
-                t.onValueChanged.RemoveAllListeners(); 
+
+                t.onValueChanged.RemoveAllListeners();
                 toggleList[index] = null;
                 return true;
             }
-            
+
             /// <summary>
             /// 清除toggle
             /// </summary>
@@ -300,11 +308,11 @@ namespace XericLibrary.Runtime.MacroLibrary
                     if (allowDestroy)
                         Object.Destroy(t);
                 }
+
                 toggleList.Clear();
             }
 
-            
-            
+
             /// <summary>
             /// toggle注册的事件，只有当按下时才需要调用此事件。
             /// </summary>
@@ -316,7 +324,7 @@ namespace XericLibrary.Runtime.MacroLibrary
                     if (a) ToggleRegister(t);
                 });
             }
-            
+
             /// <summary>
             /// toggle注册的事件，只有当按下时才需要调用此事件。
             /// </summary>
@@ -328,9 +336,8 @@ namespace XericLibrary.Runtime.MacroLibrary
                 OnAnyToggleSwitchOn?.Invoke(t);
                 OnAnyToggleIndexSwitchOn?.Invoke(nowSelectToggleIndex);
             }
-            
-            
-            
+
+
             /// <summary>
             /// 获取toggle代表的索引
             /// </summary>
@@ -361,6 +368,7 @@ namespace XericLibrary.Runtime.MacroLibrary
             {
                 target.isOn = true;
             }
+
             /// <summary>
             /// 设置单选项激活
             /// </summary>
@@ -372,6 +380,7 @@ namespace XericLibrary.Runtime.MacroLibrary
                     SetToggleOn(toggleList[index]);
                 }
             }
+
             /// <summary>
             /// 设置单选项激活
             /// </summary>
@@ -380,6 +389,7 @@ namespace XericLibrary.Runtime.MacroLibrary
             {
                 target.SetIsOnWithoutNotify(true);
             }
+
             /// <summary>
             /// 设置单选项激活
             /// </summary>
@@ -391,7 +401,7 @@ namespace XericLibrary.Runtime.MacroLibrary
                     SetToggleOnWithoutNotify(toggleList[index]);
                 }
             }
-            
+
 
             /// <summary>
             /// 清除映射结构(不会清除toggle实例)
@@ -411,11 +421,11 @@ namespace XericLibrary.Runtime.MacroLibrary
                 {
                     Object.Destroy(toggleList[i]);
                 }
+
                 Clear();
             }
 
             #endregion
-
         }
 
         #endregion
@@ -485,8 +495,8 @@ namespace XericLibrary.Runtime.MacroLibrary
         /// <param name="target"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static RectTransform RectTransform<T>(this T target) 
-        where T : Component
+        public static RectTransform RectTransform<T>(this T target)
+            where T : Component
             => target.transform as RectTransform;
 
         #endregion
