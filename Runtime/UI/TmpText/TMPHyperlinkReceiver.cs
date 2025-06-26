@@ -26,7 +26,7 @@ namespace Deconstruction.UI.TmpText
         [LabelText("点击超链接时回调")]
 #endif
         [SerializeField]
-        public UnityEvent<string> onClickLink;
+        public UnityEvent<string> onClickLink = new UnityEvent<string>();
         
         private void Awake()
         {

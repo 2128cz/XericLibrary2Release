@@ -30,7 +30,7 @@ namespace Deconstruction.UI.TmpText
         [LabelText("点击超链接时回调")]
 #endif
         [SerializeField]
-        public UnityEvent<string> onClickLink;
+        public UnityEvent<string> onClickLink = new UnityEvent<string>();
 
         
         /// <summary>
@@ -46,7 +46,7 @@ namespace Deconstruction.UI.TmpText
         protected void Awake()
         {
             if (canvas == null)
-                transform.GetParents().Startup(transform).GetComponent(out canvas);
+                canvas = transform.GetParents().Startup(transform).GetComponent<Canvas>();
             if (canvas == null)
             {
                 Debug.LogError("TMP文本对象必须在Canvas下才能使用超链接功能");
@@ -160,7 +160,7 @@ namespace Deconstruction.UI.TmpText
         internal void OnAnyLinkClick(string linkID)
         {
             onClickLink?.Invoke(linkID);
-            Debug.Log($"click link{linkID}");
+            // Debug.Log($"click link{linkID}");
             // 这里不需要处理报错，应当由发送消息的成员处理
         }
 

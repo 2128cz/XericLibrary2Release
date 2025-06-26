@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:Release/Samples~/ConfigUIElement.meta
-guid: 7758a0679c9038144a4b0d007d44618f
-========
 guid: 85f1b523843f5884bb9f6b47500bccd0
->>>>>>>> gitea-Srouce/master:Release/Runtime/UI/TmpText.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
