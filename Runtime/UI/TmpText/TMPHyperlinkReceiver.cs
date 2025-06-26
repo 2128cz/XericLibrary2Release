@@ -26,8 +26,7 @@ namespace Deconstruction.UI.TmpText
         [LabelText("点击超链接时回调")]
 #endif
         [SerializeField]
-        private UnityEvent<string> _onClickLink;
-        public Action<string> onClickLink;
+        public UnityEvent<string> onClickLink;
         
         private void Awake()
         {
@@ -54,7 +53,6 @@ namespace Deconstruction.UI.TmpText
             try
             {
                 onClickLink?.Invoke(linkID);
-                _onClickLink.Invoke(linkID);
                 manager.OnAnyLinkClick(linkID);
             }
             catch (Exception e)

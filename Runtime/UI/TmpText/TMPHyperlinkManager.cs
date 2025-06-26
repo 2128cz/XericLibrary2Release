@@ -30,10 +30,9 @@ namespace Deconstruction.UI.TmpText
         [LabelText("点击超链接时回调")]
 #endif
         [SerializeField]
-        private UnityEvent<string> _onClickLink;
+        public UnityEvent<string> onClickLink;
 
-        public Action<string> onClickLink;
-
+        
         /// <summary>
         /// 当前摄像机
         /// </summary>
@@ -161,7 +160,6 @@ namespace Deconstruction.UI.TmpText
         internal void OnAnyLinkClick(string linkID)
         {
             onClickLink?.Invoke(linkID);
-            _onClickLink.Invoke(linkID);
             Debug.Log($"click link{linkID}");
             // 这里不需要处理报错，应当由发送消息的成员处理
         }
