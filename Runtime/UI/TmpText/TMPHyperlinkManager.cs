@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
@@ -8,7 +10,7 @@ using XericLibrary.Runtime.MacroLibrary;
 using XericLibrary.Runtime.Type;
 
 namespace Deconstruction.UI.TmpText
-{   
+{
     /// <summary>
     /// TMP超链接点击管理组件
     /// </summary>
@@ -21,19 +23,22 @@ namespace Deconstruction.UI.TmpText
         [LabelText("画布*")]
 #endif
         [Tooltip("组件可为空，将自动向上查找")]
-        [SerializeField] public Canvas canvas;
+        [SerializeField]
+        public Canvas canvas;
 
 #if ODIN_INSPECTOR
         [LabelText("点击超链接时回调")]
 #endif
         [SerializeField]
         private UnityEvent<string> _onClickLink;
+
         public Action<string> onClickLink;
-        
+
         /// <summary>
         /// 当前摄像机
         /// </summary>
-        private Camera _camera; 
+        private Camera _camera;
+
         /// <summary>
         /// 存储链接ID与对应回调函数的映射
         /// </summary>
@@ -48,13 +53,11 @@ namespace Deconstruction.UI.TmpText
                 Debug.LogError("TMP文本对象必须在Canvas下才能使用超链接功能");
                 return;
             }
-        
+
             if (canvas.renderMode == RenderMode.ScreenSpaceOverlay)
                 _camera = null;
             else
                 _camera = canvas.worldCamera;
-            
-            
         }
 
         /// <summary>
@@ -72,7 +75,7 @@ namespace Deconstruction.UI.TmpText
                 _linkCallbacks.Add(linkID, callback);
             }
         }
-    
+
         /// <summary>
         /// 注销链接回调函数
         /// </summary>
@@ -83,7 +86,7 @@ namespace Deconstruction.UI.TmpText
                 _linkCallbacks.Remove(linkID);
             }
         }
-    
+
         /// <summary>
         /// 处理链接点击事件
         /// </summary>
@@ -100,7 +103,7 @@ namespace Deconstruction.UI.TmpText
             }
         }
 
-        
+
         /// <summary>
         /// 检查坐标下的超链接索引
         /// </summary>
@@ -111,6 +114,7 @@ namespace Deconstruction.UI.TmpText
         {
             return TMP_TextUtilities.FindIntersectingLink(text, position, _camera);
         }
+
         /// <summary>
         /// 检查坐标下的超链接id信息
         /// </summary>
@@ -126,9 +130,11 @@ namespace Deconstruction.UI.TmpText
                 linkInfo = text.textInfo.linkInfo[index];
                 return true;
             }
+
             linkInfo = default;
             return false;
         }
+
         /// <summary>
         /// 检查坐标下的超链接id
         /// </summary>
@@ -143,6 +149,7 @@ namespace Deconstruction.UI.TmpText
                 linkID = info.GetLinkID();
                 return true;
             }
+
             linkID = string.Empty;
             return false;
         }
@@ -158,7 +165,88 @@ namespace Deconstruction.UI.TmpText
             Debug.Log($"click link{linkID}");
             // 这里不需要处理报错，应当由发送消息的成员处理
         }
-        
+
         // todo 主动查找所有的tmp组件，或是等组件唤醒后区管理它们，用来获得所有的带有标记的超链接组件
+
+        /// <summary>
+        /// 主动查找所有具有link属性的tmp组件
+        /// </summary>
+        /// <param name="requirementComponent">自动查找</param>
+        /// <param name="forceRefesh"></param>
+        public void FindAllID(bool requirementComponent = true, bool forceRefesh = false)
+        {
+            transform.GetChildrenBFS().GetComponentsOTON<TMPHyperlinkReceiver>();
+        }
+
+        private List<TMPHyperlinkReceiver> _tempGetChildrenHyperlink = null;
+
+        /// <summary>
+        /// 获取所有链接子项
+        /// </summary>
+        /// <param name="forceRefesh">强制刷新，如果刷新过一次，之后不论设定如何都将直接从缓存中返回对象，置位将跳过这个缓存</param>
+        /// <param name="includeRepeatedMarking">包括重复标记（也就是是否包含另一个超链接管理器作用域下的超链接对象）</param>
+        public List<TMPHyperlinkReceiver> GetChildrenHyperlink(bool forceRefesh = false,
+            bool includeRepeatedMarking = false)
+        {
+            if (!forceRefesh && _tempGetChildrenHyperlink != null && _tempGetChildrenHyperlink.Count > 0)
+                return _tempGetChildrenHyperlink;
+            
+            _tempGetChildrenHyperlink = transform.GetChildrenBFS()
+                .GetComponentsOTON<TMPHyperlinkReceiver>().ToList();
+            
+            return _tempGetChildrenHyperlink;
+        }
+
+        private List<TMPHyperlinkReceiver> _tempGetChildrenTmpText2Hyperlink = null;
+
+        /// <summary>
+        /// 获取所有tmp_text，然后根据规则返回链接
+        /// </summary>
+        /// <param name="forceRefesh">强制刷新，如果刷新过一次，之后不论设定如何都将直接从缓存中返回对象，置位将跳过这个缓存</param>
+        /// <param name="requirementHyperlink">强制给带有link标记的对象加上超链接组件</param>
+        /// <param name="includeRepeatedMarking">包括重复标记（也就是是否包含另一个超链接管理器作用域下的超链接对象）</param>
+        /// <returns></returns>
+        public List<TMPHyperlinkReceiver> GetChildrenTmpText2Hyperlink(
+            bool forceRefesh = false,
+            bool requirementHyperlink = true,
+            bool includeRepeatedMarking = false)
+        {
+            if (!forceRefesh && _tempGetChildrenTmpText2Hyperlink != null && _tempGetChildrenTmpText2Hyperlink.Count > 0)
+                return _tempGetChildrenTmpText2Hyperlink;
+            
+            var children = includeRepeatedMarking
+                ? transform.GetChildrenBFS()
+                : transform.GetChildrenBFS<TMPHyperlinkManager>();
+    
+            var result = new List<TMPHyperlinkReceiver>();
+            var hyperlinkType = typeof(TMPHyperlinkReceiver);
+            var tmpTextType = typeof(TMP_Text);
+    
+            // 预先分配足够的容量，减少扩容
+            result.Capacity = Mathf.Min(children.Count(), 10);
+    
+            foreach (var child in children)
+            {
+                // 尝试从缓存获取组件
+                var hyperlink = child.GetComponent(hyperlinkType) as TMPHyperlinkReceiver;
+                if (hyperlink != null)
+                {
+                    result.Add(hyperlink);
+                    continue;
+                }
+
+                if (!requirementHyperlink)
+                    continue;
+                
+                // 尝试获取TMP_Text组件
+                var tmp = child.GetComponent(tmpTextType) as TMP_Text;
+                if (tmp != null && tmp.text.MatchRichTextID())
+                {
+                    result.Add(child.gameObject.AddComponent<TMPHyperlinkReceiver>());
+                }
+            }
+    
+            return result;
+        }
     }
 }

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+#if ODIN_INSPECTOR
 using Sirenix.OdinInspector;
+#endif
 using UnityEngine;
 using XericLibrary.Runtime.MacroLibrary;
 using Object = UnityEngine.Object;
@@ -26,15 +28,19 @@ namespace XericLibrary.Runtime.Type.Base
         /// <summary>
         /// 对象
         /// </summary>
+#if ODIN_INSPECTOR
         [HorizontalGroup("SoftRef")]
         [HideLabel]
+#endif
         public GameObject targetObejct;
 
         /// <summary>
         /// 路径
         /// </summary>
+#if ODIN_INSPECTOR
         [HorizontalGroup("SoftRef")]
         [HideLabel]
+#endif
         public string targetPath;
 
         /// <summary>
