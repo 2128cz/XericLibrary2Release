@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
@@ -27,6 +28,35 @@ namespace Deconstruction.UI.TmpText
 #endif
         [SerializeField]
         public UnityEvent<string> onClickLink = new UnityEvent<string>();
+
+        /// <summary>
+        /// 获取所有超链接id
+        /// </summary>
+        public IEnumerable<string> AllLinkID
+        {
+            get
+            {
+                if (_tmpText == null || string.IsNullOrEmpty(_tmpText.text))
+                    yield break;
+                foreach (var link in _tmpText.text.MatchesRichTextLinkID())
+                    yield return link.id;
+            }
+        }
+        
+        /// <summary>
+        /// 获取所有超链接
+        /// </summary>
+        public IEnumerable<(string id, string block)> AllLinkIDWithContext
+        {
+            get
+            {
+                if (_tmpText == null || string.IsNullOrEmpty(_tmpText.text))
+                    yield break;
+                foreach (var link in _tmpText.text.MatchesRichTextLinkID())
+                    yield return link;
+            }
+        }
+        
         
         private void Awake()
         {

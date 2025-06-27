@@ -238,7 +238,7 @@ namespace Deconstruction.UI.TmpText
                 
                 // 尝试获取TMP_Text组件
                 var tmp = child.GetComponent(tmpTextType) as TMP_Text;
-                if (tmp != null && tmp.text.MatchRichTextID())
+                if (tmp != null && tmp.text.MatchRichTextLinkID())
                 {
                     result.Add(child.gameObject.AddComponent<TMPHyperlinkReceiver>());
                 }
