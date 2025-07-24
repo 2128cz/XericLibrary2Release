@@ -209,7 +209,9 @@ namespace Deconstruction.UI.TmpText
             bool requirementHyperlink = true,
             bool includeRepeatedMarking = false)
         {
-            if (!forceRefesh && _tempGetChildrenTmpText2Hyperlink != null && _tempGetChildrenTmpText2Hyperlink.Count > 0)
+            if (!forceRefesh && 
+                _tempGetChildrenTmpText2Hyperlink != null && 
+                _tempGetChildrenTmpText2Hyperlink.Count > 0)
                 return _tempGetChildrenTmpText2Hyperlink;
             
             var children = includeRepeatedMarking

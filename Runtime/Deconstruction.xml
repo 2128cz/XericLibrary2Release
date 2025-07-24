@@ -1,0 +1,3443 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Deconstruction</name>
+    </assembly>
+    <members>
+        <member name="T:Deconstruction.Element.ContactPoint">
+            <summary>
+            链路接触点
+            <code>
+            此框架默认不实现空间坐标的功能，需要后续类实现。
+            
+            链路接触点用于定义多个物体间的链路结构
+            </code>
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Element.ContactPoint.linkedData">
+            <summary>
+            链路数据结构
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Element.ContactPoint.GetLinkLineNormal``1(``0)">
+            <summary>
+            获取此点在给定线上的法向
+            <code>
+            注意：这里假定点一定在线的某一端上，所以并不会检查是否相连
+            </code>
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="otherLinkTarget"></param>
+        </member>
+        <member name="M:Deconstruction.Element.ContactPoint.GetLinkLineNormal2``1(``0)">
+            <summary>
+            获取此点在给定线上的法向
+            <code>
+            注意：这里假定点一定在线的某一端上，所以并不会检查是否相连
+            </code>
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="otherLinkTarget"></param>
+        </member>
+        <member name="M:Deconstruction.Element.ContactPoint.TryGetLinkLineNormal``1(``0,UnityEngine.Vector3@)">
+            <summary>
+            安全地获取此点在给定线上的法向
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="otherLinkTarget"></param>
+            <param name="normal"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Element.ContactPoint.TryGetLinkLineNormal2``1(``0,UnityEngine.Vector2@)">
+            <summary>
+            安全地获取此点在给定线上的法向
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="otherLinkTarget"></param>
+            <param name="normal"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Deconstruction.Element.PlacementBase">
+            <summary>
+            基本可放置元素
+            <code>
+            元素中不定义点或法向，后续通过接口实现，目的是为了区分所有的元素。
+            放置元素中需要实现与工具类相关的内容
+            </code>
+            </summary>	
+        </member>
+        <member name="E:Deconstruction.Element.PlacementBase.OnPlancementDestory">
+            <summary>
+            放置元素的销毁事件
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Element.PlacementBase.Identifier">
+            <summary>
+            所有放置元素的唯一标识符，可以用于序列化时引用查找
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Element.PlacementBase.NeighborGridIndex">
+            <summary>
+            网格索引，如果成员添加到网格中进行了管理，那么持有这个索引会比较高效。
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Element.PlacementBase.GetMeshBounds">
+            <summary>
+            获取元素的计算边界
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Element.PlacementBase.GetMeshUpPlaneRect">
+            <summary>
+            获取元素到向上平面的边界
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Element.PlacementBase.OnDebug">
+            <summary>
+            显示调试信息
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Element.PlacementBase.AgencyMainFixedUpdate">
+            <summary>
+            代理更新
+            <code>
+            这是主线程方法，可以在此进行主要的数据交换操作
+            </code>
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Element.PlacementBase.AgencyMainUpdate">
+            <summary>
+            代理更新
+            <code>
+            这是主线程方法，可以在此进行主要的数据交换操作
+            </code>
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Element.PlacementBase.AgencyMainLateUpdate">
+            <summary>
+            代理后置更新
+            <code>
+            这是主线程方法，可以在此进行主要的数据交换操作
+            </code>
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Element.PlacementBase.AgencyAsyncBeforeUpdate">
+            <summary>
+            代理异步更新之前
+            <code>
+            这是主线程操作
+            </code>
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Element.PlacementBase.AgencyAsyncUpdate">
+            <summary>
+            代理异步更新
+            <code>
+            这是异步操作
+            </code>
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Element.PlacementBase.AgencyAsyncAfterUpdate">
+            <summary>
+            代理异步更新之后
+            <code>
+            这是主线程操作
+            </code>
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Element.PlacementBase.AgencyOnEnable">
+            <summary>
+            当启用代理异步更新时
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Element.PlacementBase.AgencyOnDisable">
+            <summary>
+            当从异步代理中退出时
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Element.PlacementBase.ReflectCheckFunc(System.String)">
+            <summary>
+            通过反射检查当前实例是否实现了更新函数
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Element.PlacementBase.ReflectCheckUpdateFunc">
+            <summary>
+            检查所有更新函数
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Element.PlacementBase.GetBaseEmbedded">
+            <summary>
+            获取此放置元素的基础代理控制器
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Deconstruction.Element.PromptLine2">
+            <summary>
+            驱使线运行的框架
+            <code>
+            此框架使用2维计算器，但自身并不保存线的参数。
+            
+            需要后续类通过SetRenderer额外指定一个渲染器；
+            且能够传递计算所需的参数，并调用UpdateRender完成渲染更新。	
+            </code>
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Element.PromptLine2.RenderLineGetPointStep">
+            <summary>
+            渲染线段时获取点的默认步骤长度
+            <code>
+            1r ≈ 1unity
+            注意这是约等于，所以其实不算准确。
+            </code>
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Element.PromptLine2.trajectoryRenderer">
+            <summary>
+            轨迹渲染器
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Element.PromptLine2.trajectoryCalculator">
+            <summary>
+            轨迹计算器
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Element.PromptLine2.linkedData">
+            <summary>
+            链路数据结构
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Element.PromptLine2.NowCalculator">
+            <summary>
+            当前的轨迹计算器
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Element.PromptLine2.NowRenderer">
+            <summary>
+            当前的轨迹渲染器
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Element.PromptLine2.roundTrajectory">
+            <summary>
+            弧线计算器
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Element.PromptLine2.straightTrajectory">
+            <summary>
+            直线计算器
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Element.PromptLine2.trajectoryValid">
+            <summary>
+            轨迹计算器有效
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Element.PromptLine2.SelectRoundTrajectory">
+            <summary>
+            当前选择使用圆弧计算器
+            </summary>
+        </member>
+        <member name="T:Deconstruction.Element.PromptLine2.LineSegment2">
+            <summary>
+            二维线段参数
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Element.PromptLine2.LineSegment2.pointA">
+            <summary>
+            线段点A
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Element.PromptLine2.LineSegment2.pointB">
+            <summary>
+            线段点B
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Element.PromptLine2.LineSegment2.pointAHandle">
+            <summary>
+            线段点A控制柄
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Element.PromptLine2.LineSegment2.pointBHandle">
+            <summary>
+            线段点B控制柄
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Element.PromptLine2.LineSegment2.HandleAValid">
+            <summary>
+            点A控制柄有效
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Element.PromptLine2.LineSegment2.HandleBValid">
+            <summary>
+            点B控制柄有效
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Element.PromptLine2.LineSegment2.SetValue(UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Vector2)">
+            <summary>
+            设置值
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <param name="ah"></param>
+            <param name="bh"></param>
+        </member>
+        <member name="T:Deconstruction.Element.PromptLine2.SelectTrajectoryType">
+            <summary>
+            选择轨迹计算器枚举
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Element.PromptLine2.SelectTrajectoryType.Round">
+            <summary>
+            圆弧
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Element.PromptLine2.SelectTrajectoryType.Straight">
+            <summary>
+            直线
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Element.PromptLine2.InitTrajectory">
+            <summary>
+            初始化轨迹计算
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Element.PromptLine2.DrawArcLine">
+            <summary>
+            绘制曲线
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Element.PromptLine2.DrawStraightLine(UnityEngine.Vector2,UnityEngine.Vector2)">
+            <summary>
+            绘制直线
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Element.PromptLine2.AutomaticDrawCircularLine(Deconstruction.Element.PromptLine2.LineSegment2,System.Single,System.Boolean)">
+            <summary>
+            自动绘制线，根据输入的参数切换直线或曲线绘制。
+            </summary>
+            <param name="line">线参数</param>
+            <param name="constraintAngle">约束角，指定当前绘制的圆弧必须为一个特定度数</param>
+            <param name="fullArc">延起点法向绘制完整圆弧，否则只绘制半圆弧</param>
+        </member>
+        <member name="M:Deconstruction.Element.PromptLine2.SetRenderer(Deconstruction.Interface.IRendererLine)">
+            <summary>
+            设置渲染组件
+            </summary>
+            <param name="renderer"></param>
+        </member>
+        <member name="M:Deconstruction.Element.PromptLine2.UpdateRender(System.Double)">
+            <summary>
+            更新渲染，将当前计算器结果设置到渲染中
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Element.PromptLine2.DissectLine">
+            <summary>
+            分割线
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Element.PromptLine2.InitPromptLine``1">
+            <summary>
+            初始化路径线
+            </summary>
+            <typeparam name="T">提供一个用于绘制的组件</typeparam>
+            <returns></returns>
+        </member>
+        <member name="T:Deconstruction.Element.SchemaBuilding">
+            <summary>
+            建筑物基类（建筑概要）
+            </summary>
+        </member>
+        <member name="T:Deconstruction.Element.LineRendererUnbodied">
+            <summary>
+            一根线基本的绘制框架，提供基于线渲染器的绘制管理
+            <code>
+            默认只支持等宽线绘制。
+            </code>
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Element.LineRendererUnbodied.ForceUpdatePriority">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Element.LineRendererUnbodied.LineRender">
+            <summary>
+            渲染线的线渲染器。
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Element.LineRendererUnbodied.LineWidth">
+            <summary>
+            线条宽度
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Element.LineRendererUnbodied.LineRenderMaterial">
+            <summary>
+            获取材质
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Element.LineRendererUnbodied.LineBrightness">
+            <summary>
+            线亮度
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Element.LineRendererUnbodied.ScaleTime">
+            <summary>
+            动画时间
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Element.LineRendererUnbodied.XDensity">
+            <summary>
+            箭头压缩程度
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Element.LineRendererUnbodied.YDensity">
+            <summary>
+            箭头穿插程度
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Element.LineRendererUnbodied.Invert">
+            <summary>
+            反转箭头
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Element.LineRendererUnbodied.ArrowExtend">
+            <summary>
+            箭头宽度占用比例
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Element.LineRendererUnbodied.BackgroundAlpha">
+            <summary>
+            背景不透明度
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Element.LineRendererUnbodied.BackgroundColor">
+            <summary>
+            背景色
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Element.LineRendererUnbodied.ForegroundColor">
+            <summary>
+            前景色
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Element.LineRendererUnbodied.LineCalculateLength">
+            <summary>
+            线计算长度，用于更新显示的长度
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Element.LineRendererUnbodied.CornerChamfer">
+            <summary>
+            角倒角数量
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Element.LineRendererUnbodied.EndPointChamfer">
+            <summary>
+            端点倒角数量
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Element.LineRendererUnbodied.IsWorldSpace">
+            <summary>
+            使用世界空间坐标
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Element.LineRendererUnbodied.EnableRender">
+            <summary>
+            启用渲染
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Element.LineRendererUnbodied.CreatLineRenderComponent">
+            <summary>
+            创建线渲染器，默认是本地空间
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Element.LineRendererUnbodied.SetPointPosition(System.Int32,UnityEngine.Vector3)">
+            <summary>
+            设置线渲染器上给定索引的一点
+            </summary>
+            <param name="index"></param>
+            <param name="position"></param>
+        </member>
+        <member name="M:Deconstruction.Element.LineRendererUnbodied.SetPointsPosition(UnityEngine.Vector3[])">
+            <summary>
+            设置线渲染器上渲染的所有点（默认将长度限制在给定的范围内）
+            </summary>
+            <param name="index"></param>
+            <param name="position"></param>
+        </member>
+        <member name="M:Deconstruction.Element.LineRendererUnbodied.TransformToWorldSpace">
+            <summary>
+            将本地坐标转换到世界坐标空间
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Element.LineRendererUnbodied.TransformToLocalSpace">
+            <summary>
+            将世界坐标转换到本地坐标空间
+            </summary>
+        </member>
+        <member name="T:Deconstruction.Interface.IConterminousness">
+            <summary>
+            一个拥有具有相连结构的对象所实现的接口，允许获取其中的相连数据结构
+            <code>
+            其中LinkedData应该指向实现此接口类本地上的一个实现ICoterminous的实例字段
+            </code>
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Interface.IConterminousness.LinkedData">
+            <summary>
+            链接数据
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Interface.IConterminousness.LinkedDataSet">
+            <summary>
+            链接数据
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Interface.IConterminousness.LinkedDataAddPolarity(Deconstruction.Interface.IConterminousness,Deconstruction.Type.Linkable.LinkType)">
+            <summary>
+            将一个成员以指定的链路类型添加到结构中，相应地在对方成员中添加与之对立的结构
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Interface.IConterminousness.LinkedDataRemovePolarity(Deconstruction.Interface.IConterminousness)">
+            <summary>
+            将一个成员从中移除，相应地在对方成员中也移除此对立的结构
+            </summary>
+            <param name="target"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Deconstruction.Interface.ICoterminous">
+            <summary>
+            具有相连的结构数据目标
+            <code>
+            对目标结构使用Add，与Remove可以添加链接关系
+            通常，具有链接关系的成员都会互相关联，所以可以使用Polarity方式进行添加与移除。
+            链接关系管理允许像链表一样遍历与维护对象，且不用在乎其中的成员类型。
+            另外链接的具体实现与当前成员的特性有关，需要根据具体成员特性进行使用
+            </code>
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Interface.ICoterminous.Add(Deconstruction.Interface.IConterminousness,Deconstruction.Type.Linkable.LinkType)">
+            <summary>
+            将一个成员以指定的链路类型添加到结构中
+            </summary>
+            <param name="target"></param>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Interface.ICoterminous.Remove(Deconstruction.Interface.IConterminousness)">
+            <summary>
+            将一个成员从中移除
+            </summary>
+            <param name="target"></param>
+        </member>
+        <member name="M:Deconstruction.Interface.ICoterminous.RemoveAll(Deconstruction.Type.Linkable.LinkType)">
+            <summary>
+            移除所有具有给定链路类型的成员
+            </summary>
+            <param name="type"></param>
+        </member>
+        <member name="M:Deconstruction.Interface.ICoterminous.DeReferenceRemove(Deconstruction.Interface.IConterminousness)">
+            <summary>
+            将一个成员从中移除，连同移除其反引用
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Interface.ICoterminous.DeReferenceRemoveAll(Deconstruction.Type.Linkable.LinkType)">
+            <summary>
+            移除所有具有给定链路类型的成员，连同移除其反引用
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Interface.ICoterminous.Contains(Deconstruction.Interface.IConterminousness,Deconstruction.Type.Linkable.LinkType@)">
+            <summary>
+            检查一个成员是否存在于结构中
+            </summary>
+            <param name="target"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Interface.ICoterminous.GetOpposite(Deconstruction.Type.Linkable.LinkType)">
+            <summary>
+            获取与之对立的结构(如果有多个，那么会返回第一个)
+            </summary>
+            <returns>如果没找到，返回空</returns>
+        </member>
+        <member name="M:Deconstruction.Interface.ICoterminous.GetIdentical(Deconstruction.Type.Linkable.LinkType)">
+            <summary>
+            获取与之相同的结构(如果有多个，那么会返回第一个)
+            </summary>
+            <param name="type"></param>
+            <returns>如果没找到，返回空</returns>
+        </member>
+        <member name="M:Deconstruction.Interface.ICoterminous.GetOpposite(Deconstruction.Interface.ICoterminous)">
+            <summary>
+            获取与给定链接成员对立的结构
+            </summary>
+            <param name="target"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Interface.ICoterminous.GetIdentical(Deconstruction.Interface.ICoterminous)">
+            <summary>
+            获取与给定链接成员相同的结构
+            </summary>
+            <param name="target"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Interface.ICoterminous.GetOpposites(Deconstruction.Type.Linkable.LinkType)">
+            <summary>
+            获取与此对立的所有结构
+            </summary>
+            <returns>如果没找到，返回空</returns>
+        </member>
+        <member name="M:Deconstruction.Interface.ICoterminous.GetIdenticals(Deconstruction.Type.Linkable.LinkType)">
+            <summary>
+            获取与之相同的所有结构
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Interface.ICoterminous.GetOpposites(Deconstruction.Interface.ICoterminous)">
+            <summary>
+            获取所有与给定链接成员对立的结构
+            </summary>
+            <param name="target"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Interface.ICoterminous.GetIdenticals(Deconstruction.Interface.ICoterminous)">
+            <summary>
+            获取所有与给定链接成员相同的结构
+            </summary>
+            <param name="target"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Interface.ICoterminous.GetCount">
+            <summary>
+            获取所有结构的数量
+            <code>
+            返回的是所有有效的成员数量
+            </code>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Interface.ICoterminous.Clean">
+            <summary>
+            清空结构
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Interface.ICoterminous.DeReferenceClean">
+            <summary>
+            清空结构，连同其反引用
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Interface.ICoterminous.SwapLinkOrder">
+            <summary>
+            交换所有的命令方向
+            <code>
+            只改变在结构中保存的命令结构方向，不改变数据
+            </code>
+            </summary>
+        </member>
+        <member name="T:Deconstruction.Interface.IDebugDraw">
+            <summary>
+            控制对象是否进行调试绘制
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Interface.IDebugDraw.EnableDebugDraw">
+            <summary>
+            是否启用调试绘制（用于可以主动绘制的对象）
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Interface.IDebugDraw.GetDebugDrawLine">
+            <summary>
+            调试绘制的具体行为（用于无法主动绘制的对象）
+            <code>
+            用于无法自主绘制对象提供的被动绘制方法。
+            </code>
+            </summary>
+        </member>
+        <member name="T:Deconstruction.Interface.IDissectTrajectory`1">
+            <summary>
+            切割线
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Interface.IDissectTrajectory`1.GetDissectTrajectory(System.Single,`0@)">
+            <summary>
+            获取在指定百分比处分割的轨迹
+            </summary>
+            <param name="normalLength"></param>
+            <param name="trajectory"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Deconstruction.Interface.IForceUpdate">
+            <summary>
+            允许实现此接口的成员被异步更新处理。
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Interface.IForceUpdate.ForceUpdatePriority">
+            <summary>
+            异步更新时的优先级，根据优先级进行穿插更新。
+            (优先级0 -> oo数值越大优先级越低)
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Interface.IForceUpdate.ForceUpdate(System.Single)">
+            <summary>
+            由外部管理器协程控制的更新事件
+            </summary>
+            <param name="deltaTime">距离上次此成员被更新的时间</param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Interface.IForceUpdate.AsyncForceUpdate(System.Single)">
+            <summary>
+            由外部管理器异步控制的更新事件
+            (请确保其中没有会导致主线程异常的操作)
+            </summary>
+            <param name="deltaTime"></param>
+        </member>
+        <member name="T:Deconstruction.Interface.IPossessorTrajectory2">
+            <summary>
+            此处持有的轨迹相关成员，将其开放用于外部快捷获取
+            <code>
+            所有包含轨迹计算的可放置对象都应该实现此接口，如果是建筑物可以实现另类的渲染器结构。
+            一个可放置对象拥有轨迹接口将代表其拥有轨迹计算的一切必备条件。
+            
+            注意，其中的三维空间是转为平面向上，二维则是标准xy竖直平面进行变换，两者都会根据当前的物体位置进行变换。
+            </code>
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Interface.IPossessorTrajectory2.TrajectoryRenderer">
+            <summary>
+            轨迹渲染器
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Interface.IPossessorTrajectory2.TrajectoryCalculator">
+            <summary>
+            轨迹计算器
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Interface.IPossessorTrajectory2.GetWorldPoint(System.Double)">
+            <summary>
+            获取此轨迹的点位迭代器，并根据当前实现需求转为水平面世界空间。
+            </summary>
+            <param name="step">迭代步长，1点步长相当于unity中的1m</param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Interface.IPossessorTrajectory2.GetWorldPoint2(System.Double)">
+            <summary>
+            获取此轨迹的点位迭代器，并根据当前实现需求转为立面世界空间。
+            </summary>
+            <param name="step">迭代步长，1点步长相当于unity中的1m</param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Interface.IPossessorTrajectory2.GetStartPointWorldPosition">
+            <summary>
+            获取起点的世界水平面坐标
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Interface.IPossessorTrajectory2.GetStartPointWorldPosition2">
+            <summary>
+            获取起点的世界立面坐标
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Interface.IPossessorTrajectory2.GetEndPointWorldPosition">
+            <summary>
+            获取终点的世界水平面坐标
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Interface.IPossessorTrajectory2.GetEndPointWorldPosition2">
+            <summary>
+            获取终点的世界立面坐标
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Interface.IPossessorTrajectory2.GetStartPointWorldNormal">
+            <summary>
+            获取起点的世界水平面法线
+            (世界空间法线会随着物体世界旋转而旋转)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Interface.IPossessorTrajectory2.GetStartPointWorldNormal2">
+            <summary>
+            获取起点的世界立面法线
+            (世界空间法线会随着物体世界旋转而旋转)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Interface.IPossessorTrajectory2.GetEndPointWorldNormal">
+            <summary>
+            获取终点的世界水平面法线
+            (世界空间法线会随着物体世界旋转而旋转)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Interface.IPossessorTrajectory2.GetEndPointWorldNormal2">
+            <summary>
+            获取终点的世界立面法线
+            (世界空间法线会随着物体世界旋转而旋转)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Interface.IPossessorTrajectory2.GetTrajectoryLength">
+            <summary>
+            获取轨迹长度
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Interface.IPossessorTrajectory2.FindNearestActuatorNormalLength(UnityEngine.Vector3)">
+            <summary>
+            寻找最近的使用线上单位长度驱动的点位
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Interface.IPossessorTrajectory2.FindNearestActuatorNormalLength(UnityEngine.Vector2)">
+            <summary>
+            寻找最近的使用线上单位长度驱动的点位
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Interface.IPossessorTrajectory2.FindNearestActuatorUnclampedNormalLength(UnityEngine.Vector3)">
+            <summary>
+            寻找最近的使用线上未钳制的单位长度驱动的点位
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Interface.IPossessorTrajectory2.FindNearestActuatorUnclampedNormalLength(UnityEngine.Vector2)">
+            <summary>
+            寻找最近的使用线上未钳制的单位长度驱动的点位
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Interface.IPossessorTrajectory2.GetPointFormLength(System.Single)">
+            <summary>
+            获取给定单位长度上的点位
+            </summary>
+            <param name="length"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Interface.IPossessorTrajectory2.GetPoint2FormLength(System.Single)">
+            <summary>
+            获取给定单位长度上的点位
+            </summary>
+            <param name="length"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Interface.IPossessorTrajectory2.GetNearsetPoint(UnityEngine.Vector3)">
+            <summary>
+            获取离给定坐标最近的点
+            </summary>
+            <param name="point"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Interface.IPossessorTrajectory2.GetNearsetPoint(UnityEngine.Vector2)">
+            <summary>
+            获取离给定坐标最近的点
+            </summary>
+            <param name="point"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Deconstruction.Interface.IRendererLine">
+            <summary>
+            线段渲染
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Interface.IRendererLine.IsRenderCompValid">
+            <summary>
+            检查此渲染组件是否正常
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Interface.IRendererLine.TransToWorldSpace">
+            <summary>
+            将渲染器切换到世界空间(拖动对象原点将不会改变渲染位置)
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Interface.IRendererLine.TransToLocalSpace">
+            <summary>
+            将渲染器切换到本地空间(拖动对象也会改变渲染位置)
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Interface.IRendererLine.SetRednderPoints(System.Collections.Generic.IEnumerable{UnityEngine.Vector3})">
+            <summary>
+            设置渲染线段上的一系列点
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Interface.IRendererLine.SetRenderPoint(System.Int32,UnityEngine.Vector3)">
+            <summary>
+            设置渲染线段上的给定索引的一个点的坐标
+            </summary>
+            <param name="index"></param>
+            <param name="position"></param>
+        </member>
+        <member name="T:Deconstruction.Interface.IOperateStep`1">
+            <summary>
+            适用于需要在对象内额外定义操作步骤的成员。
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Interface.IOperateStep`1.GetOperationSequence">
+            <summary>
+            获取操作步骤序列
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Deconstruction.Interface.IRenderer">
+            <summary>
+            用于支持自定义渲染的组件
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Interface.IRenderer.EnableRender">
+            <summary>
+            渲染有效
+            </summary>
+        </member>
+        <member name="T:Deconstruction.Interface.ISerializablePost">
+            <summary>
+            可序列化的对象后处理
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Interface.ISerializablePost.SerializedOccurs">
+            <summary>
+            呼叫序列化发生
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Interface.ISerializablePost.CheckDeserializeUnion(SerializerHelper.Type.SerializeUnion)">
+            <summary>
+            反序列化前检查标志
+            </summary>
+            <param name="context"></param>
+            <returns>可以继续执行返回真，否则为否</returns>
+        </member>
+        <member name="M:Deconstruction.Interface.ISerializablePost.DeserializeOccurs(SerializerHelper.Type.SerializeUnion)">
+            <summary>
+            呼叫反序列化发生
+            <code>
+            首先发生的反序列化事件，用于反序列化全局索引，以及一些没有依赖引用关系的参数
+            </code>
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Interface.ISerializablePost.DeserializeHysteresisOccurs(SerializerHelper.Type.SerializeUnion)">
+            <summary>
+            滞后的反序列化发生
+            <code>
+            比如将引用关系放在滞后反序列化中进行构建，此时全局索引已经构建，所以可以不用考虑目标是否还在序列化等问题。
+            </code>
+            </summary>
+        </member>
+        <member name="T:Deconstruction.Interface.ISpatialDimension">
+            <summary>
+            空间维度转换，用于2维轨迹中后续对于坐标矢量的描述
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Interface.ISpatialDimension.GetPosition3">
+            <summary>
+            强制获取此实现在三维空间中的坐标
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Interface.ISpatialDimension.GetHorizonPosition">
+            <summary>
+            强制获取此实现在地平面中的坐标
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Interface.ISpatialDimension.GetVerticalPlatePosition">
+            <summary>
+            强制获取此实现在纵版空间中的坐标
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Interface.ISpatialDimension.SetPosition3(UnityEngine.Vector3)">
+            <summary>
+            强制设置此实现在三维空间中的坐标
+            </summary>
+            <param name="position"></param>
+        </member>
+        <member name="M:Deconstruction.Interface.ISpatialDimension.SetHorizonPosition(UnityEngine.Vector2)">
+            <summary>
+            强制设置此实现在地平面中的坐标
+            </summary>
+            <param name="position"></param>
+        </member>
+        <member name="M:Deconstruction.Interface.ISpatialDimension.SetVerticalPlatePosition(UnityEngine.Vector2)">
+            <summary>
+            强制设置此实现在纵版空间中的坐标
+            </summary>
+            <param name="position"></param>
+        </member>
+        <member name="M:Deconstruction.Interface.ITrajectory`1.GetPoint(System.Double)">
+            <summary>
+            获取此轨迹的点位迭代器，无论如何都会返回包含首尾的点坐标。
+            <code>
+            注意：这是本地空间
+            另外有些时候在计算的最后不满两步长的点可能会被省略。
+            </code>
+            </summary>
+            <param name="step">迭代步长，1步长接近于unity中的1m</param>
+            <returns>返回双精浮点的XY值</returns>
+        </member>
+        <member name="P:Deconstruction.Interface.ITrajectory`1.Origin">
+            <summary>
+            相对原点，如果当前是世界空间，可以使用此项目进行坐标偏移；
+            如果当前是本地空间，此项应当为零;
+            <code>
+            注意：此项主要用于设置坐标偏移，是本地空间
+            并且它的坐标可能并不是真的是中心点。
+            </code>
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Interface.ITrajectory`1.GetStartPointNormal">
+            <summary>
+            获取起点法向
+            <code>
+            注意：这是模拟空间，世界或本地旋转对此无效
+            </code>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Deconstruction.Interface.ITrajectory`1.GetEndPointNormal">
+            <summary>
+            获取终点法向
+            <code>
+            注意：这是模拟空间，世界或本地旋转对此无效
+            </code>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Deconstruction.Interface.ITrajectory`1.GetStartPointPosition">
+            <summary>
+            获取起点坐标
+            <code>
+            注意：这是模拟空间
+            </code>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Deconstruction.Interface.ITrajectory`1.GetEndPointPosition">
+            <summary>
+            获取终点坐标
+            <code>
+            注意：这是模拟空间
+            </code>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Deconstruction.Interface.ITrajectory`1.GetTrajectoryLength">
+            <summary>
+            获取轨迹长度
+            <code>
+            注意：这是模拟空间，世界或本地缩放对此无效
+            </code>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Interface.ITrajectory`1.GetNormalLengthFormPoint(`0)">
+            <summary>
+            获取给定点在轨迹上的单位长度
+            <code>
+            注意：这是模拟空间，世界或本地缩放对此无效
+            </code>
+            </summary>
+            <param name="point">轨迹上的坐标</param>
+            <returns>返回的是一个被钳制在0-1之间的值</returns>
+        </member>
+        <member name="M:Deconstruction.Interface.ITrajectory`1.GetUnclampedNormalLengthFormPoint(`0)">
+            <summary>
+            获取给定点在轨迹上未被钳制的单位长度
+            <code>
+            注意：这是模拟空间，世界或本地缩放对此无效
+            </code>
+            </summary>
+            <param name="point"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Interface.ITrajectory`1.GetPointFormUnclampedNormalLength(System.Single)">
+            <summary>
+            获取此轨迹上单位长度上的点坐标，注意这不会进行单位长度钳制
+            <code>
+            注意：这是模拟空间，世界或本地缩放对此无效
+            </code>
+            </summary>
+            <param name="normalLength">单位长度</param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Interface.ITrajectory`1.FindNearestPoint(`0)">
+            <summary>
+            获取离给定点最近的点坐标
+            <code>
+            注意：这是模拟空间，不能与世界空间坐标混用
+            </code>
+            </summary>
+            <param name="point"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Deconstruction.Interface.IUniqueIdentifier">
+            <summary>
+            具有全局唯一标识符的
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Interface.IUniqueIdentifier.Identifier">
+            <summary>
+            标识符成员
+            </summary>
+        </member>
+        <member name="T:Deconstruction.Interface.ITrajectory3">
+            <summary>
+            三维轨迹类接口，实现接口的类可以用于驱动线
+            </summary>
+        </member>
+        <member name="T:Deconstruction.Interface.ITrajectory2">
+            <summary>
+            二维轨迹类接口，实现接口的类可以用于驱动线
+            </summary>
+        </member>
+        <member name="T:Deconstruction.Tool.DecisionMakerToolBase">
+            <summary>
+            决策者工具，创建一个工具类，来对所有的输入进行决策分离。
+            <code>
+            说明：
+            决策者工具是一种通过输入产生操作的代理工具，所有的操作应该通过决策者工具类代为实现。
+            决策者工具可以在特定的条件下接受来自不同情景的输入（快捷键，或常规操作），
+            切换这个决策者工具即可完成对一系列操作的情景快速切换，
+            其中包含一系列操作栈，可以同时操作数个对象。
+            
+            通常情况下只能有一个决策者工具在线，这将会占用静态名额；
+            其他启动的决策者工具会关闭当前激活的决策者。
+            不论工具是否启用，都可以调用updateDMTool()，这会自动路由到所需的工具上。
+            
+            注意：
+            工具内异步更新将按顺序执行，这十分缓慢，很可能会因为无法准时完成任务延迟多帧。
+            异步期间无法访问所有的的运行时参数，需要另外为异步创建所需的备份，注意不要给GC带来过大的压力。
+            </code>
+            </summary>
+        </member>
+        <member name="E:Deconstruction.Tool.DecisionMakerToolBase.OnGameobjectAddition">
+            <summary>
+            当对象增加时
+            </summary>
+        </member>
+        <member name="E:Deconstruction.Tool.DecisionMakerToolBase.OnGameobjectDecrease">
+            <summary>
+            当对象减少时
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Tool.DecisionMakerToolBase.allDecisionMakers">
+            <summary>
+            所有决策者工具
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Tool.DecisionMakerToolBase.MakersCount">
+            <summary>
+            所有可用的工具数量
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.GetMakerTool(System.Int32)">
+            <summary>
+            获取给定索引下的工具
+            </summary>
+            <param name="index"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.DestroyTool">
+            <summary>
+            移除工具
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Tool.DecisionMakerToolBase.ActiveDecisionMaker">
+            <summary>
+            当前激活的决策者工具
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Tool.DecisionMakerToolBase.ActiveAuxiliaryDecisionMaker">
+            <summary>
+            当前激活的辅助决策者
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.UpdateDMTool">
+            <summary>
+            决策者更新，这会自动路由到当前激活的决策工具上。
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Tool.DecisionMakerToolBase.keyState">
+            <summary>
+            按键状态
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Tool.DecisionMakerToolBase.keyIndex">
+            <summary>
+            第一按键状态
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Tool.DecisionMakerToolBase.difKeyIndex">
+            <summary>
+            第二按键状态
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Tool.DecisionMakerToolBase.anyKeyDown">
+            <summary>
+            任何键按下
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Tool.DecisionMakerToolBase.keycodes">
+            <summary>
+            所有使用的按键，一般来说真的要用的按键并不多，而且并不频繁修改。
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.KeyStateSnapshoot">
+            <summary>
+            按键状态快照
+            <code>
+            如果直接遍历所有按键，将有2ms的GC，并不高效；
+            这也是为什么需要先申请一个按键
+            </code>
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.ContainsKey(UnityEngine.KeyCode)">
+            <summary>
+            检查一个按键是否已经存在
+            </summary>
+            <param name="keyCode"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.RequestKey(UnityEngine.KeyCode)">
+            <summary>
+            请求一个按键处理，以便后续使用
+            </summary>
+            <param name="keyCode"></param>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.RejectKey(UnityEngine.KeyCode)">
+            <summary>
+            驳回一个按键处理
+            </summary>
+            <param name="keyCode"></param>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.GetKey(UnityEngine.KeyCode)">
+            <summary>
+            获取按键状态
+            </summary>
+            <param name="keyCode"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.GetLastKey(UnityEngine.KeyCode)">
+            <summary>
+            获取上一按键状态
+            </summary>
+            <param name="keyCode"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.GetKeyDown(UnityEngine.KeyCode)">
+            <summary>
+            获取按键按下时
+            </summary>
+            <param name="keyCode"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.GetKeyUp(UnityEngine.KeyCode)">
+            <summary>
+            获取按键释放时
+            </summary>
+            <param name="keyCode"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.GetKeyDifferent(UnityEngine.KeyCode)">
+            <summary>
+            获取按键状态不一致时（按下或释放）
+            </summary>
+            <param name="keyCode"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.GetAnyKeyDown">
+            <summary>
+            获取任意键状态按下时
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="F:Deconstruction.Tool.DecisionMakerToolBase.mouseIndex">
+            <summary>
+            第一按键状态
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Tool.DecisionMakerToolBase.difMouseIndex">
+            <summary>
+            第二按键状态
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Tool.DecisionMakerToolBase.anyMouseDown">
+            <summary>
+            任何键按下
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.MouseStateSnapshoot">
+            <summary>
+            鼠标状态快照
+            <code>
+            如果直接遍历所有按键，将有2ms的GC，并不高效；
+            这也是为什么需要先申请一个按键
+            </code>
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.GetMouseButton(System.Int32)">
+            <summary>
+            获取按键状态
+            </summary>
+            <param name="code"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.GetMouseButtonDown(System.Int32)">
+            <summary>
+            获取按键按下时
+            </summary>
+            <param name="code"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.GetMouseButtonUp(System.Int32)">
+            <summary>
+            获取按键释放时
+            </summary>
+            <param name="code"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.GetMouseButtonDifferent(System.Int32)">
+            <summary>
+            获取按键状态不一致时（按下或释放）
+            </summary>
+            <param name="code"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.GetAnyMouseButtonDown">
+            <summary>
+            获取任意键状态按下时
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Deconstruction.Tool.DecisionMakerToolBase.KeyPack">
+            <summary>
+            按键包
+            <code>
+            包装一个按键事件
+            </code>
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Tool.DecisionMakerToolBase.KeyPack.key">
+            <summary>
+            指代按键
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Tool.DecisionMakerToolBase.KeyPack.mouseKey">
+            <summary>
+            鼠标按键
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Tool.DecisionMakerToolBase.KeyPack.isKeyboard">
+            <summary>
+            当前按键是键盘
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.KeyPack.#ctor(UnityEngine.KeyCode[])">
+            <summary>
+            此按键包监听指定的非鼠标按键
+            </summary>
+            <param name="key"></param>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.KeyPack.#ctor(System.Int32)">
+            <summary>
+            此按键包监听一个指定的鼠标按键
+            </summary>
+            <param name="mouseKey"></param>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.KeyPack.Initialize">
+            <summary>
+            初期化参数，只针对部分特殊临时状态
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.KeyPack.Getkey">
+            <summary>
+            获取包装按键状态，如果定义了多个按键，则所有按键都按下了才有效
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.KeyPack.GetKeyDown">
+            <summary>
+            获取包装按键按下，如果定义了多个按键，则任意按键按下了都有效
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.KeyPack.GetKeyUp">
+            <summary>
+            获取包装按键释放，如果定义了多个按键，则任意按键释放了都有效
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.KeyPack.GetKeyDifferent">
+            <summary>
+            获取包装按键差异，如果定义了多个按键，则任意按键发生差异都有效
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.KeyPack.GetKeyCombinationDown">
+            <summary>
+            获取包装按键组合按下，当最后一个按键按下时触发
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.KeyPack.GetAnyKeyDown">
+            <summary>
+            获取任意按键按下时
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.KeyPack.GetPressKeyFlipFlopState">
+            <summary>
+            获取按下翻页的按键状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.KeyPack.GetReleaseKeyFlipFlopState">
+            <summary>
+            获取释放翻页的按键状态
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.KeyPack.op_Implicit(Deconstruction.Tool.DecisionMakerToolBase.KeyPack)~UnityEngine.KeyCode">
+            <summary>
+            隐式获取一个按键包的按键
+            </summary>
+            <param name="keyPack"></param>
+        </member>
+        <member name="E:Deconstruction.Tool.DecisionMakerToolBase.OnStartExecution">
+            <summary>
+            工具开始执行
+            </summary>
+        </member>
+        <member name="E:Deconstruction.Tool.DecisionMakerToolBase.OnEndExecution">
+            <summary>
+            工具结束执行
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Tool.DecisionMakerToolBase.EnableTool">
+            <summary>
+            工具是否有效
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Tool.DecisionMakerToolBase.EnableBeforeEvent">
+            <summary>
+            是否启用批处理异步前置更新
+            <code>
+            注意：这会带来更大的开销
+            </code>
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Tool.DecisionMakerToolBase.EnableAfterEvent">
+            <summary>
+            是否启用批处理异步后置更新
+            <code>
+            注意：这会带来更大的开销
+            </code>
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Tool.DecisionMakerToolBase._operateContextLists">
+            <summary>
+            操作栈插槽链表，每个插槽代表一个成员
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Tool.DecisionMakerToolBase._operateSlotBatchList">
+            <summary>
+            操作栈插槽列表，这里不用它作为索引依据的原因是因为这是异步的
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Tool.DecisionMakerToolBase.CoParenting">
+            <summary>
+            工具元素父级
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Tool.DecisionMakerToolBase.CoParentValid">
+            <summary>
+            工具元素父级有效
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Tool.DecisionMakerToolBase.EnableCompress">
+            <summary>
+            开启序列化时的压缩功能
+            <code>
+            开启后会大大降低占用空间，但会使输出不再具有可读性，并带来一定的性能问题。
+            默认开启。
+            </code>
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.#ctor">
+            <summary>
+            创建一个基本操作工具
+            <code>
+            每个工具中包含一系列的操作栈列，启用工具将直接执行这些操作。
+            当工具中的操作栈全部结束时，工具将会自动关闭。
+            监听工具的开始与结束委托来快速跟踪工具状态。
+            </code>
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.Finalize">
+            <summary>
+            销毁工具
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.InitializeParent(UnityEngine.Transform)">
+            <summary>
+            初始化工具父级
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.Awake">
+            <summary>
+            工具初始构造时
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.OnEnableTool">
+            <summary>
+            当决策工具启用时，上一个工具会在此之前调用OnDisableTool并结束
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.OnDisableTool">
+            <summary>
+            当决策工具停用时
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.ToolUpdate">
+            <summary>
+            工具更新生命周期
+            <code>
+            基类必须继承，用以实现栈批处理更新
+            </code>
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.ToolLateUpdate">
+            <summary>
+            工具后置更新生命周期
+            <code>
+            基类必须继承，用以实现栈批处理更新
+            </code>
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.OnEnableAuxiliary">
+            <summary>
+            当工具被标记为辅助并开始执行时
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.OnDisableAuxiliary">
+            <summary>
+            当工具结束辅助工具时
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.ToolAuxiliaryUpdate">
+            <summary>
+            工具后台主要更新
+            <code>
+            不建议在后台执行按键操作等关键操作，而是应该将主要逻辑放在当前激活的工具上。
+            </code>
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.ToolAuxiliaryLateUpdate">
+            <summary>
+            工具后台后置更新
+            <code>
+            不建议在后台执行按键操作等关键操作，而是应该将主要逻辑放在当前激活的工具上。
+            </code>
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.OnBringingForeground">
+            <summary>
+            工具被激活，逻辑递交前台
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.OnPuttingBackground">
+            <summary>
+            工具休眠，逻辑递交后台
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.OnFristStart">
+            <summary>
+            当工具中的首个操作栈开始使用时
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.OnFinalEnd">
+            <summary>
+            当工具最后一个操作栈结束使用时
+            <code>
+            基类必须继承，提供必要的结束回调
+            </code>
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.LaunchTool">
+            <summary>
+            决策工具启动过程
+            <code>
+            对于过程来说_enableTool是常量，可以检查，不能写入
+            </code>
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.ShutDownTool">
+            <summary>
+            决策工具关闭过程
+            <code>
+            对于过程来说_enableTool是常量，可以检查，不能写入
+            </code>
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Tool.DecisionMakerToolBase.serializeTemp">
+            <summary>
+            序列化与反序列化缓冲区
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Tool.DecisionMakerToolBase.SerializeTemp">
+            <summary>
+            序列化与反序列化缓冲区
+            <code>
+            只能在工具序列化处理阶段中调用
+            </code>
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Tool.DecisionMakerToolBase.typeConsignMap">
+            <summary>
+            序列化类型映射集合
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Tool.DecisionMakerToolBase.TypeConsignMap">
+            <summary>
+            序列化类型映射集合
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.ToolSerializeDispost">
+            <summary>
+            工具序列化处理
+            <code>
+            在序列化方法中可以使用：
+            SerializeTemp作为序列化的缓冲区；
+            TypeConsignMap作为目标类标识的映射管理；
+            
+            可以使用 SerializeTemp.Add 来添加新的元素，以将其纳入序列化范围；
+            并在所有元素添加结束后调用 SerializeTemp.RefreshSerializedContext() 来刷新缓存。
+            如果不刷新缓存会导致所有序列化的内容清零。
+            </code>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.ToolDiserializDispost(SerializerHelper.Type.SerializeUnion)">
+            <summary>
+            工具反序列化处理
+            <code>
+            在反序列化方法中可以使用：
+            SerializeTemp作为序列化内容的获取；
+            TypeConsignMap作为目标类标识的映射获取；
+            </code>
+            </summary>
+            <param name="context"></param>
+            <returns>如果传入的集合无法进行序列化，返回否</returns>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.AddType``1">
+            <summary>
+            在序列化中添加类型
+            <code>
+            请在ToolSerializeDispost方法中基类方法之后调用
+            </code>
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.CheckType(System.Type@)">
+            <summary>
+            获取当前反序列化的类型
+            <code>
+            请在ToolDiserializDispost方法中基类方法之后调用
+            </code>
+            </summary>
+            <param name="type"></param>
+            <returns>真则代表当前类型有效</returns>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.GenerateOperateSlot``1">
+            <summary>
+            创建一个操作插槽
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.AddOperateSlot(Deconstruction.Type.DMToolSlot.OperateSlotBase)">
+            <summary>
+            添加一个现有的操作插槽
+            </summary>
+            <param name="slot"></param>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.InsertOrerateSlot(Deconstruction.Type.DMToolSlot.OperateSlotBase)">
+            <summary>
+            嵌入插槽
+            </summary>
+            <param name="slot"></param>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.RemoveOperateSlot(Deconstruction.Type.DMToolSlot.OperateSlotBase)">
+            <summary>
+            移除一个操作插槽
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.ReplaceOperateSlot(Deconstruction.Type.DMToolSlot.OperateSlotBase,Deconstruction.Type.DMToolSlot.OperateSlotBase)">
+            <summary>
+            用新的插槽替换当前插槽
+            </summary>
+            <param name="slot"></param>
+            <param name="newSlot"></param>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.FindNode(Deconstruction.Element.PlacementBase,System.Collections.Generic.LinkedListNode{Deconstruction.Type.DMToolSlot.OperateSlotBase}@)">
+            <summary>
+            查找一个对象在哪个节点中
+            </summary>
+            <param name="target"></param>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.CleanSlot">
+            <summary>
+            清除所有成员
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.CreatPlacementObject``1">
+            <summary>
+            即刻创建一个用于建造的对象
+            <code>
+            创建成员的连带功能：
+            * 创建时加入建造队列。
+            * 名称是自动按照当前的时间序列给定，全局唯一。
+            </code>
+            </summary>
+            <typeparam name="PLACEMENT"></typeparam>
+        </member>
+        <member name="M:Deconstruction.Tool.DecisionMakerToolBase.CreatPlacementObject``1(System.String)">
+            <summary>
+            创建一个可放置的元素
+            </summary>
+            <typeparam name="PLACEMENT">建造目标的类型</typeparam>
+            <param name="name">目标名称</param>
+            <returns></returns>
+        </member>
+        <member name="T:Deconstruction.Tool.DMUndoRedo">
+            <summary>
+            重做撤回操作的基类
+            </summary>
+        </member>
+        <member name="T:Deconstruction.Tool.BackendConsoleTool">
+            <summary>
+            后端控制台工具，直接接收输入按键并构建为字符串
+            </summary>
+        </member>
+        <member name="E:Deconstruction.Tool.BackendConsoleTool.InputChanged">
+            <summary>
+            输入更新时
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Tool.BackendConsoleTool.inputBuffer">
+            <summary>
+            输入文本缓冲区
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Tool.BackendConsoleTool.buffer">
+            <summary>
+            获取文本
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.BackendConsoleTool.UpdateKeyInput">
+            <summary>
+            更新按键输入
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.BackendConsoleTool.ClearBuffer">
+            <summary>
+            清除缓冲区
+            </summary>
+        </member>
+        <member name="T:Deconstruction.Tool.TrajectoryTrackingTool">
+            <summary>
+            轨迹跟踪工具
+            <code>
+            轨迹跟踪可以计算出一个受路径影响的光标，用于路径上吸附。
+            
+            注意：这是一个后台工具，不需要置于前台
+            </code>
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Tool.TrajectoryTrackingTool.TrackGridRange">
+            <summary>
+            设定追踪器检查范围
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Tool.TrajectoryTrackingTool.TrackingCurrentPosition">
+            <summary>
+            跟踪目标坐标（这默认是小型占位模式）
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Tool.TrajectoryTrackingTool.TrackingCurrentTarget">
+            <summary>
+            跟踪目标（这默认是小型占位模式）
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Tool.TrajectoryTrackingTool._currentIndex">
+            <summary>
+            目标索引
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Tool.TrajectoryTrackingTool._placeholderCaculate">
+            <summary>
+            所有期望获取的通讯目标
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Tool.TrajectoryTrackingTool.CurrentWorldPosition">
+            <summary>
+            世界光标位置
+            </summary>
+        </member>
+        <member name="T:Deconstruction.Tool.TrajectoryTrackingTool.TrackPersistentCommunicate">
+            <summary>
+            持续获取追踪目标的结构
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Tool.TrajectoryTrackingTool.TrackPersistentCommunicate.type">
+            <summary>
+            类型
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Tool.TrajectoryTrackingTool.TrackPersistentCommunicate.BroughtScope">
+            <summary>
+            有效的距离
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Tool.TrajectoryTrackingTool.TrackPersistentCommunicate.MinLength">
+            <summary>
+            最近的距离
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Tool.TrajectoryTrackingTool.TrackPersistentCommunicate.NearsetPoint">
+            <summary>
+            最近的位置
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Tool.TrajectoryTrackingTool.TrackPersistentCommunicate.NearsetObject">
+            <summary>
+            最近的物体
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.TrajectoryTrackingTool.TrackPersistentCommunicate.#ctor(Deconstruction.Type.Area.PlaceholdersAreaType,System.Func{UnityEngine.Vector3},System.Single)">
+            <summary>
+            创建追踪目标权重对
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.TrajectoryTrackingTool.TrackPersistentCommunicate.StartCalculate">
+            <summary>
+            开始计算
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.TrajectoryTrackingTool.TrackPersistentCommunicate.EndCalcualte">
+            <summary>
+            结束计算
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.TrajectoryTrackingTool.TrackPersistentCommunicate.CalculateNearsetPoint(UnityEngine.Vector3,Deconstruction.Element.PlacementBase)">
+            <summary>
+            直接计算过程
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.TrajectoryTrackingTool.TrackPersistentCommunicate.CalculateNearsetObject(Deconstruction.Element.PlacementBase)">
+            <summary>
+            根据当前的模式类型计算过程
+            </summary>
+            <param name="item"></param>
+        </member>
+        <member name="M:Deconstruction.Tool.TrajectoryTrackingTool.TrackPersistentCommunicate.Clear">
+            <summary>
+            清空
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.TrajectoryTrackingTool.GetCurrentGridNearsetNeighbor(Deconstruction.Tool.TrajectoryTrackingTool.TrackPersistentCommunicate,System.Int32)">
+            <summary>
+            获取光标在当前网格中的最近的邻居。
+            <code>
+            结果会放在类字段:
+            吸附坐标：_trackingCurrentPosition
+            吸附对象: _trackingCurrentTarget
+            </code>
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.TrajectoryTrackingTool.GetTrackCaculateByIndex(System.Int32,Deconstruction.Tool.TrajectoryTrackingTool.TrackPersistentCommunicate@)">
+            <summary>
+            获取追踪计算器
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Tool.TrajectoryTrackingTool.InstantiationTrackCaculate(Deconstruction.Type.Area.PlaceholdersAreaType,System.Func{UnityEngine.Vector3},System.Single)">
+            <summary>
+            创建一个新的追踪计算器
+            <code>
+            返回一个追踪计算器，这会和其他计算器同时计算，但返回关注点不同的结果
+            注意：这会带来额外的性能开销。
+            </code>
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Tool.TrajectoryTrackingTool.RemoveTrackCaculate(Deconstruction.Tool.TrajectoryTrackingTool.TrackPersistentCommunicate)">
+            <summary>
+            移除一个追踪计算器
+            <code>
+            注意，请注意保留至少一个计算器在工具内，全部删除可能导致获取默认值时抛出异常
+            </code>
+            </summary>
+            <param name="caculate"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Deconstruction.Manager.CameraMouseInputHelper">
+            <summary>
+            摄像机视图下输入辅助，用来提供用户在
+            </summary>
+        </member>
+        <member name="T:Deconstruction.Manager.CameraMouseInputHelper.MainCameraChangeDelegate">
+            <summary>
+            摄像机换源委托
+            </summary>
+            <param name="newCamera">新的摄像机</param>
+        </member>
+        <member name="E:Deconstruction.Manager.CameraMouseInputHelper.MainCameraChange">
+            <summary>
+            当主要的摄像机发生变更时
+            </summary>
+        </member>
+        <member name="T:Deconstruction.Manager.CameraMouseInputHelper.MouseHitUpdateDelegate">
+            <summary>
+            鼠标输入更新委托
+            </summary>
+            <param name="valid">鼠标落点有效</param>
+            <param name="worldHit">鼠标在世界中的落点</param>
+        </member>
+        <member name="E:Deconstruction.Manager.CameraMouseInputHelper.MouseHitUpdate">
+            <summary>
+            鼠标输入更新
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Manager.CameraMouseInputHelper.EnableInput">
+            <summary>
+            此控制器输入是否启用
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Manager.CameraMouseInputHelper.EnableCameraChangeCheck">
+            <summary>
+            此控制器摄像机换源检查是否有效，如果游戏中需要切换摄像机，那么应该开启检查。
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Manager.CameraMouseInputHelper.MainCamera">
+            <summary>
+            获取当前第一个被标记为有效的摄像机。
+            (注意：这是惰性属性，获取的是一个本地变量)
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Manager.CameraMouseInputHelper.CurrentPosition">
+            <summary>
+            光标在世界中命中的坐标
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Manager.CameraMouseInputHelper.CurrentGridPosition">
+            <summary>
+            光标在世界中的网格吸附坐标
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Manager.CameraMouseInputHelper.CurrentScreenPosition">
+            <summary>
+            光标在屏幕上的坐标
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Manager.CameraMouseInputHelper.HitValid">
+            <summary>
+            命中点有效
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Manager.CameraMouseInputHelper.RayCastMask">
+            <summary>
+            鼠标光标在世界中的碰撞检测层
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Manager.CameraMouseInputHelper.MaxCastLength">
+            <summary>
+            鼠标光标在世界中的最大碰撞距离
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Manager.CameraMouseInputHelper.AdsorptionGrid">
+            <summary>
+            鼠标光标在世界中吸附的尺寸
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Manager.CameraMouseInputHelper.DebugCurrent">
+            <summary>
+            调试移动目标
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Manager.CameraMouseInputHelper._debugDrawRayLine">
+            <summary>
+            控制是否在世界中绘制光标射线
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Manager.CameraMouseInputHelper._debugDrawCurrentGrid">
+            <summary>
+            控制是否在世界中绘制光标附近的网格
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Manager.CameraMouseInputHelper.UpdateMainCamera">
+            <summary>
+            更新主要摄像机，随后可以使用_mainCamera获取引用。
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Manager.CameraMouseInputHelper.GetMouseInViewWorldPoint(UnityEngine.RaycastHit@,System.Single,UnityEngine.LayerMask)">
+            <summary>
+            获取鼠标在世界空间中的点
+            </summary>
+            <param name="hit"></param>
+            <param name="maxDistance"></param>
+            <param name="mask"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Manager.CameraMouseInputHelper.AdsorbAbsoluteGrid(UnityEngine.Vector3,UnityEngine.Vector3)">
+            <summary>
+            将给定的点吸附到绝对网格
+            </summary>
+            <param name="point">点坐标</param>
+            <param name="grid">网格</param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Manager.CameraMouseInputHelper.ReplaceRaycastHitPosition(UnityEngine.RaycastHit,UnityEngine.Vector3)">
+            <summary>
+            替换碰撞结果中的坐标
+            </summary>
+            <param name="hit"></param>
+            <param name="position"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Manager.CameraMouseInputHelper.GetGridAdsorb(UnityEngine.Vector3)">
+            <summary>
+            获取一个矢量吸附在此处定义的网格上的值。
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Manager.CameraMouseInputHelper.ForgerRaycastHit(UnityEngine.Vector3,UnityEngine.GameObject,UnityEngine.RaycastHit@,UnityEngine.Vector3)">
+            <summary>
+            伪造一个射线检测结果
+            <code>
+            如果不想要进行射线检测，那么在此处提供必要的属性即可创建一个满足要求的射线检测结果。
+             (注意：潜在的较大开销方法)
+            </code>
+            </summary>
+            <param name="position">命中位置</param>
+            <param name="target">命中对象</param>
+            <param name="hit">返回命中结果</param>
+            <param name="normal">命中位置的法向</param>
+            <returns>当目标的碰撞检测层不一致时将返回否</returns>
+        </member>
+        <member name="T:Deconstruction.Manager.PlaceElementManager">
+             <summary>
+             建造放置元素的管理器，用于控制元素的渲染生命周期
+             <code>
+             默认开启了输入控制，可以通过EnableInputHelper字段来设定是否启用。
+            
+             在没有任何工具启动的情况下，管理器可以接收按键输入，直到被工具输入抢占。
+             不过这里并没有抢占逻辑，所以请根据工具激活的逻辑适时关闭按键处理
+             
+             使用前须知：
+             代理生命周期元素需要通过AddEmbedded加入；同时默认关闭主要的更新过程，需要设置EnableUpdate为true;
+             </code>
+             </summary>	
+        </member>
+        <member name="P:Deconstruction.Manager.PlaceElementManager.EnableFixedUpdate">
+            <summary>
+            允许可放置对象的前置更新
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Manager.PlaceElementManager.EnableUpdate">
+            <summary>
+            允许可放置对象的主要更新
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Manager.PlaceElementManager.EnableLateUpdate">
+            <summary>
+            允许可放置对象的后置更新
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Manager.PlaceElementManager._lineMaterial">
+            <summary>
+            线材质
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Manager.PlaceElementManager._pointMaterial">
+            <summary>
+            点材质
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Manager.PlaceElementManager.PlacementBaseNeighborGridOrigin">
+            <summary>
+            网格原点
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Manager.PlaceElementManager.PlacementBaseNeighborGridCellSize">
+            <summary>
+            晶格尺寸
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Manager.PlaceElementManager.PlacementBaseNeighborGridFullSize">
+            <summary>
+            网格总尺寸
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Manager.PlaceElementManager.PlacementBaseNeighborGridMaxNeighborCount">
+            <summary>
+            网格最大邻居数量
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Manager.PlaceElementManager._placementNeighbor">
+            <summary>
+            全体可放置元素的邻居
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Manager.PlaceElementManager._placementObjects">
+            <summary>
+            可放置物对象的批处理列表
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Manager.PlaceElementManager._structuralLinkedList">
+            <summary>
+            全体结构链表
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Manager.PlaceElementManager.StructuralLinkedList">
+            <summary>
+            所有结构链表
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Manager.PlaceElementManager.InputHelper">
+            <summary>
+            输入管理器
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Manager.PlaceElementManager.EnableInputHelper">
+            <summary>
+            此管理器的输入代理控制是否有效
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Manager.PlaceElementManager.TrackingTool">
+            <summary>
+            线路追踪工具
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Manager.PlaceElementManager.AddEmbedded``1(``0)">
+            <summary>
+            将一个成员添加到此处的代理生命周期中
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="obj"></param>
+        </member>
+        <member name="M:Deconstruction.Manager.PlaceElementManager.RemoveEmbedded``1(``0)">
+            <summary>
+            将一个成员从此处的代理生命周期中移除
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="obj"></param>
+        </member>
+        <member name="M:Deconstruction.Manager.PlaceElementManager.InitializedNeighborGrid">
+            <summary>
+            初始化邻居网格
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Manager.PlaceElementManager.InsertGiantNeighbor``1(``0,XericLibrary.Runtime.MacroLibrary.NeighborGrid{Deconstruction.Element.PlacementBase}.NeighborConcentratorMappingGridIndex@)">
+            <summary>
+            添加巨大邻居对象 (一个横跨多个网格点的对象称为巨大对象，需要里面包含一个线计算器)
+            </summary>
+            <typeparam name="K"></typeparam>
+            <param name="target"></param>
+            <param name="howToTrans">由外部决定如何变换坐标空间（目标，建议步长）返回点位迭代器</param>
+            <param name="index"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Manager.PlaceElementManager.RemoveGiantNeighbor``1(``0)">
+            <summary>
+            移除巨大邻居对象
+            </summary>
+            <typeparam name="K"></typeparam>
+            <param name="target"></param>
+            <param name="howToTrans">由外部决定如何变换坐标空间（目标，建议步长）返回点位迭代器</param>
+        </member>
+        <member name="M:Deconstruction.Manager.PlaceElementManager.RemoveGiantNeighbor(XericLibrary.Runtime.MacroLibrary.NeighborGrid{Deconstruction.Element.PlacementBase}.NeighborConcentratorMappingGridIndex)">
+            <summary>
+            清空此集线器上的所有的索引
+            </summary>
+            <typeparam name="K"></typeparam>
+            <param name="index"></param>
+        </member>
+        <member name="M:Deconstruction.Manager.PlaceElementManager.InsertNeighbor(Deconstruction.Element.PlacementBase,XericLibrary.Runtime.MacroLibrary.NeighborGrid{Deconstruction.Element.PlacementBase}.NeighborGridIndex@)">
+            <summary>
+            添加一个相邻元素，用于后续通过坐标进行查找
+            </summary>
+            <param name="target"></param>
+        </member>
+        <member name="M:Deconstruction.Manager.PlaceElementManager.RemoveNeighbor(Deconstruction.Element.PlacementBase)">
+            <summary>
+            移除一个网格元素
+            </summary>
+            <param name="target"></param>
+        </member>
+        <member name="M:Deconstruction.Manager.PlaceElementManager.RemoveNeighbor(XericLibrary.Runtime.MacroLibrary.NeighborGrid{Deconstruction.Element.PlacementBase}.NeighborGridIndex)">
+            <summary>
+            移除一个网格元素
+            </summary>
+            <param name="index"></param>
+        </member>
+        <member name="M:Deconstruction.Manager.PlaceElementManager.RequestKey(UnityEngine.KeyCode)">
+            <summary>
+            代理请求一个按键
+            </summary>
+            <param name="keyCode"></param>
+        </member>
+        <member name="M:Deconstruction.Manager.PlaceElementManager.RejectKey(UnityEngine.KeyCode)">
+            <summary>
+            代理拒接一个按键
+            </summary>
+            <param name="keyCode"></param>
+        </member>
+        <member name="M:Deconstruction.Manager.PlaceElementManager.AddLinkedTarget(Deconstruction.Element.PlacementBase)">
+            <summary>
+            添加可管理对象到此管理器中
+            <code>
+            加入的成员可以享受序列化与反序列化服务，以及后续的一系列管理方法
+            </code>
+            </summary>
+            <param name="target"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Manager.PlaceElementManager.RemoveLinkedTarget(System.Collections.Generic.LinkedListNode{Deconstruction.Element.PlacementBase})">
+            <summary>
+            将一个可管理对象从此管理器中移除
+            <code>
+            移除的成员将无法继续享受序列化服务
+            </code>
+            </summary>
+            <param name="targetNode"></param>
+        </member>
+        <member name="T:Deconstruction.Trajectory.BezierTrajectory2">
+            <summary>
+            贝塞尔曲线轨迹计算器
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Trajectory.BezierTrajectory2.term">
+            <summary>
+            项数
+            </summary>
+        </member>
+        <member name="T:Deconstruction.Trajectory.RoundTrajectory2">
+            <summary>
+            弧形轨迹计算器
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Trajectory.RoundTrajectory2.OverflowArcRadius">
+            <summary>
+            长度溢出此范围时，返回为否表示不允许继续绘制
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Trajectory.RoundTrajectory2.MaxNumIntervals">
+            <summary>
+            最大弧长计算积分间隔
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Trajectory.RoundTrajectory2.h">
+            <summary>
+            x坐标
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Trajectory.RoundTrajectory2.k">
+            <summary>
+            y坐标
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Trajectory.RoundTrajectory2.a">
+            <summary>
+            x半径
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Trajectory.RoundTrajectory2.b">
+            <summary>
+            y半径
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Trajectory.RoundTrajectory2.radius1">
+            <summary>
+            圆弧起点或反转时的终点
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Trajectory.RoundTrajectory2.radius2">
+            <summary>
+            圆弧终点或反转时的起点
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Trajectory.RoundTrajectory2.consequent">
+            <summary>
+            是否顺向，表示从a到b的轨迹为顺时针，否则为逆时针
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Trajectory.RoundTrajectory2.MakeCircleWith1Normal(UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Vector2,System.Boolean)">
+            <summary>
+            制作切向正圆弧
+            </summary>
+            <param name="a">相对坐标</param>
+            <param name="aHandle">切线空间</param>
+            <param name="b">相对坐标</param>
+            <param name="isTangent">交换绘制方向，用于半圆弧与全圆弧切换</param>
+            <returns>如果条件不满足则返回否</returns>
+        </member>
+        <member name="M:Deconstruction.Trajectory.RoundTrajectory2.MakeCircleWithNormal1(UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Vector2,System.Boolean)">
+            <summary>
+            制作切向正圆弧
+            </summary>
+            <param name="a">相对坐标</param>
+            <param name="b">相对坐标</param>
+            <param name="bHandle"></param>
+            <param name="isTangent">交换绘制方向，用于半圆弧与全圆弧切换</param>
+            <returns>如果条件不满足则返回否</returns>
+        </member>
+        <member name="M:Deconstruction.Trajectory.RoundTrajectory2.MakeCircleWithAngle(UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Vector2,System.Double,System.Boolean)">
+            <summary>
+            制作角度约束圆弧（圆弧会自行计算得到一个新的顶点）
+            </summary>
+            <param name="a">局部空间</param>
+            <param name="aHandle">切线空间</param>
+            <param name="b">局部空间</param>
+            <param name="angle"></param>
+            <param name="isTangent">交换绘制方向，用于半圆弧与全圆弧切换</param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Trajectory.RoundTrajectory2.MakeCircleWith2Normal(UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Vector2,System.Boolean)">
+            <summary>
+            制作两法线完全约束圆弧(圆弧参考两个法向的方向进行绘制)
+            </summary>
+            <param name="a">局部空间</param>
+            <param name="aHandle">切线空间</param>
+            <param name="b">局部空间</param>
+            <param name="bHandle"></param>
+            <param name="isTangent">交换绘制方向，用于半圆弧与全圆弧切换</param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Trajectory.RoundTrajectory2.GetEllipseArcLength(System.Double,System.Double,System.Double,System.Double,System.Int32)">
+            <summary>
+            逼近椭圆弧弧长，这是有一定误差的计算方法，具体取决于积分间隔
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <param name="startAngle"></param>
+            <param name="endAngle"></param>
+            <param name="numIntervals">积分间隔数</param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Trajectory.RoundTrajectory2.GetCircularArcLength(System.Double,System.Double,System.Double,System.Boolean)">
+            <summary>
+            获取正圆弧长
+            </summary>
+            <param name="radius">半径</param>
+            <param name="startAngle">起始弧长</param>
+            <param name="endAngle">结束弧长</param>
+            <param name="consequent">顺向控制</param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Trajectory.RoundTrajectory2.GetAutoArcLength(System.Int32)">
+            <summary>
+            获取弧长
+            </summary>
+            <param name="numIntervals">如果当前是非正圆弧，需要设定积分逼近细节，建议保持默认</param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Trajectory.RoundTrajectory2.GetTangentFormula(System.Double,System.Double@,System.Double@)">
+            <summary>
+            获取给定弧度上的切线斜率与截距
+            </summary>
+            <param name="angle">测量弧度</param>
+            <param name="slope">斜率</param>
+            <param name="intercept">截距</param>
+        </member>
+        <member name="M:Deconstruction.Trajectory.RoundTrajectory2.GetTangentPosition(System.Double,UnityEngine.Vector2@)">
+            <summary>
+            获取给定弧度上的坐标
+            </summary>
+            <param name="angle">单位是弧度</param>
+            <returns>向量的起点与法向</returns>
+        </member>
+        <member name="M:Deconstruction.Trajectory.RoundTrajectory2.GetTangentNormal(System.Double,UnityEngine.Vector2@)">
+            <summary>
+            获取给定弧度上的切线向量
+            </summary>
+            <param name="angle">单位是弧度</param>
+            <returns>向量的起点与法向</returns>
+        </member>
+        <member name="M:Deconstruction.Trajectory.RoundTrajectory2.GetPointPositionOnArc(System.Double)">
+            <summary>
+            获取给定弧度下的坐标
+            </summary>
+            <param name="angle"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Trajectory.RoundTrajectory2.FindNearestPoint_Dichotomy(UnityEngine.Vector2)">
+            <summary>
+            通过二分法确定一个点在圆弧的位置
+            </summary>
+            <param name="position"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Trajectory.RoundTrajectory2.FindNearestPointRadius(System.Double,System.Double)">
+            <summary>
+            通过投影计算一个点在圆弧上的弧度
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Trajectory.RoundTrajectory2.FindNearestPoint_DifferenceAngle(System.Double,System.Double)">
+            <summary>
+            通过投影计算一个点在圆弧上的位置（最近的位置）
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Deconstruction.Trajectory.RoundTrajectory2.Consequent">
+            <summary>
+            圆弧方向是否顺向，通常在绘制上有顺序之分，顺向表示当前圆弧从点A到点B的顺序是顺时针的
+            <code>
+            注意：这并不意味着点A和点B的顺序是沿当前表示的顺时针的方向排列的，
+            </code>
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Trajectory.RoundTrajectory2.ArcRadius">
+            <summary>
+            把这个圆弧当作正圆弧来获取半径
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Trajectory.RoundTrajectory2.Angle">
+            <summary>
+            获取这段圆弧上两个端点形成的角度
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Trajectory.RoundTrajectory2.AngleExact">
+            <summary>
+            获取这段圆弧上两个端点形成的角度
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Trajectory.RoundTrajectory2.ChordLength">
+            <summary>
+            获取正圆圆弧弦长
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Trajectory.RoundTrajectory2.ChordHeight">
+            <summary>
+            获取正圆弦高（圆上任意两点间中点垂直到圆弧的距离）
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Trajectory.RoundTrajectory2.Sagitta">
+            <summary>
+            弓形高（圆弧的两点间中点到圆心的距离）
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Trajectory.RoundTrajectory2.EllipticalArcChordLength">
+            <summary>
+            获取椭圆弧弦长
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Trajectory.RoundTrajectory2.EllipticalArcChordHeight">
+            <summary>
+            获取椭圆弧弦高
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Trajectory.RoundTrajectory2.EllipticalArcSagitta">
+            <summary>
+            获取椭圆弧弓形的高
+            </summary>
+        </member>
+        <member name="T:Deconstruction.Trajectory.StraightTrajectory2">
+            <summary>
+            直线轨迹计算器
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Trajectory.StraightTrajectory2.MakeLine(UnityEngine.Vector2,UnityEngine.Vector2)">
+            <summary>
+            创建直线
+            </summary>
+            <param name="start"></param>
+            <param name="end"></param>
+        </member>
+        <member name="M:Deconstruction.Trajectory.StraightTrajectory2.MakeLine(UnityEngine.Vector2,UnityEngine.Vector2,System.Single)">
+            <summary>
+            创建直线
+            </summary>
+            <param name="start"></param>
+            <param name="dir"></param>
+            <param name="length"></param>
+        </member>
+        <member name="M:Deconstruction.Trajectory.StraightTrajectory2.GetLineNormalLength(UnityEngine.Vector2)">
+            <summary>
+            获取给定坐标点处相当于当前线的单位长度
+            </summary>
+            <param name="point"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Trajectory.StraightTrajectory2.GetUnclampedLineNormalLength(UnityEngine.Vector2)">
+            <summary>
+            获取给定点坐标处相当于当前线的未钳制单位长度
+            </summary>
+            <param name="point"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Deconstruction.Trajectory.TrajectoryBase">
+            <summary>
+            基础轨迹类
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Trajectory.TrajectoryBase.Rad2Ang">
+            <summary>
+            弧度转角度
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Trajectory.TrajectoryBase.Ang2Rad">
+            <summary>
+            角度转弧度
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Trajectory.TrajectoryBase.MaxError">
+            <summary>
+            最大可接受的误差
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Trajectory.TrajectoryBase.PMod(System.Double,System.Double)">
+            <summary>
+            正循环，三角取整
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Trajectory.TrajectoryBase.Cross(UnityEngine.Vector2,UnityEngine.Vector2)">
+            <summary>
+            二维叉乘
+            </summary>
+            <param name="lhs"></param>
+            <param name="rhs"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Trajectory.TrajectoryBase.PolarCoord2UnitSpace(System.Double)">
+            <summary>
+            极坐标空间转单位空间(指的是将(-π, π)范围的取值转为(0, 1))
+            </summary>
+            <param name="polar">极坐标空间</param>
+            <returns>此操作不会破坏空间连续性</returns>
+        </member>
+        <member name="M:Deconstruction.Trajectory.TrajectoryBase.UnitSpace2PolarCoord(System.Double)">
+            <summary>
+            单位空间转极坐标空间(指的是将(0, 1)范围的取值转为(-π, π))
+            </summary>
+            <param name="unit">单位极坐标空间</param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Trajectory.TrajectoryBase.Intersect(UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Vector2@)">
+            <summary>
+            从两线获取相交点(矩阵思想)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Trajectory.TrajectoryBase.Intersect2(UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Vector2,UnityEngine.Vector2@)">
+            <summary>
+            获取两线是否相交(矢量变换思想)
+            </summary>
+            <param name="a">线1起点</param>
+            <param name="b">线1终点</param>
+            <param name="c">线2起点</param>
+            <param name="d">线2终点</param>
+            <param name="point">输出交点</param>
+            <returns></returns>
+        </member>
+        <member name="T:Deconstruction.Type.Area.OccupancyAreaBase">
+            <summary>
+            占用区域，描述一个物体的占用范围，并根据规则遍历这个范围。
+            </summary>
+        </member>
+        <member name="T:Deconstruction.Type.Area.PlaceholdersAreaType">
+            <summary>
+            关注的占位符类型
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.Area.PlaceholdersAreaType.SingleOrigin">
+            <summary>
+            小型占位符元素，只占用单个检索网格数据结构
+            (占用原点)
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.Area.PlaceholdersAreaType.RectangleRange">
+            <summary>
+            大型占位符元素，占用一块矩形的地块
+            (占用矩形范围)
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.Area.PlaceholdersAreaType.LinearContinuity">
+            <summary>
+            路径占位符元素，使用其中的轨迹占用检索数据结构
+            (占用轨迹)
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.Area.PlaceholdersAreaType.Heterogeneous">
+            <summary>
+            异型占位符元素，是其他没有约定的形状。
+            (使用其他特殊形状)
+            </summary>
+        </member>
+        <member name="T:Deconstruction.Type.DMToolSlot.Exit_OpSlot">
+            <summary>
+            退出状态，等待所有项目异步执行完毕后退出操作栈
+            </summary>
+        </member>
+        <member name="T:Deconstruction.Type.DMToolSlot.SteadyState_OpSlot">
+            <summary>
+            稳定状态
+            </summary>
+        </member>
+        <member name="T:Deconstruction.Type.DMToolSlot.WaitForUserInput_OpSlot">
+            <summary>
+            在放置对象时进行按键等待，左键下一步，右键上一步
+            <code>
+            这是一个模拟双稳态的行为节点，
+            通过初始化其中上一步和下一步将要执行的节点目标
+            </code>
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Type.DMToolSlot.WaitForUserInput_OpSlot.GetExitWay">
+            <summary>
+            获取退出的方法
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="F:Deconstruction.Type.DMToolSlot.WaitForUserInput_OpSlot.valueHelperValid">
+            <summary>
+            下面捕获的值是有效的
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.DMToolSlot.WaitForUserInput_OpSlot.valueHitValid">
+            <summary>
+            鼠标在场景中的坐标值是有效的
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.DMToolSlot.WaitForUserInput_OpSlot.mouseHelperPosition">
+            <summary>
+            在用户输入下一步时，鼠标在世界的坐标
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.DMToolSlot.WaitForUserInput_OpSlot.mouseHelperScreenPosition">
+            <summary>
+            在用户输入下一步时，鼠标在屏幕上的坐标
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Type.DMToolSlot.WaitForUserInput_OpSlot.ValueHelperValid">
+            <summary>
+            下面捕获的值是有效的
+            </summary> 
+        </member>
+        <member name="P:Deconstruction.Type.DMToolSlot.WaitForUserInput_OpSlot.ValueHitValid">
+            <summary>
+            鼠标在场景中的坐标值是有效的
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Type.DMToolSlot.WaitForUserInput_OpSlot.MouseHelperPosition">
+            <summary>
+            在用户输入下一步时，鼠标在世界的坐标
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Type.DMToolSlot.WaitForUserInput_OpSlot.MouseHelperScreenPosition">
+            <summary>
+            在用户输入下一步时，鼠标在屏幕上的坐标
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Type.DMToolSlot.WaitForUserInput_OpSlot.InitializeNextTodo(Deconstruction.Type.DMToolSlot.WaitForUserInput_OpSlot.JumpNextStepToDo,Deconstruction.Type.DMToolSlot.WaitForUserInput_OpSlot.JumpNextStepToDo)">
+            <summary>
+            初始化等待用户输入行为节点的双稳态目标
+            </summary>
+            <param name="nextToDo">下一步节点目标</param>
+            <param name="previousToDo">上一步节点目标</param>
+        </member>
+        <member name="M:Deconstruction.Type.DMToolSlot.WaitForUserInput_OpSlot.CaptureMouseHelperValue">
+            <summary>
+            将鼠标的坐标捕获到本地
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Type.DMToolSlot.WaitForUserInput_OpSlot.IsReleaseCanelKey">
+            <summary>
+            取消按键检查
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Type.DMToolSlot.WaitForUserInput_OpSlot.IsReleaseContinueKey">
+            <summary>
+            按下继续的按钮
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Type.DMToolSlot.WaitForUserInput_OpSlot.JumpToPrevious">
+            <summary>
+            跳转到上一步
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Type.DMToolSlot.WaitForUserInput_OpSlot.JumpToNext">
+            <summary>
+            跳转到下一步
+            </summary>
+        </member>
+        <member name="T:Deconstruction.Type.DMToolSlot.OperateSlotBase">
+            <summary>
+            操作栈插槽，对应一个需要被工具控制的对象，以及控制它的一系列事件，属性。
+            <code>
+            操作栈是一个操作行为树，其中遍布插槽，插槽中包含具体行为，并定义了状态转换的过程。
+            操作栈（行为树） -> 操作插槽 -> 行为 -> 状态切换
+            
+            你可以通过在工具类上调用GenerateOperateSlot来创建一个指定类的插槽，
+            切换状态时可以直接new一个新的派生自OperateSlot的类，通过ReplaceThis来切换状态，而不会改变其中的目标成员。
+            </code>
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.DMToolSlot.OperateSlotBase.NullOperateStruct">
+            <summary>
+            默认的空操作结构
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.DMToolSlot.OperateSlotBase.targetTool">
+            <summary>
+            当前所处的工具类，应当保持引用，当抛弃引用时，说明此插槽已被废弃。
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Type.DMToolSlot.OperateSlotBase.Next">
+            <summary>
+            按栈结构顺序的下一个操作栈插槽
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Type.DMToolSlot.OperateSlotBase.Previous">
+            <summary>
+            按栈结构顺序的上一个操作栈插槽
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Type.DMToolSlot.OperateSlotBase.behaviorPath">
+            <summary>
+            当前栈表运行到此的路径结构，只有当执行了替换时才会发放值
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Type.DMToolSlot.OperateSlotBase.Last">
+            <summary>
+            按时间顺序在此之前的一个栈节点
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Type.DMToolSlot.OperateSlotBase.HasLastNode">
+            <summary>
+            当前栈节点是否存在时间上的上一个节点
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.DMToolSlot.OperateSlotBase.target">
+            <summary>
+            操作目标对象
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Type.DMToolSlot.OperateSlotBase.ReplaceThis(Deconstruction.Type.DMToolSlot.OperateSlotBase)">
+            <summary>
+            用新的插槽替换此处的成员，表示此成员切换了状态
+            </summary>
+            <param name="newSlot"></param>
+        </member>
+        <member name="M:Deconstruction.Type.DMToolSlot.OperateSlotBase.RemoveThis">
+            <summary>
+            移除自己
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Type.DMToolSlot.OperateSlotBase.Update">
+            <summary>
+            更新
+            <code>
+            在这里进行主要的逻辑切换，使用ReplaceThis(newSlot)来切换流程；
+            注意不要进行复杂的操作，减少日志打印的调用。
+            </code>
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Type.DMToolSlot.OperateSlotBase.OnStart">
+            <summary>
+            开始时
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Type.DMToolSlot.OperateSlotBase.OnEnd">
+            <summary>
+            结束时
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Type.DMToolSlot.OperateSlotBase.AsyncBeforeUpdate">
+            <summary>
+            异步更新前同步更新
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Type.DMToolSlot.OperateSlotBase.AsyncUpdate">
+            <summary>
+            异步更新
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Type.DMToolSlot.OperateSlotBase.AsyncAfterUpdate">
+            <summary>
+            异步更新后同步更新
+            </summary>
+        </member>
+        <member name="T:Deconstruction.Type.Identifier.UniqueIdentifier">
+            <summary>
+            全局唯一标识符
+            <code>
+            可以用于数组标识，其中的id在运行期间不会改变。
+            如果要移除对象，记得先使用Invalidation无效化索引。
+            </code>
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.Identifier.UniqueIdentifier.uidCounter">
+            <summary>
+            全局唯一计数器，计数器只包含有效的成员数量，不包括虽然存在，但已被回收的成员
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.Identifier.UniqueIdentifier.recycleUid">
+            <summary>
+            回收id，虽然存在，但是不算在全局的id计数中
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.Identifier.UniqueIdentifier.existID">
+            <summary>
+            已经存在的ID
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Type.Identifier.UniqueIdentifier.ContainID(System.Int32)">
+            <summary>
+            检查一个id是否已经存在，时间复杂度接近O(1)
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Type.Identifier.UniqueIdentifier.TryGetID(System.Int32,Deconstruction.Type.Identifier.UniqueIdentifier@)">
+            <summary>
+            尝试获取给定的id的引用
+            </summary>
+            <param name="id"></param>
+            <param name="idResult"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Deconstruction.Type.Identifier.UniqueIdentifier.ID">
+            <summary>
+            标识符ID
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Type.Identifier.UniqueIdentifier.State">
+            <summary>
+            标识符有效
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Type.Identifier.UniqueIdentifier.Target">
+            <summary>
+            映射对象
+            </summary>
+        </member>
+        <member name="T:Deconstruction.Type.Identifier.UniqueIdentifier.UniqueIdentifierState">
+            <summary>
+            标识符状态
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.Identifier.UniqueIdentifier.UniqueIdentifierState.Pretender">
+            <summary>
+            被标记的伪装，或从反序列化得来，这是默认值
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.Identifier.UniqueIdentifier.UniqueIdentifierState.Normal">
+            <summary>
+            正常的标识符状态
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.Identifier.UniqueIdentifier.UniqueIdentifierState.IdentifierValid">
+            <summary>
+            标识符正常状态
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.Identifier.UniqueIdentifier.UniqueIdentifierState.MappingValid">
+            <summary>
+            映射关系正常
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Type.Identifier.UniqueIdentifier.#ctor(System.Object)">
+            <summary>
+            创建全局唯一标识符
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Type.Identifier.UniqueIdentifier.#ctor(System.Int32,System.Object)">
+            <summary>
+            直接创建一个标识符
+            </summary>
+            <param name="id"></param>
+            <param name="obj"></param>
+        </member>
+        <member name="M:Deconstruction.Type.Identifier.UniqueIdentifier.Invalidation">
+            <summary>
+            无效化索引，表示此标识符不再使用，等待回收
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Type.Identifier.UniqueIdentifier.IsValidID">
+            <summary>
+            id是有效的(索引正常，且映射正常)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Type.Identifier.UniqueIdentifier.TryParse(System.String,Deconstruction.Type.Identifier.UniqueIdentifier@)">
+            <summary>
+            与ToString对应，可以将一个包含基本标识符的目标转为标识符
+            </summary>
+            <param name="b"></param>
+            <param name="result"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Type.Identifier.UniqueIdentifier.op_Implicit(Deconstruction.Type.Identifier.UniqueIdentifier)~System.Int32">
+            <summary>
+            隐式获取标识符索引
+            </summary>
+            <param name="id"></param>
+        </member>
+        <member name="T:Deconstruction.Type.Linkable.GroupTheoreticLink">
+            <summary>
+            群组链接
+            </summary>
+            <summary>
+            线性链接
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.Linkable.GroupTheoreticLink.linkedTarget">
+            <summary>
+            链接成员链表
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Type.Linkable.GroupTheoreticLink.linkedTargets">
+            <summary>
+            连接成员迭代器
+            </summary>
+        </member>
+        <member name="T:Deconstruction.Type.Linkable.GroupTheoreticLink.LinkedTypeMapping">
+            <summary>
+            组链接映射器
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.Linkable.GroupTheoreticLink.LinkedTypeMapping.target">
+            <summary>
+            目标
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.Linkable.GroupTheoreticLink.LinkedTypeMapping.type">
+            <summary>
+            类型
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Type.Linkable.GroupTheoreticLink.LinkedTypeMapping.#ctor(Deconstruction.Interface.IConterminousness,Deconstruction.Type.Linkable.LinkType)">
+            <summary>
+            构建一个组链接映射器
+            </summary>
+            <param name="target"></param>
+            <param name="type"></param>
+        </member>
+        <member name="T:Deconstruction.Type.Linkable.LinearPeriodicLink">
+            <summary>
+            线性链接
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.Linkable.LinearPeriodicLink.linkTarget">
+            <summary>
+            链接成员
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Type.Linkable.LinearPeriodicLink.Replace(Deconstruction.Interface.IConterminousness,Deconstruction.Type.Linkable.LinkType)">
+            <summary>
+            将一个成员直接替换到目标上
+            </summary>
+            <param name="target"></param>
+            <param name="type"></param>
+        </member>
+        <member name="T:Deconstruction.Type.Linkable.LinkExtend">
+            <summary>
+            链路扩展
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Type.Linkable.LinkExtend.FindSelf(Deconstruction.Interface.IConterminousness,Deconstruction.Interface.ICoterminous,Deconstruction.Interface.IConterminousness@)">
+            <summary>
+            从别人的结构中找到自己
+            </summary>
+            <param name="target">目标</param>
+            <param name="me">自己</param>
+            <param name="self">别人眼中的自己</param>
+        </member>
+        <member name="M:Deconstruction.Type.Linkable.LinkExtend.GoStraight(Deconstruction.Interface.ICoterminous,Deconstruction.Type.Linkable.LinkType)">
+            <summary>
+            在给定的节点上遍历首个节点，直到结束。
+            <code>
+            注意：遍历是有限的，你不能无限遍历一个循环链路，
+            线路的遍历应该抽象给行为树，由行为树节点在有限的空间中进行遍历。
+            </code>
+            </summary>
+            <param name="linkData"></param>
+            <returns>遍历的第一个节点是传入的节点</returns>
+        </member>
+        <member name="M:Deconstruction.Type.Linkable.LinkExtend.Go(Deconstruction.Interface.ICoterminous,Deconstruction.Type.Linkable.LinkType)">
+            <summary>
+            在给定的节点上遍历链路，这是一种辅助遍历的方法
+            <code>
+            遍历的行为需要在循环体内定义，需要对每次循环提供的回调器设定下一步的目标。
+            如果没有设定目标，或目标未变更，那么再次遍历时，循环将自动退出。
+            
+            注意：遍历是有限的，你不能无限遍历一个循环链路，
+            线路的遍历应该抽象给行为树，由行为树节点在有限的空间中进行遍历。
+            </code>
+            </summary>
+            <param name="linkData">起点方向</param>
+            <param name="dir"></param>
+            <returns>提供一个遍历描述回调，这在阶段中唯一，首个遍历对象是传入节点本身</returns>
+        </member>
+        <member name="T:Deconstruction.Type.Linkable.LinkedEnumerCb">
+            <summary>
+            链路遍历描述回调器
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.Linkable.LinkedEnumerCb.target">
+            <summary>
+            当前目标
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.Linkable.LinkedEnumerCb.direction">
+            <summary>
+            定义方向
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Type.Linkable.LinkedEnumerCb.Check">
+            <summary>
+            执行检查
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Type.Linkable.LinkedEnumerCb.SetTarget(Deconstruction.Interface.ICoterminous)">
+            <summary>
+            设置下一步的目标
+            </summary>
+            <param name="target"></param>
+        </member>
+        <member name="M:Deconstruction.Type.Linkable.LinkedEnumerCb.GetTarget">
+            <summary>
+            获取当前目标
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Type.Linkable.LinkedEnumerCb.SetDirection(Deconstruction.Type.Linkable.LinkType)">
+            <summary>
+            设定下一步的运行方向
+            </summary>
+            <param name="dir"></param>
+        </member>
+        <member name="M:Deconstruction.Type.Linkable.LinkedEnumerCb.GetDirection">
+            <summary>
+            获取下一步的运行方向
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Type.Linkable.LinkedEnumerCb.GoBack">
+            <summary>
+            设定当前节点阻塞，下一步可以尝试遍历兄弟节点
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Type.Linkable.LinkedEnumerCb.GetHistoryEnumerator">
+            <summary>
+            获取当前遍历节点的历史
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Type.Linkable.LinkedEnumerCb.GetHistoryCount">
+            <summary>
+            获取历史节点计数
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Deconstruction.Type.Linkable.LinkType">
+            <summary>
+            链路链接类型
+            <code>
+            可以与 LinkedPortType 直接相转换
+            </code>
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.Linkable.LinkType.Import">
+            <summary>
+            输入
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.Linkable.LinkType.Export">
+            <summary>
+            输出
+            </summary>
+        </member>
+        <member name="T:Deconstruction.Type.Linkable.LinkedPortType">
+            <summary>
+            链路的端口类型
+            <code>
+            可以与 LinkType 直接相转换
+            </code>
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.Linkable.LinkedPortType.outputPort">
+            <summary>
+            输出端口
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.Linkable.LinkedPortType.inputPort">
+            <summary>
+            输入端口
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Type.Linkable.LinkTypeExtend.SwapType(Deconstruction.Type.Linkable.LinkType)">
+            <summary>
+            翻转连接状态
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Type.Linkable.LinkTypeExtend.SwapType(Deconstruction.Type.Linkable.LinkedPortType)">
+            <summary>
+            翻转接口状态
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Type.Linkable.LinkTypeExtend.ConvertType(Deconstruction.Type.Linkable.LinkType)">
+            <summary>
+            转换连接状态为接口状态
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Deconstruction.Type.Linkable.LinkTypeExtend.ConvertType(Deconstruction.Type.Linkable.LinkedPortType)">
+            <summary>
+            转换接口状态为连接状态
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Deconstruction.Type.DrawWayPoints">
+            <summary>
+            绘制路径点集
+            <code>
+            路径点集是一个世界中用于参考的点的集合。
+            </code>
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.DrawWayPoints.IsBankedUp">
+            <summary>
+            此路不通
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.DrawWayPoints.IsRedundant">
+            <summary>
+            需要大于1段线才可以拟合的路径
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.DrawWayPoints.passWayPoints">
+            <summary>
+            路径点迭代器
+            </summary>
+        </member>
+        <member name="T:Deconstruction.Type.Operate.EOperatingCondition">
+            <summary>
+            运行工况枚举
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.Operate.EOperatingCondition.Begin">
+            <summary>
+            开始时
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.Operate.EOperatingCondition.InService">
+            <summary>
+            正在运行
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.Operate.EOperatingCondition.Submit">
+            <summary>
+            状态呈递
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.Operate.EOperatingCondition.Finish">
+            <summary>
+            结束
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.Operate.EOperatingCondition.Error">
+            <summary>
+            错误
+            </summary>
+        </member>
+        <member name="T:Deconstruction.Type.Operate.OperationAgency`1">
+            <summary>
+            委托代理事件枚举执行器
+            <code>
+            给定执行流程，在随后的stepRun中被按阶段执行。
+            可以调用end方法在运行过程中结束事件。
+            </code>
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.Operate.OperationAgency`1.fastBoot">
+            <summary>
+            标记为快速执行，在执行完first后立刻执行run
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Type.Operate.OperationAgency`1.#ctor(System.Func{`0},System.Func{System.Collections.Generic.IEnumerator{`0}},System.Func{`0},System.Boolean)">
+            <summary>
+            创建一个委托代理，并指定运行时的各项状态
+            </summary>
+            <param name="first">如果没有需要执行或传递的成员，可以返回null</param>
+            <param name="run">返回一个枚举器，而不是直接定义成枚举器</param>
+            <param name="stop">如果没有需要执行或传递的成员，可以返回null</param>
+            <param name="fastBoot">快速运行，可能会破坏原有的执行顺序</param>
+        </member>
+        <member name="M:Deconstruction.Type.Operate.OperationAgency`1.StepRun(Deconstruction.Type.Operate.OperationEnumeration{`0}@)">
+            <summary>
+            单步执行
+            </summary>
+            <param name="op"></param>
+            <returns>如果执行完毕，返回为否</returns>
+        </member>
+        <member name="M:Deconstruction.Type.Operate.OperationAgency`1.End">
+            <summary>
+            结束执行，需要等到下次执行时才结束
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Type.Operate.OperationAgency`1.EndImmediately(`0@)">
+            <summary>
+            立刻结束执行
+            </summary>
+        </member>
+        <member name="T:Deconstruction.Type.Operate.OperationEnumeration`1">
+            <summary>
+            操作栈回调
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Type.Operate.OperationEnumeration`1.SetStep(`0,Deconstruction.Type.Operate.EOperatingCondition)">
+            <summary>
+            单步设置
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Type.Operate.OperationEnumeration`1.SetStep(Deconstruction.Type.Operate.EOperatingCondition)">
+            <summary>
+            单步设置
+            </summary>
+        </member>
+        <member name="T:Deconstruction.Type.Operate.OperationSequence`1">
+            <summary>
+            操作序列器
+            <code>
+            步骤序列器中包含多个委托构成的步骤，每个步骤都将循环执行，
+            通过序列器中预设的方法来控制流程方向。
+            </code>
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.Operate.OperationSequence`1.operateSequence">
+            <summary>
+            操作步骤序列
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Type.Operate.OperationSequence`1.IsRunning">
+            <summary>
+            当前操作序列正在运行
+            </summary>
+        </member>
+        <member name="F:Deconstruction.Type.Operate.OperationSequence`1.runStep">
+            <summary>
+            运行
+            </summary>
+        </member>
+        <member name="P:Deconstruction.Type.Operate.OperationSequence`1.RunningAction">
+            <summary>
+            当前活动的操作步骤
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Type.Operate.OperationSequence`1.StepRun(Deconstruction.Type.Operate.OperationEnumeration{`0}@)">
+            <summary>
+            单步运行，如果要开始运行，需要先调用StartRun
+            </summary>
+            <returns>如果运行结束或运行无效，返回否</returns>
+        </member>
+        <member name="M:Deconstruction.Type.Operate.OperationSequence`1.StartRun">
+            <summary>
+            开始运行，接下来允许通过StepRun运行
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Type.Operate.OperationSequence`1.StopRun">
+            <summary>
+            中止运行，这不会立刻停止运行，而是需要等下下一次单步运行时退出
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Type.Operate.OperationSequence`1.StopRunImmediately(`0@)">
+            <summary>
+            立刻停止运行，并释放操作栈
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Type.Operate.OperationSequence`1.AddAction(Deconstruction.Type.Operate.OperationAgency{`0})">
+            <summary>
+            添加一个步骤
+            </summary>
+            <param name="operate"></param>
+        </member>
+        <member name="M:Deconstruction.Type.Operate.OperationSequence`1.ClearAction">
+            <summary>
+            清空步骤
+            </summary>
+        </member>
+        <member name="T:Deconstruction.Type.Serialize.DeconstructionSerializer">
+            <summary>
+            当前项目的代理序列化器
+            </summary>
+        </member>
+        <member name="T:Deconstruction.Type.Serialize.DeconstructionSerializer.DSTransform">
+            <summary>
+            变换组件序列化结构
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Type.Serialize.DeconstructionSerializer.TrySequelDSTransform(SerializerHelper.Type.SerializeUnion,Deconstruction.Element.PlacementBase)">
+            <summary>
+            顺序反序列化变换组件
+            </summary>
+            <param name="union"></param>
+            <param name="target"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Deconstruction.Type.Serialize.DeconstructionSerializer.DSUniqueIdentifier">
+            <summary>
+            序列化索引结构
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Type.Serialize.DeconstructionSerializer.DSUniqueIdentifier.#ctor(Deconstruction.Element.PlacementBase)">
+            <summary>
+            创建一个序列化结构
+            </summary>
+            <param name="target"></param>
+        </member>
+        <member name="M:Deconstruction.Type.Serialize.DeconstructionSerializer.DSUniqueIdentifier.VerifyID">
+            <summary>
+            校验索引
+            </summary>
+            <returns>如果当前的情况需要进一步处理，则返回真（比如没目标，不与其他id冲突时）</returns>
+            <exception cref="T:System.Exception"></exception>
+        </member>
+        <member name="M:Deconstruction.Type.Serialize.DeconstructionSerializer.TrySequelDSUniqueIdentifier(SerializerHelper.Type.SerializeUnion,Deconstruction.Element.PlacementBase)">
+            <summary>
+            顺序反序列化索引
+            </summary>
+            <param name="union"></param>
+            <param name="target"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Deconstruction.Type.Serialize.DeconstructionSerializer.DSLinearPeriodicLink">
+            <summary>
+            序列化线性链接
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Type.Serialize.DeconstructionSerializer.DSLinearPeriodicLink.#ctor(Deconstruction.Type.Linkable.LinearPeriodicLink)">
+            <summary>
+            创建一个序列化结构
+            </summary>
+            <param name="target"></param>
+        </member>
+        <member name="M:Deconstruction.Type.Serialize.DeconstructionSerializer.TrySequelDSLinearPeriodicLink(SerializerHelper.Type.SerializeUnion,Deconstruction.Type.Linkable.LinearPeriodicLink)">
+            <summary>
+            顺序反序列化线性链接结构
+            </summary>
+            <param name="union"></param>
+            <param name="target"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Deconstruction.Type.Serialize.DeconstructionSerializer.DSGroupTheoreticLink">
+            <summary>
+            序列化组链接
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Type.Serialize.DeconstructionSerializer.DSGroupTheoreticLink.#ctor(Deconstruction.Type.Linkable.GroupTheoreticLink)">
+            <summary>
+            创建一个序列化结构
+            </summary>
+            <param name="target"></param>
+        </member>
+        <member name="M:Deconstruction.Type.Serialize.DeconstructionSerializer.TrySequelDSLinearPeriodicLink(SerializerHelper.Type.SerializeUnion,Deconstruction.Type.Linkable.GroupTheoreticLink)">
+            <summary>
+            顺序反序列化组链接
+            </summary>
+            <param name="union"></param>
+            <param name="target"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Deconstruction.Type.Serialize.DeconstructionSerializer.DSStraightTrajectory2">
+            <summary>
+            序列化直线轨迹
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Type.Serialize.DeconstructionSerializer.DSStraightTrajectory2.#ctor(Deconstruction.Trajectory.StraightTrajectory2)">
+            <summary>
+            创建一个序列化结构
+            </summary>
+            <param name="target"></param>
+        </member>
+        <member name="M:Deconstruction.Type.Serialize.DeconstructionSerializer.TrySequelDSStraightTrajectory2(SerializerHelper.Type.SerializeUnion,Deconstruction.Trajectory.StraightTrajectory2)">
+            <summary>
+            顺序反序列化直线轨迹
+            </summary>
+            <param name="union"></param>
+            <param name="target"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Deconstruction.Type.Serialize.DeconstructionSerializer.DSRoundTrajectory2">
+            <summary>
+            序列化圆弧轨迹
+            </summary>
+        </member>
+        <member name="M:Deconstruction.Type.Serialize.DeconstructionSerializer.DSRoundTrajectory2.#ctor(Deconstruction.Trajectory.RoundTrajectory2)">
+            <summary>
+            创建一个序列化结构
+            </summary>
+            <param name="target"></param>
+        </member>
+        <member name="M:Deconstruction.Type.Serialize.DeconstructionSerializer.TrySequelDSRoundTrajectory2(SerializerHelper.Type.SerializeUnion,Deconstruction.Trajectory.RoundTrajectory2)">
+            <summary>
+            顺序反序列化圆弧轨迹
+            </summary>
+            <param name="union"></param>
+            <param name="target"></param>
+            <returns></returns>
+        </member>
+        <member name="T:RescissionRework.Interface.IRescissionRework">
+            <summary>
+            废除返工(撤销重做)的接口;
+            废除返工不需要被特定的成员实现，应该由控制器代理完成。
+            </summary>
+        </member>
+        <member name="M:RescissionRework.Interface.IRescissionRework.Rescission">
+            <summary>
+            废除操作；
+            当建造时，这里应该是“销毁”，当从0移动到1时，这里应该是移动到0
+            </summary>
+        </member>
+        <member name="M:RescissionRework.Interface.IRescissionRework.Rework">
+            <summary>
+            返工操作；
+            当撤回建造时，这里应该是
+            </summary>
+        </member>
+        <member name="M:RescissionRework.Interface.IRescissionRework.OnRemovedFromRescissionReworkStack">
+            <summary>
+            当一个废除返工操作因为超出栈而被移除时
+            </summary>
+        </member>
+        <member name="T:RescissionRework.Manager.RescissionReworkManager">
+            <summary>
+            撤销重做管理器
+            </summary>
+        </member>
+        <member name="F:RescissionRework.Manager.RescissionReworkManager.RescissionReworkStack">
+            <summary>
+            重做撤回调用栈
+            </summary>
+        </member>
+    </members>
+</doc>
