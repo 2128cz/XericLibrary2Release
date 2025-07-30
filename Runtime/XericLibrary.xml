@@ -2633,6 +2633,13 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroPool.UnionSet.GetAllActiveWithComponent``1">
+            <summary>
+            获取所有激活的池化项目上的组件
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
         <member name="T:XericLibrary.Runtime.MacroLibrary.MacroPool.Beacon">
             <summary>
             信标，用于查找
@@ -3454,6 +3461,24 @@
             <param name="values">当目标枚举不实现Flags时，需要进行完全匹配</param>
             <returns>返回是否存在至少有一个有效的枚举项目</returns>
         </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.EnumLess(System.Enum)">
+            <summary>
+            枚举小于0，或者说不存在有效的枚举项目
+            </summary>
+            <returns>返回是否不存在有效的枚举项目</returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.EnumLess(System.Enum,System.Enum)">
+            <summary>
+            枚举小于0，或者说不存在有效的枚举项目
+            </summary>
+            <returns>返回是否不存在有效的枚举项目</returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.EnumLess(System.Enum,System.Enum[])">
+            <summary>
+            枚举小于0，或者说不存在有效的枚举项目
+            </summary>
+            <returns>返回是否不存在有效的枚举项目</returns>
+        </member>
         <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.EnumGreater1(System.Enum)">
             <summary>
             枚举1有效
@@ -3501,18 +3526,6 @@
             枚举8有效
             </summary>
             <returns></returns>
-        </member>
-        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.EnumLess(System.Enum)">
-            <summary>
-            枚举小于0，或者说不存在有效的枚举项目
-            </summary>
-            <returns>返回是否不存在有效的枚举项目</returns>
-        </member>
-        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.EnumLess(System.Enum,System.Enum)">
-            <summary>
-            枚举小于0，或者说不存在有效的枚举项目
-            </summary>
-            <returns>返回是否不存在有效的枚举项目</returns>
         </member>
         <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.FisherYatesShuffle(System.Int32,System.Int32)">
             <summary>
@@ -6121,6 +6134,45 @@
             <param name="dis">当前返回的最优单词的编辑距离</param>	
             <returns>当前最优的单词</returns>
         </member>
+        <member name="F:XericLibrary.Runtime.MacroLibrary.MacroMath.EqualsMode.Contain">
+            <summary>
+            右值为左值的一部分时为包含
+            </summary>
+        </member>
+        <member name="F:XericLibrary.Runtime.MacroLibrary.MacroMath.EqualsMode.Belong">
+            <summary>
+            左值为右值的一部分时为属于
+            </summary>
+        </member>
+        <member name="F:XericLibrary.Runtime.MacroLibrary.MacroMath.EqualsMode.ImpactSpace">
+            <summary>
+            文本比较时考虑空格
+            </summary>
+        </member>
+        <member name="F:XericLibrary.Runtime.MacroLibrary.MacroMath.EqualsMode.ExactlyEquivalen">
+            <summary>
+            两者完全相等
+            </summary>
+        </member>
+        <member name="F:XericLibrary.Runtime.MacroLibrary.MacroMath.EqualsMode.EquivalentButIgnoreSpace">
+            <summary>
+            忽略空格
+            </summary>
+        </member>
+        <member name="F:XericLibrary.Runtime.MacroLibrary.MacroMath.EqualsMode.EquivalentButIgnoreCase">
+            <summary>
+            忽略空格，大小写
+            </summary>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.IsEquals(System.String,System.String,XericLibrary.Runtime.MacroLibrary.MacroMath.EqualsMode)">
+            <summary>
+            判断两个文本是否相等
+            </summary>
+            <param name="lhs"></param>
+            <param name="rhs"></param>
+            <param name="mode">判断模式</param>
+            <returns></returns>
+        </member>
         <member name="F:XericLibrary.Runtime.MacroLibrary.MacroMath.DayPerYear">
             <summary>
             一年有多少天
@@ -8523,6 +8575,14 @@
             </summary>
             <param name="inputMatch"></param>
             <param name="replace"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroRegex.RegexReplace(System.String,System.Object[])">
+            <summary>
+            将正则替换格式以给定的参数列表进行替换
+            </summary>
+            <param name="replace"></param>
+            <param name="inputParams"></param>
             <returns></returns>
         </member>
         <member name="M:XericLibrary.Runtime.MacroLibrary.MacroRegex.TryMatch(System.Text.RegularExpressions.Regex,System.String,System.Text.RegularExpressions.Match@)">
