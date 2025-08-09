@@ -934,6 +934,11 @@
             游戏方法调用标记类型
             </summary>
         </member>
+        <member name="T:XericLibrary.Runtime.CustomEditor.MacroMonoAttribute.AutoFindComponent">
+            <summary>
+            自动查找组件
+            </summary>
+        </member>
         <member name="T:XericLibrary.Runtime.CustomEditor.MenuAttribute.CusMeAttribute">
             <summary>
             自定义菜单特性。
@@ -5588,12 +5593,12 @@
             值
             </summary>
         </member>
-        <member name="F:XericLibrary.Runtime.MacroLibrary.MacroMath.NumberValueBlock.min">
+        <member name="F:XericLibrary.Runtime.MacroLibrary.MacroMath.NumberValueBlock.minValid">
             <summary>
             最小值
             </summary>
         </member>
-        <member name="F:XericLibrary.Runtime.MacroLibrary.MacroMath.NumberValueBlock.max">
+        <member name="F:XericLibrary.Runtime.MacroLibrary.MacroMath.NumberValueBlock.maxValid">
             <summary>
             最大值
             </summary>
@@ -5617,6 +5622,18 @@
             <summary>
             无效时展示
             </summary>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.NumberValueBlock.#ctor(System.Double,System.Double,System.Double,System.String,System.String,System.Boolean,System.String)">
+            <summary>
+            值包裹器
+            </summary>
+            <param name="defaultValue"></param>
+            <param name="minValid"></param>
+            <param name="maxValid"></param>
+            <param name="name"></param>
+            <param name="format"></param>
+            <param name="enableInvalidValue"></param>
+            <param name="invalidString"></param>
         </member>
         <member name="T:XericLibrary.Runtime.MacroLibrary.MacroMath.ValueExpressionBlock">
             <summary>
@@ -5674,6 +5691,19 @@
             </summary>
             <param name="mode"></param>
             <param name="expression"></param>
+        </member>
+        <member name="T:XericLibrary.Runtime.MacroLibrary.MacroMath.ConditionBlock">
+            <summary>
+            条件包裹器
+            </summary>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.ConditionBlock.SetParamter(System.Int32,System.Object[])">
+            <summary>
+            设置参数
+            </summary>
+            <param name="startIndex">参数起点索引</param>
+            <param name="parameters">所有参数</param>
+            <returns>返回使用了多少参数</returns>
         </member>
         <member name="T:XericLibrary.Runtime.MacroLibrary.MacroMath.AlignBlock">
             <summary>
@@ -6171,6 +6201,14 @@
             <param name="lhs"></param>
             <param name="rhs"></param>
             <param name="mode">判断模式</param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.ProcessString(System.String,XericLibrary.Runtime.MacroLibrary.MacroMath.EqualsMode)">
+            <summary>
+            预处理字符串（应用所有模式规则）
+            </summary>
+            <param name="str"></param>
+            <param name="mode"></param>
             <returns></returns>
         </member>
         <member name="F:XericLibrary.Runtime.MacroLibrary.MacroMath.DayPerYear">
@@ -14141,6 +14179,11 @@
         <member name="M:XericLibrary.Runtime.Type.Weakly.IGuidance.Guidance">
             <summary>
             先导事件（如果MONO不允许启动Awake，先导事件仍会触发）
+            </summary>
+        </member>
+        <member name="T:XericLibrary.Runtime.Type.Weakly.MacroMonoBehaviour">
+            <summary>
+            原生支持各种宏用法的mono脚本
             </summary>
         </member>
         <member name="T:XericLibrary.Runtime.Type.Weakly.XericSeriousMonoBehaviour">

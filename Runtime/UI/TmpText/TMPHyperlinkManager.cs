@@ -43,6 +43,13 @@ namespace Deconstruction.UI.TmpText
         /// </summary>
         private Dictionary<string, Action> _linkCallbacks = new Dictionary<string, Action>();
 
+#if UNITY_EDITOR
+        protected void OnValidate()
+        {
+            canvas = GetComponentInParent<Canvas>();
+        }
+#endif
+        
         protected void Awake()
         {
             if (canvas == null)

@@ -56,11 +56,18 @@ namespace Deconstruction.UI.TmpText
                     yield return link;
             }
         }
-        
+
+#if UNITY_EDITOR
+        protected void OnValidate()
+        {
+            _tmpText = GetComponent<TextMeshProUGUI>();
+        }
+#endif
         
         private void Awake()
         {
-            _tmpText = GetComponent<TextMeshProUGUI>();
+            if (_tmpText == null)
+                _tmpText = GetComponent<TextMeshProUGUI>();
             if (manager == null)
                 transform.GetParents().Startup(transform).GetComponent(out manager);
             if (manager == null)
@@ -87,7 +94,7 @@ namespace Deconstruction.UI.TmpText
             }
             catch (Exception e)
             {
-                Debug.LogError($"点击 {_tmpText.text.LimitStringLength(32)} 的超链接 {linkID} 时出错：\n{e.Message}\n{e.Data}", this);
+                Debug.LogError($"超链接目标事件存在错误 {_tmpText.text.LimitStringLength(32)} ：\n{e.Message}\n{e.Data}", this);
             }
         }
     }
