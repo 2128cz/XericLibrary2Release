@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 using XericLibrary.Runtime.MacroLibrary;
 
 namespace Deconstruction.UI.TmpText
@@ -16,6 +17,8 @@ namespace Deconstruction.UI.TmpText
     public class TMPHyperlinkReceiver : MonoBehaviour, IPointerClickHandler
     {
         private TextMeshProUGUI _tmpText;
+        
+        public bool autoFixRayCastTargetState = true;        
         
 #if ODIN_INSPECTOR
         [LabelText("超链接管理器*")]
@@ -64,7 +67,7 @@ namespace Deconstruction.UI.TmpText
         }
 #endif
         
-        private void Awake()
+        protected virtual void Awake()
         {
             if (_tmpText == null)
                 _tmpText = GetComponent<TextMeshProUGUI>();
@@ -73,7 +76,13 @@ namespace Deconstruction.UI.TmpText
             if (manager == null)
                 throw new Exception("TMP文本超链接集成捕获组件必须放在具有管理器的父级下");
         }
-    
+
+        protected virtual void OnEnable()
+        {
+            if (autoFixRayCastTargetState)
+                _tmpText.raycastTarget = true;
+        }
+
         public void OnPointerClick(PointerEventData eventData)
         {
             ClickPoint(eventData.position);

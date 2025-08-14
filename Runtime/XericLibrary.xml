@@ -3643,6 +3643,42 @@
             <param name="interpolationSyntax">内插语法，表示此foreachdo不会作为执行器运行，而是作为其中一步执行</param>
             <returns></returns>
         </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.UntilTrue``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},System.Boolean)">
+            <summary>
+            迭代直到真状态
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source"></param>
+            <param name="getState"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.UntilFalse``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},System.Boolean)">
+            <summary>
+            迭代直到假状态
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source"></param>
+            <param name="getState"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.UntilEqules``1(System.Collections.Generic.IEnumerable{``0},``0,System.Boolean)">
+            <summary>
+            迭代直到相等
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source"></param>
+            <param name="target"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.UntilNotEqules``1(System.Collections.Generic.IEnumerable{``0},``0,System.Boolean)">
+            <summary>
+            迭代直到不相等
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source"></param>
+            <param name="target"></param>
+            <returns></returns>
+        </member>
         <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.IndexOf``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
             <summary>
             在枚举器中定位到首个当equals结果为真的项目索引
@@ -9122,6 +9158,11 @@
         <member name="F:XericLibrary.Runtime.MacroLibrary.MacroFile.JsonSettingIgnoreLoopHandling">
             <summary>
             忽略循环引用
+            </summary>
+        </member>
+        <member name="T:XericLibrary.Runtime.MacroLibrary.MacroFile.NullFloatConverter">
+            <summary>
+            可空浮点
             </summary>
         </member>
         <member name="M:XericLibrary.Runtime.MacroLibrary.MacroFile.GetSpecialPath(System.String,System.Environment.SpecialFolder)">
