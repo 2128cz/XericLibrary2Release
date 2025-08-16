@@ -3643,6 +3643,24 @@
             <param name="interpolationSyntax">内插语法，表示此foreachdo不会作为执行器运行，而是作为其中一步执行</param>
             <returns></returns>
         </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.Repeat``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+            <summary>
+            重复枚举器中的每个对象
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source"></param>
+            <param name="repeatEachCount"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.Repeat``1(System.Collections.Generic.IEnumerable{System.ValueTuple{``0,System.Int32}})">
+            <summary>
+            重复枚举器中的每个对象
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source"></param>
+            <param name="repeatEachCount"></param>
+            <returns></returns>
+        </member>
         <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.UntilTrue``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},System.Boolean)">
             <summary>
             迭代直到真状态
@@ -3677,6 +3695,15 @@
             <typeparam name="T"></typeparam>
             <param name="source"></param>
             <param name="target"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.UntilEndOfTime``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+            <summary>
+            迭代直到计数超出
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source"></param>
+            <param name="count"></param>
             <returns></returns>
         </member>
         <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.IndexOf``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
@@ -3784,7 +3811,7 @@
         </member>
         <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.Merge``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``0,``0})">
             <summary>
-            将枚举器成员合并为一个结果
+            将枚举器成员合并为一个结果（比如用这个方法计算加法？）
             </summary>
             <typeparam name="T"></typeparam>
             <param name="source"></param>
@@ -4203,6 +4230,17 @@
             <param name="addition">添加成员（从源数组末尾开始添加）</param>
             <param name="replaceAt">替换成员（如果为空，则不会检查数组成员差异）</param>
         </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.DiscrepancyOrder``1(System.Collections.Generic.IList{``0},System.Int32,System.Action{System.Int32},System.Action{System.Int32},System.Action{System.Int32})">
+            <summary>
+            比较这个列表的数量与目标数量的差异，
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="origin"></param>
+            <param name="count"></param>
+            <param name="removeAt"></param>
+            <param name="addition"></param>
+            <param name="replaceAt"></param>
+        </member>
         <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.TryGetAtIndex``1(System.Collections.Generic.IList{``0},System.Int32,``0@)">
             <summary>
             尝试从列表中读取，如果项目为空，则先填充空，然后再获取
@@ -4467,6 +4505,15 @@
             </summary>
             <param name="min"></param>
             <param name="max"></param>
+            <param name="seed"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.RandomBoolean(System.Int32,System.Single,System.Int32)">
+            <summary>
+            获取在概率分布中的随机布尔值（如果需要非绝对概率随机，请移步洗牌算法）
+            </summary>
+            <param name="probability">概率基数</param>
+            <param name="percent">百分比(≤1)</param>
             <param name="seed"></param>
             <returns></returns>
         </member>
@@ -9160,11 +9207,6 @@
             忽略循环引用
             </summary>
         </member>
-        <member name="T:XericLibrary.Runtime.MacroLibrary.MacroFile.NullFloatConverter">
-            <summary>
-            可空浮点
-            </summary>
-        </member>
         <member name="M:XericLibrary.Runtime.MacroLibrary.MacroFile.GetSpecialPath(System.String,System.Environment.SpecialFolder)">
             <summary>
             获取系统枚举路径
@@ -12661,8 +12703,8 @@
             <summary>
             可以直接获取一些没有空的类的空对象
             <code>
-            与直接使用default不同的是，这里会尝试创建一个空示例，这对于使用
-            
+            与直接使用default不同的是，这里会尝试创建一个空示例
+            （可能存在性能或aot问题，可能还是建议在各个类自身里编写空对象。）
             </code>
             </summary>
             <typeparam name="T"></typeparam>
@@ -12832,6 +12874,11 @@
         <member name="F:XericLibrary.Runtime.Type.Base.TimingStamp.Now">
             <summary>
             当前时刻
+            </summary>
+        </member>
+        <member name="F:XericLibrary.Runtime.Type.Base.TimingStamp.Today">
+            <summary>
+            当天的起始时刻
             </summary>
         </member>
         <member name="F:XericLibrary.Runtime.Type.Base.TimingStamp.tickTime">
