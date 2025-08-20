@@ -3668,6 +3668,7 @@
             <typeparam name="T"></typeparam>
             <param name="source"></param>
             <param name="getState"></param>
+            <param name="includeCulprit">输出迭代成员包括使条件翻转的成员</param>
             <returns></returns>
         </member>
         <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.UntilFalse``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},System.Boolean)">
@@ -3677,6 +3678,7 @@
             <typeparam name="T"></typeparam>
             <param name="source"></param>
             <param name="getState"></param>
+            <param name="includeCulprit">输出迭代成员包括使条件翻转的成员</param>
             <returns></returns>
         </member>
         <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.UntilEqules``1(System.Collections.Generic.IEnumerable{``0},``0,System.Boolean)">
@@ -3686,6 +3688,7 @@
             <typeparam name="T"></typeparam>
             <param name="source"></param>
             <param name="target"></param>
+            <param name="includeCulprit">输出迭代成员包括使条件翻转的成员</param>
             <returns></returns>
         </member>
         <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.UntilNotEqules``1(System.Collections.Generic.IEnumerable{``0},``0,System.Boolean)">
@@ -3695,6 +3698,47 @@
             <typeparam name="T"></typeparam>
             <param name="source"></param>
             <param name="target"></param>
+            <param name="includeCulprit">输出迭代成员包括使条件翻转的成员</param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.AfterTure``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},System.Boolean)">
+            <summary>
+            从首个条件为真的成员开始迭代
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source"></param>
+            <param name="getState"></param>
+            <param name="includeCulprit">输出迭代成员包括使条件翻转的成员</param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.AfterFalse``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},System.Boolean)">
+            <summary>
+            从首个条件为假的成员开始迭代
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source"></param>
+            <param name="getState"></param>
+            <param name="includeCulprit">输出迭代成员包括使条件翻转的成员</param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.AfterEqules``1(System.Collections.Generic.IEnumerable{``0},``0,System.Boolean)">
+            <summary>
+            从首个相等的成员开始迭代
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source"></param>
+            <param name="getState"></param>
+            <param name="includeCulprit">输出迭代成员包括使条件翻转的成员</param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.AfterNotEqules``1(System.Collections.Generic.IEnumerable{``0},``0,System.Boolean)">
+            <summary>
+            从首个不等的成员开始迭代
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source"></param>
+            <param name="getState"></param>
+            <param name="includeCulprit">输出迭代成员包括使条件翻转的成员</param>
             <returns></returns>
         </member>
         <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.UntilEndOfTime``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
@@ -4164,6 +4208,15 @@
             <param name="index"></param>
         </member>
         <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.AddByIndex``1(System.Collections.Generic.IList{``0},``0,System.Int32)">
+            <summary>
+            在列表的指定位置添加目标，如果中间为空，则会填充空
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="targetList"></param>
+            <param name="target"></param>
+            <param name="index"></param>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.SetAtIndex``1(System.Collections.Generic.IList{``0},``0,System.Int32)">
             <summary>
             在列表的指定位置添加目标，如果中间为空，则会填充空
             </summary>
