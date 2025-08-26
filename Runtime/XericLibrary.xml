@@ -3862,6 +3862,16 @@
             <param name="howToMergeTwoEle"></param>
             <returns></returns>
         </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.Merge``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``1,``1,``1})">
+            <summary>
+            将枚举器成员合并为一个结果（比如用这个方法计算加法？）
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source"></param>
+            <param name="howToGetEle"></param>
+            <param name="howToMergeTwoEle"></param>
+            <returns></returns>
+        </member>
         <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.EqualitySet``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0})">
             <summary>
             检查两个集合中的元素是否相等
@@ -9339,6 +9349,11 @@
             <param name="filePath"></param>
             <returns></returns>
         </member>
+        <member name="T:XericLibrary.Runtime.MacroLibrary.MacroFile.FileRelativePath">
+            <summary>
+            相对路径枚举
+            </summary>
+        </member>
         <member name="T:XericLibrary.Runtime.MacroLibrary.MacroFile.CrossPlatformFileHandle">
             <summary>
             文件句柄
@@ -9528,6 +9543,35 @@
             将一个相对路径转到临时数据/缓存目录下的绝对路径
             </summary>
             <param name="relativePath"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroFile.CrossPlatformFileHandle.CombineCustomRelativePath(System.String,XericLibrary.Runtime.MacroLibrary.MacroFile.FileRelativePath,System.Enum)">
+            <summary>
+            拼接自定义相对路径
+            </summary>
+            <param name="relativePath"></param>
+            <param name="type"></param>
+            <param name="specialType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroFile.CrossPlatformFileHandle.CombineSpecialPath(System.String,System.Enum)">
+            <summary>
+            特殊路径
+            </summary>
+            <param name="relativePath"></param>
+            <param name="specialFolder"></param>
+            <returns></returns>
+            <exception cref="T:System.Exception"></exception>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroFile.CrossPlatformFileHandle.GetDirectoryFileNames(System.String,System.String,System.Boolean,System.String,System.Boolean)">
+            <summary>
+            获取给定目录下的文件，或文件夹
+            </summary>
+            <param name="absolutePathname">绝对路径</param>
+            <param name="fileSearchPattern">文件筛选</param>
+            <param name="includeFile">包含文件</param>
+            <param name="folderSearchPattern">文件夹筛选</param>
+            <param name="includeFolder">包含路径（文件夹）</param>
             <returns></returns>
         </member>
         <member name="T:XericLibrary.Runtime.MacroLibrary.MacroFile.WindowsHandle">
