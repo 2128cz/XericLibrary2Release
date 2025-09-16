@@ -148,22 +148,41 @@ namespace XericLibrary.Runtime.MacroLibrary
             private List<Toggle> toggleList = new List<Toggle>();
 
             // 当前选中的项目
-            private int nowSelectToggleIndex = 0;
-            private Toggle nowSelectToggle = null;
+            private int _nowSelectToggleIndex = -1;
 
 
             public Transform TogglesContext => ToggleGroup.transform;
 
             /// <summary>
-            /// 当前选中的toggle索引
+            /// 当前选中的toggle索引，依赖缓存，对于绕过该容器的单选项控制行为可能存在追踪不准确的问题。
             /// </summary>
-            public int NowSelectToggleIndex => nowSelectToggleIndex;
+            public int NowSelectToggleIndex => _nowSelectToggleIndex;
+
+            /// <summary>
+            /// 当前激活的toggle索引，直接进行查找而不是依赖当前缓存
+            /// </summary>
+            public int CurrentSelectToggleIndex
+            {
+                get
+                {
+                    for (var i = 0; i < toggleList.Count; i++)
+                    {
+                        if (!toggleList[i].isOn) continue;
+                        _nowSelectToggleIndex = i;
+                        return _nowSelectToggleIndex;
+                    }
+                    return -1;
+                }
+            }
 
             /// <summary>
             /// 当前选中的toggle
             /// </summary>
-            public Toggle NowSelectToggle => nowSelectToggle;
+            public Toggle NowSelectToggle => toggleList[_nowSelectToggleIndex];
 
+            #endregion
+
+            #region 编辑器方法
 
             /// <summary>
             /// 获取并给列表排序(顺序不一定与拼音有关)
@@ -196,7 +215,7 @@ namespace XericLibrary.Runtime.MacroLibrary
             }
 
             #endregion
-
+            
             #region 接口
 
             /// <summary>
@@ -219,7 +238,7 @@ namespace XericLibrary.Runtime.MacroLibrary
 
             #endregion
 
-            #region 方法
+            #region 初始化 和 增删改查
 
             /// <summary>
             /// 初始化
@@ -230,11 +249,10 @@ namespace XericLibrary.Runtime.MacroLibrary
             /// </summary>
             public void Initialize()
             {
-                // 未指定组时，说明压根没用这部分功能，用不着初始化。
-                if (ToggleGroup == null)
+                // 啥也没有，压根没用这部分功能，用不着初始化。
+                if (ToggleGroup == null && toggleList.Count <= 0)
                     return;
-
-                // 防呆警告
+                // 防呆
                 if (toggleList.Count <= 0)
                 {
                     var toggles = ToggleGroup.GetToggles();
@@ -243,24 +261,39 @@ namespace XericLibrary.Runtime.MacroLibrary
                         toggleList = toggles;
                         Debug.LogWarning($"在初始化单选项组时，{ToggleGroup.name}并未预先指定索引顺序，将默认使用大纲顺序。");
                     }
-                }
 
+                    if (toggles.Count <= 0)
+                    {
+                        Debug.LogWarning("在初始化单选项组时，目标单选项组为空");
+                        return;
+                    }
+                }
+                // 防傻
+                if (ToggleGroup == null)
+                    ToggleGroup = toggleList[0].group;
+                if (ToggleGroup == null)
+                {
+                    ToggleGroup = toggleList[0].gameObject.AddComponent<ToggleGroup>();
+                    foreach (var toggle in toggleList)
+                        toggle.group = ToggleGroup;
+                }
+                // 防空
+                toggleList = toggleList.Where(a => a != null).ToList();
+                
                 // 事件初始化
-                for (int i = 0; i < toggleList.Count; i++)
+                for (var i = 0; i < toggleList.Count; i++)
                 {
                     var toggle = toggleList[i];
 
                     ToggleAddEvent(toggle);
 
-                    if (toggle.isOn)
-                    {
-                        nowSelectToggleIndex = i;
-                        nowSelectToggle = toggle;
-                    }
+                    if (_nowSelectToggleIndex < 0 && toggle.isOn)
+                        _nowSelectToggleIndex = i;
                 }
 
-                if (nowSelectToggle == null)
-                    SetToggleOn(0);
+                // 如果不允许为空的情况下还为空，那就默认标记一个
+                if (!ToggleGroup.allowSwitchOff && _nowSelectToggleIndex < 0)
+                    SetToggleOnWithoutNotify(0);
             }
 
             /// <summary>
@@ -312,7 +345,10 @@ namespace XericLibrary.Runtime.MacroLibrary
                 toggleList.Clear();
             }
 
+            #endregion
 
+            #region 事件流程
+            
             /// <summary>
             /// toggle注册的事件，只有当按下时才需要调用此事件。
             /// </summary>
@@ -331,10 +367,9 @@ namespace XericLibrary.Runtime.MacroLibrary
             /// <param name="t"></param>
             private void ToggleRegister(Toggle t)
             {
-                nowSelectToggle = t;
-                nowSelectToggleIndex = GetIndex(t);
+                _nowSelectToggleIndex = GetIndex(t);
                 OnAnyToggleSwitchOn?.Invoke(t);
-                OnAnyToggleIndexSwitchOn?.Invoke(nowSelectToggleIndex);
+                OnAnyToggleIndexSwitchOn?.Invoke(_nowSelectToggleIndex);
             }
 
 
@@ -345,7 +380,16 @@ namespace XericLibrary.Runtime.MacroLibrary
             /// <returns>如果这个toggle不存在于当前的单选项组中，返回-1</returns>
             public int GetIndex(Toggle target)
             {
-                return toggleList.IndexOf(target);
+                if (target == null)
+                {
+                    Debug.LogError("无法查询空toggle的索引");
+                    return 0;
+                }
+                var index = toggleList.IndexOf(target);
+                if (index >= 0)
+                    return index;
+                Debug.LogError($"无法查询 {target.name} 在当前单选项组中的索引。");
+                return 0;
             }
 
             /// <summary>
@@ -360,12 +404,14 @@ namespace XericLibrary.Runtime.MacroLibrary
                 return index >= 0;
             }
 
+            
             /// <summary>
             /// 设置单选项激活
             /// </summary>
             /// <param name="target"></param>
             public void SetToggleOn(Toggle target)
             {
+                _nowSelectToggleIndex = GetIndex(target);
                 target.isOn = true;
             }
 
@@ -387,6 +433,7 @@ namespace XericLibrary.Runtime.MacroLibrary
             /// <param name="target"></param>
             public void SetToggleOnWithoutNotify(Toggle target)
             {
+                _nowSelectToggleIndex = GetIndex(target);
                 target.SetIsOnWithoutNotify(true);
             }
 
@@ -415,15 +462,21 @@ namespace XericLibrary.Runtime.MacroLibrary
             /// <summary>
             /// 清除映射结构，并销毁所有toggle组件 
             /// </summary>
-            public void RemoveAllToggle()
+            public void DestroyAllToggle()
             {
                 for (int i = toggleList.Count - 1; i >= 0; i--)
                 {
                     Object.Destroy(toggleList[i]);
                 }
-
                 Clear();
             }
+            
+            /// <summary>
+            /// 清除映射结构，并销毁所有toggle组件 
+            /// </summary>
+            [Obsolete("方法命名不规范，改为使用DestroyAllToggle")]
+            public void RemoveAllToggle()
+                => DestroyAllToggle();
 
             #endregion
         }

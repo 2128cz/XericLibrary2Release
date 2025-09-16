@@ -3628,7 +3628,7 @@
             <typeparam name="T"></typeparam>
             <param name="source"></param>
             <param name="action"></param>
-            <returns></returns>
+            <returns>返回值是无效的，因为这会立刻执行，这么做只是为了能插入到一些链式函数式中用作调试</returns>
         </member>
         <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.ForEachDo``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0},System.Boolean)">
             <summary>
@@ -3641,7 +3641,33 @@
             <param name="source"></param>
             <param name="action"></param>
             <param name="interpolationSyntax">内插语法，表示此foreachdo不会作为执行器运行，而是作为其中一步执行</param>
-            <returns></returns>
+            <returns>返回值可能是有效的，根据是否启用内插来判断</returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.ForEachDo``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0},System.Func{``0,System.Int32,System.Boolean},System.Boolean)">
+            <summary>
+            使用链式语法进行foreach迭代，允许使用委托定义何时执行协作。
+            <code>
+            odin的库中也有一个ForEach，但如果关闭了Serializer模块的话，Sirenix.Utilities命名空间下的内容在编译时就不可用了。
+            </code>
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source"></param>
+            <param name="action"></param>
+            <param name="interpolationSyntax">内插语法，表示此foreachdo不会作为执行器运行，而是作为其中一步执行</param>
+            <returns>返回值可能是有效的，根据是否启用内插来判断</returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.ForEachDoButFristInterpolation``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0},System.Boolean)">
+            <summary>
+            使用链式语法进行foreach迭代，允许使用委托定义何时执行协作。
+            <code>
+            odin的库中也有一个ForEach，但如果关闭了Serializer模块的话，Sirenix.Utilities命名空间下的内容在编译时就不可用了。
+            </code>
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source"></param>
+            <param name="action"></param>
+            <param name="interpolationSyntax">内插语法，表示此foreachdo不会作为执行器运行，而是作为其中一步执行</param>
+            <returns>返回值可能是有效的，根据是否启用内插来判断</returns>
         </member>
         <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.Repeat``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
             <summary>
@@ -3748,6 +3774,81 @@
             <typeparam name="T"></typeparam>
             <param name="source"></param>
             <param name="count"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.LimitFor``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+            <summary>
+            迭代直到计数超出
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source"></param>
+            <param name="count"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.Marshalling``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},System.Func{``0,System.Boolean})">
+            <summary>
+            使用两个编组规则，实现一个带通过滤器
+            将给定数据根据条件A编组，然后根据条件B是否存在输出这个编组
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source"></param>
+            <param name="slidingGroup">编组条件，只有连续为真的条件才是组</param>
+            <param name="decisive">决定输出的条件</param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.MarshallingByTrigger``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},System.Boolean)">
+            <summary>
+            触发器编组。  
+            当遇到触发器上升沿或下降沿时，执行一次编组
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source"></param>
+            <param name="slidingGroup"></param>
+            <param name="isRiseOtherwiseFallEdge">是上升沿，否则下降沿</param>
+            <param name=""></param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.MarshallingByEquals``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            触发器编组。  
+            当遇到触发器上升沿或下降沿时，执行一次编组
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source"></param>
+            <param name="slidingGroup"></param>
+            <param name="isRiseOtherwiseFallEdge">是上升沿，否则下降沿</param>
+            <param name=""></param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.MarshallingByEquals``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Object})">
+            <summary>
+            触发器编组。  
+            当遇到触发器上升沿或下降沿时，执行一次编组
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source"></param>
+            <param name="slidingGroup"></param>
+            <param name="isRiseOtherwiseFallEdge">是上升沿，否则下降沿</param>
+            <param name=""></param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.CountContinuous``1(System.Collections.Generic.IEnumerable{``0},``0,System.Boolean)">
+            <summary>
+            在连续的对象上计数
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source"></param>
+            <param name="baseObj">如果对象为空，则根据枚举中第一个有效的项目进行选择</param>
+            <param name="autoSelect">如果为真，则允许在默认值为空的情况下选择第一个不为空的对象作为判断依据</param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.CountContinuous``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+            <summary>
+            在连续为真的条件上计数
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source"></param>
+            <param name="getCondition">计数条件</param>
             <returns></returns>
         </member>
         <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.IndexOf``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
@@ -4185,7 +4286,7 @@
             <param name="sortedList">一个已经排好序的列表对象</param>
             <param name="target">查找的目标</param>
             <param name="isAccuracy">返回索引是否为准确的</param>
-            <param name="getFloat">如果需要找到最接近的对象，则必须指定如何获取判断依据</param>
+            <param name="getValue">如果需要找到最接近的对象，则必须指定如何获取判断依据</param>
             <param name="comparer">允许手动指定一个比较器，否则使用T类型默认的比较方式</param>
             <param name="findNearst">在模糊判断时，选择更接近的一方，否则直接返回应当插入的位置</param>
             <returns></returns>
@@ -8800,6 +8901,19 @@
             排序算法库
             </summary>
         </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroSort.SelectionSortList``1(System.Collections.Generic.List{``0},System.Func{``0,System.Int32})">
+            <summary>
+            选择排序，复杂度 O((n(n-2))/2)
+            操作方式是从无序区选择数据插入到有序区的后面。（比较多，交换少，链表稳定）
+            </summary>
+            <remarks>
+            注意直接使用列表作为参数时，不要运行在多线程环境下。
+            </remarks>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+            <param name="getValue"></param>
+            <returns>返回从小到大的枚举器</returns>
+        </member>
         <member name="M:XericLibrary.Runtime.MacroLibrary.MacroSort.SelectionSort``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32})">
             <summary>
             选择排序，复杂度 O((n(n-2))/2)
@@ -8809,6 +8923,19 @@
             <param name="list"></param>
             <param name="getValue"></param>
             <returns>返回从小到大的枚举器</returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroSort.QuickSortList``1(System.Collections.Generic.List{``0},System.Func{``0,System.Int64})">
+            <summary>
+            快速排序，复杂度 O(n log2n)
+            0 -> 最大值 n -> 最小值
+            </summary>
+            <remarks>
+            注意直接使用列表作为参数时，不要运行在多线程环境下。
+            </remarks>
+            <typeparam name="T"></typeparam>
+            <param name="listTarget"></param>
+            <param name="getValue"></param>
+            <returns></returns>
         </member>
         <member name="M:XericLibrary.Runtime.MacroLibrary.MacroSort.QuickSort``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int64})">
             <summary>
@@ -9357,10 +9484,10 @@
         <member name="T:XericLibrary.Runtime.MacroLibrary.MacroFile.CrossPlatformFileHandle">
             <summary>
             文件句柄
+            </summary>
             <code>
             异步的读取保存方法通常不需要等待，可以在末尾使用.ConfigureAwait(false)，避免执行完毕后切换上下文，如果在ui线程中就不要调用这个了，其他情况下建议调用。
             </code>
-            </summary>
         </member>
         <member name="F:XericLibrary.Runtime.MacroLibrary.MacroFile.CrossPlatformFileHandle.runtimePlatform">
             <summary>
@@ -9509,6 +9636,13 @@
             <param name="formatter"></param>
             <returns></returns>
         </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroFile.CrossPlatformFileHandle.MakeSurePathValid(System.String)">
+            <summary>
+            确保路径正确
+            </summary>
+            <param name="path"></param>
+            <returns></returns>
+        </member>
         <member name="M:XericLibrary.Runtime.MacroLibrary.MacroFile.CrossPlatformFileHandle.CombinePath(System.String,System.String)">
             <summary>
             拼接路径
@@ -9562,6 +9696,14 @@
             <param name="specialFolder"></param>
             <returns></returns>
             <exception cref="T:System.Exception"></exception>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroFile.CrossPlatformFileHandle.GetRelativePath(System.String,System.String)">
+            <summary>
+            获取相对路径（windows上这个方法在当前 .net Framework中不存在，但是在.net standard2.1有官方预设的）
+            </summary>
+            <param name="relativeTo"></param>
+            <param name="path"></param>
+            <returns></returns>
         </member>
         <member name="M:XericLibrary.Runtime.MacroLibrary.MacroFile.CrossPlatformFileHandle.GetDirectoryFileNames(System.String,System.String,System.Boolean,System.String,System.Boolean)">
             <summary>
@@ -14150,6 +14292,11 @@
             参数访问器
             </summary>
         </member>
+        <member name="T:XericLibrary.Runtime.Type.SpatialAlgorithm.BenchMarker">
+            <summary>
+            unity委托耗时执行测试
+            </summary>
+        </member>
         <member name="T:XericLibrary.Runtime.Type.SpatialAlgorithm.CatalogueTree`1">
             <summary>
             目录树型管理结构
@@ -14234,6 +14381,245 @@
             <param name="forceDebugMember">启用调试成员，将输出所有控制字符在遍历的成员</param>
             <param name="allowDebugOrder">允许调试语句，将不再检查语句语法，可以完全使用路径语句进行流程遍历控制，而不会产生报错</param>
         </member>
+        <member name="T:XericLibrary.Runtime.Type.SpatialAlgorithm.MaxHeap`1">
+            <summary>
+            大顶堆(一种排序算法)，基于泛型List实现
+            </summary>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.MaxHeap`1.Add(`0)">
+            <summary>
+            添加元素
+            </summary>
+            <remarks>
+            时间复杂度O(log n)
+            </remarks>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.MaxHeap`1.RemoveTop">
+            <summary>
+            移除顶部的元素并返回
+            </summary>
+            <remarks>
+            <list type="bullet">
+            <item><description>时间复杂度O(log n)</description></item>
+            <item><description>如果堆为空，会抛出异常</description></item>
+            </list>
+            </remarks>
+            <exception cref="T:System.InvalidOperationException"></exception>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.MaxHeap`1.RemoveAt(System.Int32)">
+            <summary>
+            移除指定索引处的元素并返回
+            </summary>
+            <remarks>
+            <list type="bullet">
+            <item><description>时间复杂度O(log n)</description></item>
+            <item><description>索引越界会报错</description></item>
+            </list>
+            </remarks>
+            <exception cref="T:System.ArgumentOutOfRangeException"></exception>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.MaxHeap`1.Remove(`0)">
+            <summary>
+            移除指定的元素
+            </summary>
+            <remarks>
+            <list type="bullet">
+            <item><description>时间复杂度O(log n)</description></item>
+            <item><description>返回是否移除成功，如果元素不在堆内就无法移除，返回false</description></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.MaxHeap`1.Peek">
+            <summary>
+            查阅堆顶的元素
+            </summary>
+            <remarks>
+            如果堆为空，会抛出异常
+            </remarks>
+            <exception cref="T:System.InvalidOperationException"></exception>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.MaxHeap`1.Clear">
+            <summary>
+            清空堆
+            </summary>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.MaxHeap`1.Contains(`0)">
+            <summary>
+            查询元素是否在堆内
+            </summary>
+            <remarks>
+            时间复杂度O(n)
+            </remarks>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.MaxHeap`1.IndexOf(`0)">
+            <summary>
+            查找元素在堆中首次出现的索引
+            </summary>
+            <remarks>
+            <list type="bullet">
+            <item><description>时间复杂度O(n)</description></item>
+            <item><description>如果元素不存在，则返回-1</description></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.MaxHeap`1.HeapifyUp(System.Int32)">
+            <summary>
+            从指定索引处向上堆化
+            </summary>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.MaxHeap`1.HeapifyDown(System.Int32)">
+            <summary>
+            从指定索引处向下堆化
+            </summary>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.MaxHeap`1.Swap(System.Int32,System.Int32)">
+            <summary>
+            交换两个索引位置的item
+            </summary>
+            <param name="indexA"></param>
+            <param name="indexB"></param>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.MaxHeap`1.GetParentIndex(System.Int32)">
+            <summary>
+            返回指定节点的父节点的索引
+            </summary>
+            <remarks>
+            如果已经到顶则仍然返回0
+            </remarks>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.MaxHeap`1.GetLeftChildIndex(System.Int32)">
+            <summary>
+            返回指定节点的左子结点的索引
+            </summary>
+            <remarks>
+            如果不存在则返回-1
+            </remarks>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.MaxHeap`1.GetRightChildIndex(System.Int32)">
+            <summary>
+            返回指定节点的右子结点的索引
+            </summary>
+            <remarks>
+            如果不存在则返回-1
+            </remarks>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.MaxHeap`1.IsGreaterThan(System.Int32,System.Int32)">
+            <summary>
+            返回索引A处的元素是否比索引B处的大
+            </summary>
+        </member>
+        <member name="T:XericLibrary.Runtime.Type.SpatialAlgorithm.Octree`1">
+            <summary>
+            灵活的八叉树实现，支持3D空间中的多种坐标类型
+            </summary>
+            <code>
+            生成根节点时，可以适当扩大一点距离，如10%，可以避免加入时落在根节点边界上，减少插入时边界判断开销。
+            </code>;
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.Octree`1.#ctor(UnityEngine.Bounds,System.Func{`0,UnityEngine.Bounds},System.Int32,System.Int32)">
+            <summary>
+            初始化八叉树
+            </summary>
+            <param name="boundary">八叉树边界</param>
+            <param name="getBoundsFunc">获取对象边界的函数</param>
+            <param name="maxObjectsPerNode">每个节点最大对象数</param>
+            <param name="maxDepth">最大深度</param>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.Octree`1.Insert(`0)">
+            <summary>
+            插入元素（修复：确保对象正确插入，处理边界检查）
+            </summary>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.Octree`1.GetTotalInsertedCount">
+            <summary>
+            调试用：获取成功插入的对象总数
+            </summary>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.Octree`1.FindNearest(UnityEngine.Vector3,System.Boolean@,System.Single)">
+            <summary>
+            查找最近的元素（修复：处理无结果的情况，增加备选查找）
+            </summary>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.Octree`1.GetObjectCenter(`0)">
+            <summary>
+            获取对象的中心点
+            </summary>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.Octree`1.Node.Insert(`0)">
+            <summary>
+            插入元素（修复：简化插入逻辑，确保对象正确进入节点）
+            </summary>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.Octree`1.Node.Split">
+            <summary>
+            分裂节点（修复：确保对象正确迁移）
+            </summary>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.Octree`1.Node.FindNearest(UnityEngine.Vector3,`0@,System.Single@,System.Boolean@)">
+            <summary>
+            在当前节点及其子节点中查找最近的元素
+            </summary>
+        </member>
+        <member name="T:XericLibrary.Runtime.Type.SpatialAlgorithm.OctreeExtensions">
+            <summary>
+            八叉树扩展方法，提供不同3D类型的边界转换
+            </summary>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.OctreeExtensions.CreateOctree(System.Collections.Generic.List{UnityEngine.Vector3},System.Int32,System.Int32)">
+            <summary>
+            创建八叉树
+            </summary>
+            <param name="points">点列表</param>
+            <param name="maxObjectsPerNode">每个节点最大对象数</param>
+            <param name="maxDepth">最大深度</param>
+            <returns>八叉树</returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.OctreeExtensions.CalculateBounds(System.Collections.Generic.List{UnityEngine.Vector3})">
+            <summary>
+            计算点集的边界
+            </summary>
+            <param name="points">点列表</param>
+            <returns>边界</returns>
+        </member>
+        <member name="T:XericLibrary.Runtime.Type.SpatialAlgorithm.OctreeProfiler">
+            <summary>
+            八叉树性能分析工具
+            </summary>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.OctreeProfiler.ProfileOctree``1(XericLibrary.Runtime.Type.SpatialAlgorithm.Octree{``0},System.Collections.Generic.List{``0},System.Int32)">
+            <summary>
+            分析八叉树性能
+            </summary>
+            <param name="octree">八叉树</param>
+            <param name="points">点列表</param>
+            <param name="testQueries">测试查询次数</param>
+            <returns>性能统计</returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.OctreeProfiler.AnalyzeTreeStructure``1(XericLibrary.Runtime.Type.SpatialAlgorithm.Octree{``0},System.Int32@,System.Int32@)">
+            <summary>
+            分析树结构
+            </summary>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.OctreeProfiler.EstimateMemoryUsage(System.Int32,System.Int32)">
+            <summary>
+            估算内存使用
+            </summary>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.OctreeProfiler.LinearSearch``1(System.Collections.Generic.List{``0},``0)">
+            <summary>
+            线性搜索
+            </summary>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.OctreeProfiler.GetPosition``1(``0)">
+            <summary>
+            获取对象位置
+            </summary>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.OctreeProfiler.FormatPerformanceReport(XericLibrary.Runtime.Type.SpatialAlgorithm.OctreeProfiler.PerformanceStats)">
+            <summary>
+            格式化性能报告
+            </summary>
+        </member>
         <member name="T:XericLibrary.Runtime.Type.SpatialAlgorithm.TrieNode">
             <summary>
             字典树节点类
@@ -14310,6 +14696,78 @@
             </summary>
             <param name="str"></param>
             <returns></returns>
+        </member>
+        <member name="T:XericLibrary.Runtime.Type.SpatialAlgorithm.QuadTree`1">
+            <summary>
+            灵活的四叉树实现，支持多种坐标类型
+            </summary>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.QuadTree`1.#ctor(UnityEngine.Rect,System.Func{`0,UnityEngine.Rect},System.Int32,System.Int32)">
+            <summary>
+            初始化四叉树
+            </summary>
+            <param name="boundary">四叉树边界</param>
+            <param name="getRectFunc">获取对象边界的函数</param>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.QuadTree`1.Insert(`0)">
+            <summary>
+            插入元素
+            </summary>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.QuadTree`1.Retrieve(UnityEngine.Rect)">
+            <summary>
+            查找范围内的元素
+            </summary>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.QuadTree`1.FindNearest(UnityEngine.Vector2,System.Single)">
+            <summary>
+            查找最近的元素
+            </summary>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.QuadTree`1.DrawGrid">
+            <summary>
+            调试绘制网格
+            </summary>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.QuadTree`1.Node.Insert(`0)">
+            <summary>
+            插入元素
+            </summary>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.QuadTree`1.Node.Split">
+            <summary>
+            分裂为四个子节点
+            </summary>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.QuadTree`1.Node.FindNearest(UnityEngine.Vector2,`0@,System.Single@)">
+            <summary>
+            查找最近的元素
+            </summary>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.QuadTree`1.Node.Retrieve(UnityEngine.Rect)">
+            <summary>
+            查找范围内的元素
+            </summary>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.QuadTree`1.Node.DrawGrid(UnityEngine.Color)">
+            <summary>
+            绘制节点网格
+            </summary>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.QuadTree`1.Node.IsOverlapping(UnityEngine.Rect,UnityEngine.Rect)">
+            <summary>
+            判断两个矩形是否重叠
+            </summary>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.QuadTree`1.Node.GetDistanceToRectSquared(UnityEngine.Vector2,UnityEngine.Rect)">
+            <summary>
+            计算点到矩形的最小距离平方
+            </summary>
+        </member>
+        <member name="T:XericLibrary.Runtime.Type.SpatialAlgorithm.QuadTreeExtensions">
+            <summary>
+            四叉树扩展方法，提供不同类型的矩形转换
+            </summary>
         </member>
         <member name="T:XericLibrary.Runtime.Type.Weakly.AnonymousMono">
             <summary>
@@ -15140,98 +15598,15 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="T:XericLibrary.Runtime.Type.QuadTree`1">
-            <summary>
-            一个简单的四叉树
-            <code>
-            由于四叉树的特性，重新生成可能会比转置并平衡四叉树要简单和方便的多。
-            所以，如果需要维护四叉树，建议直接丢弃旧树重新生成
-            </code>
-            </summary>
-        </member>
-        <member name="M:XericLibrary.Runtime.Type.QuadTree`1.Insert(`0)">
-            <summary>
-            插入元素
-            </summary>
-            <param name="t"></param>
-            <param name="rect"></param>
-            <returns></returns>
-        </member>
-        <member name="M:XericLibrary.Runtime.Type.QuadTree`1.Retrieve(UnityEngine.Rect)">
-            <summary>
-            寻找范围内的元素
-            </summary>
-            <param name="retArea"></param>
-            <returns></returns>
-        </member>
-        <member name="T:XericLibrary.Runtime.Type.QuadTree`1.Node">
-            <summary>
-            四叉树节点
-            </summary>
-        </member>
-        <member name="F:XericLibrary.Runtime.Type.QuadTree`1.Node.boundary">
-            <summary>
-            节点范围
-            </summary>
-        </member>
-        <member name="F:XericLibrary.Runtime.Type.QuadTree`1.Node.objectSet">
-            <summary>
-            节点内对象，为空代表此节点不包含成员
-            </summary>
-        </member>
-        <member name="M:XericLibrary.Runtime.Type.QuadTree`1.Node.#ctor(UnityEngine.Rect,System.Int32)">
-            <summary>
-            构造节点
-            </summary>
-            <param name="boundary">节点范围</param>
-            <param name="deep">节点层级</param>
-        </member>
-        <member name="M:XericLibrary.Runtime.Type.QuadTree`1.Node.Insert(`0)">
-            <summary>
-            元素插入
-            </summary>
-            <param name="t"></param>
-            <param name="rect"></param>
-            <returns></returns>
-        </member>
-        <member name="M:XericLibrary.Runtime.Type.QuadTree`1.Node.Split">
-            <summary>
-            执行细分，这会直接创建所有的子节点
-            </summary>
-        </member>
-        <member name="M:XericLibrary.Runtime.Type.QuadTree`1.Node.QuadrantOf(UnityEngine.Rect,XericLibrary.Runtime.Type.QuadTree{`0}.NodeQuadrant@)">
-            <summary>
-            查找给定范围象限
-            </summary>
-            <param name="rect"></param>
-            <returns></returns>
-        </member>
-        <member name="M:XericLibrary.Runtime.Type.QuadTree`1.Node.Retrieve(UnityEngine.Rect)">
-            <summary>
-            找回
-            </summary>
-            <param name="retArea"></param>
-            <returns></returns>
-        </member>
-        <member name="T:XericLibrary.Runtime.Type.ICanStoredByQuadTree">
-            <summary>
-            四叉树识别接口
-            </summary>
-        </member>
-        <member name="M:XericLibrary.Runtime.Type.ICanStoredByQuadTree.QuadTreeDiscernRectRange">
-            <summary>
-            提供给四叉树容器可识别的范围
-            </summary>
-            <returns></returns>
-        </member>
         <member name="T:XericLibrary.Runtime.Type.SingleMonoBase`1">
             <summary>
             单例基础类，允许通过继承或直接注册的方式获取一个类的单例系统
             <code>
-            如果给定的类通过继承的方式获得单例行为时，允许获取此单例类中的全部操作实现。
-            如果给定类通过类型限定语句注册到全局时，将不允许获取此单例中的操作实现。
+            * 如果给定的类通过继承的方式获得单例行为时，允许获取此单例类中的全部操作实现。
+            * 如果给定类通过类型限定语句注册到全局时，将不允许获取此单例中的操作实现。
+            * 如果期望直接获得一个空的节点，可以使用transform作为泛型。
             
-            如果期望直接获得一个空的节点，可以使用transform作为泛型，毕竟所有节点都有这个组件。
+            * 如果目标脚本无法继承自限定为自身的单例系统，可以使用旁系模式，使用超级单例包裹父类即可，
             </code>
             </summary>
             <typeparam name="T"></typeparam>
@@ -15305,38 +15680,72 @@
         </member>
         <member name="P:XericLibrary.Runtime.Type.SingleMonoBase`1.Inst">
             /// <summary>
-            代理单例对象(世界父级优先)
+            代理单例对象(代理优先，位于世界)
             <code>
             交叉同源对象，将另一个目标作为首选项覆盖原生，这在原型并非泛型限定时很有用。
             
-            注意：
-            不允许：多线同步，异步执行，隐式声明，远程单例
-            允许：自身排斥，非运行时
+            ## 警告：
+              * 多线异步
+            	线程锁会阻止可能的多个实例的创建，并等待其他实例的获取完成。
+              * 异步执行
+            	线程锁会强制等待其他实例的获取完成
+              * 非运行时
+            	在编辑期间的操作是安全的，但编译操作刷新可能会引发实例重复，不建议实践
+            ## 允许：
+              * 隐式声明 
+            	允许隐式，但注意调用时生命周期顺序，避免发生不必要的排斥
+              * 自身排斥
+            	自排时要求实例以最新实例为准
+              * 远程单例
+            	期望构建同质或劣质远程，如果实例已为远程，则返回远程，可能会影响场景切换时的生命周期顺序
             </code>
             </summary>
         </member>
         <member name="P:XericLibrary.Runtime.Type.SingleMonoBase`1.GlobalInst">
             /// <summary>
-            代理单例对象(世界不销毁父级优先)
+            代理单例对象(代理优先，位于持久世界)
             <code>
             交叉同源对象，将另一个目标作为首选项覆盖原生，这在原型并非泛型限定时很有用。
             
-            注意：
-            不允许：多线同步，异步执行，隐式声明，远程单例
-            允许：自身排斥，非运行时
+            ## 不允许：
+              * 非运行时
+            	在编辑期间使用会引发错误
+            ## 警告：
+              * 多线异步
+            	线程锁会阻止可能的多个实例的创建，并等待其他实例的获取完成。
+              * 异步执行
+            	线程锁会强制等待其他实例的获取完成
+            ## 允许：
+              * 隐式声明 
+            	允许隐式，但注意调用时生命周期顺序，避免发生不必要的排斥
+              * 自身排斥
+            	自排时要求实例以最新实例为准
+              * 远程单例
+            	期望构建优质远程，如果实例已为远程，则返回远程，可能会影响场景切换时的生命周期顺序
             </code>
             </summary>
         </member>
         <member name="P:XericLibrary.Runtime.Type.SingleMonoBase`1.Instance">
             <summary>
-            获取组件最近单例
+            常规单例(仅自身，位于世界)
             <code>
             inst要求返回的对象必须为声明的泛型 (如果泛型类并非自己时无法获取自己的内容)。
             如果目标已实现，但不存在于世界中时，将自动在当前场景中创建一个空节点用于存放对象。
             
-            注意：
-            不允许：自身排斥，多线同步，异步执行，远程单例，非运行时
-            允许：隐式声明
+            ## 警告：
+              * 多线异步
+            	线程锁会阻止可能的多个实例的创建，并等待其他实例的获取完成。
+              * 异步执行
+            	线程锁会强制等待其他实例的获取完成
+              * 自身排斥
+            	自排时要求实例以最新实例为准
+              * 非运行时
+            	在编辑期间的操作是安全的，但编译等操作会导致实例不稳定（注意模式穿插可能导致混入意外实例）
+            ## 允许：
+              * 隐式声明 
+            	允许隐式，但注意调用时生命周期顺序，避免发生不必要的排斥
+              * 远程单例
+            	期望构建同质或劣质远程，如果实例已为远程，则返回远程，可能会影响场景切换时的生命周期顺序
             </code>
             </summary>
         </member>
@@ -15348,33 +15757,67 @@
             如果目标已实现，但不存在于世界中时，将自动在全局创建一个空节点用于存放自己。
             如果泛型并非自己时，虽然可以定义，但无法在此处获取自己的内容，可以使用配合InstanceSelf使用。
             
-            注意：
-            不允许：自身排斥，多线同步，非运行时
-            允许：异步执行，隐式声明，远程单例
+            ## 不允许：
+              * 非运行时
+            	在编辑期间使用会引发错误
+            ## 警告：
+              * 多线异步
+            	线程锁会阻止可能的多个实例的创建，并等待其他实例的获取完成。
+              * 异步执行
+            	线程锁会强制等待其他实例的获取完成
+              * 自身排斥
+            	自排时要求实例以最新实例为准
+            ## 允许：
+              * 远程单例
+            	如果实例已为远程，则返回远程，可能会影响场景切换时的生命周期顺序
+              * 隐式声明
+            	允许隐式，但注意调用时生命周期顺序，避免发生不必要的排斥
             </code>
             </summary>
         </member>
         <member name="P:XericLibrary.Runtime.Type.SingleMonoBase`1.LazyInst">
             <summary>
-            惰性单例(优先惰性单例)
+            惰性单例(代理优先)
             <code>
             如果单例未声名，尝试查找，否则返回空
             
-            注意：
-            不允许：隐式声明，远程单例，自身排斥
-            允许：多线同步，异步执行，非运行时
+            ## 不允许：
+              * 非运行时
+            	在编辑期间无法按预期执行，将退化为 Inst 
+              * 隐式声明 
+            	除非对象另外使用隐式专用语法执行过至少一次，否则对象永远不会创建或被引用。
+            ## 警告：
+              * 多线异步
+            	线程锁会阻止可能的多个实例的创建，并等待其他实例的获取完成。
+              * 异步执行
+            	线程锁会强制等待其他实例的获取完成
+              * 自身排斥
+            	自排时要求实例以最新实例为准
+              * 远程单例
+            	不对远程设限，该单例不会对远程实例进行维护，不能保证有效性，除非这是你希望的
             </code>
             </summary>
         </member>
         <member name="P:XericLibrary.Runtime.Type.SingleMonoBase`1.LazyInstance">
             <summary>
-            惰性单例(优先普通单例)
+            惰性单例(完全惰性)
             <code>
-             如果单例未声名，尝试查找，否则返回空
+            如果单例未声名，返回空
             
-            注意：
-            不允许：隐式声明，远程单例，自身排斥
-            允许：多线同步，异步执行，非运行时
+            ## 不允许：
+              * 隐式声明 
+            	除非对象另外使用隐式专用语法执行过至少一次，否则对象永远不会创建或被引用。
+            ## 警告：
+              * 多线异步
+            	可以多线异步使用，但需要注意主线程生命周期
+              * 异步执行
+            	可以异步使用，但需要注意主线程生命周期
+              * 自身排斥
+            	是否唯一并不重要。
+              * 远程单例
+            	不对远程设限，该单例不会对远程实例进行维护，不能保证有效性，除非这是你希望的
+              * 非运行时
+            	可以引用到非运行时单例，但需要使用非运行时语法限定。
             </code>
             </summary>
         </member>
@@ -15382,12 +15825,23 @@
             <summary>
             获取此静态单例成员的绝对自身
             <code>
-            功能与 GlobalInstance 一致，但：
+            功能与 Inst 一致，但：
             如果泛型并非自己时，虽然可以定义，但无法在此处获取泛型的内容。
             
-            注意：
-            不允许：自身排斥，多线同步，非运行时
-            允许：异步执行，隐式声明，远程单例
+            ## 警告：
+              * 多线异步
+            	线程锁会阻止可能的多个实例的创建，并等待其他实例的获取完成。
+              * 异步执行
+            	线程锁会强制等待其他实例的获取完成
+              * 非运行时
+            	在编辑期间的操作是安全的，但编译操作刷新可能会引发实例重复，不建议实践
+            ## 允许：
+              * 隐式声明 
+            	允许隐式，但注意调用时生命周期顺序，避免发生不必要的排斥
+              * 自身排斥
+            	自排时要求实例以最新实例为准
+              * 远程单例
+            	期望构建同质或劣质远程，如果实例已为远程，则返回远程，可能会影响场景切换时的生命周期顺序
             </code>
             </summary>
         </member>
@@ -15395,12 +15849,24 @@
             <summary>
             获取此静态单例成员的绝对自身
             <code>
-            功能与 GlobalInstance 一致，但：
+            功能与 GlobalInst 一致，但：
             如果泛型并非自己时，虽然可以定义，但无法在此处获取泛型的内容。
             
-            注意：
-            不允许：自身排斥，多线同步，非运行时
-            允许：异步执行，隐式声明，远程单例
+            ## 不允许：
+              * 非运行时
+            	在编辑期间使用会引发错误
+            ## 警告：
+              * 多线异步
+            	线程锁会阻止可能的多个实例的创建，并等待其他实例的获取完成。
+              * 异步执行
+            	线程锁会强制等待其他实例的获取完成
+            ## 允许：
+              * 隐式声明 
+            	允许隐式，但注意调用时生命周期顺序，避免发生不必要的排斥
+              * 自身排斥
+            	自排时要求实例以最新实例为准
+              * 远程单例
+            	期望构建优质远程，如果实例已为远程，则返回远程，可能会影响场景切换时的生命周期顺序
             </code>
             </summary>
         </member>
@@ -15408,12 +15874,23 @@
             <summary>
             获取此静态单例成员的绝对自身
             <code>
-            功能与 GlobalInstance 一致，但：
+            功能与 Instance 一致，但：
             如果泛型并非自己时，虽然可以定义，但无法在此处获取泛型的内容。
             
-            注意：
-            不允许：自身排斥，多线同步，非运行时
-            允许：异步执行，隐式声明，远程单例
+            ## 警告：
+              * 多线异步
+            	线程锁会阻止可能的多个实例的创建，并等待其他实例的获取完成。
+              * 异步执行
+            	线程锁会强制等待其他实例的获取完成
+              * 自身排斥
+            	自排时要求实例以最新实例为准
+              * 非运行时
+            	在编辑期间的操作是安全的，但编译操作刷新可能会引发实例重复，不建议实践
+            ## 允许：
+              * 隐式声明 
+            	允许隐式，但注意调用时生命周期顺序，避免发生不必要的排斥
+              * 远程单例
+            	期望构建同质或劣质远程，如果实例已为远程，则返回远程，可能会影响场景切换时的生命周期顺序
             </code>
             </summary>
         </member>
@@ -15424,9 +15901,21 @@
             功能与 GlobalInstance 一致，但：
             如果泛型并非自己时，虽然可以定义，但无法在此处获取泛型的内容。
             
-            注意：
-            不允许：自身排斥，多线同步，非运行时
-            允许：异步执行，隐式声明，远程单例
+            ## 不允许：
+              * 非运行时
+            	在编辑期间使用会引发错误
+            ## 警告：
+              * 多线异步
+            	线程锁会阻止可能的多个实例的创建，并等待其他实例的获取完成。
+              * 异步执行
+            	线程锁会强制等待其他实例的获取完成
+              * 自身排斥
+            	自排时要求实例以最新实例为准
+            ## 允许：
+              * 远程单例
+            	如果实例已为远程，则返回远程，可能会影响场景切换时的生命周期顺序
+              * 隐式声明
+            	允许隐式，但注意调用时生命周期顺序，避免发生不必要的排斥
             </code>
             </summary>
         </member>
@@ -15438,8 +15927,18 @@
             不建议依赖编辑时单例在状态与状态之间传递数据。
             此单例对象不稳定且易变
             如果现在不是编辑器模式，则与Instance一致
+            
+            ## 不允许：
+              * 隐式声明 
+              * 多线异步
+              * 异步执行
+              * 非运行时
+              * 远程单例
+              * 自身排斥
+            ## 警告：
+            ## 允许：
             注意：
-            不允许：多线同步，异步执行，远程单例，自身排斥
+            不允许：多线异步，异步执行，远程单例，自身排斥
             允许：隐式声明，非运行时
             </code>
             </summary>
@@ -15454,9 +15953,18 @@
             匿名单例需要手动维护，你可以调用 SyncCopyMainToAnonymous 或 SyncCopyAnonymousToMain 来在两个方向上同步。
             匿名单例可以在单例被释放后仍然保存数据。
             
+            ## 不允许：
+              * 隐式声明 
+              * 多线异步
+              * 异步执行
+              * 非运行时
+              * 远程单例
+              * 自身排斥
+            ## 警告：
+            ## 允许：
             注意：
             不允许：隐式声明，远程单例，非运行时
-            允许：多线同步，异步执行，自身排斥
+            允许：多线异步，异步执行，自身排斥
             </code>
             </summary>
         </member>
@@ -15489,8 +15997,15 @@
         </member>
         <member name="M:XericLibrary.Runtime.Type.SingleMonoBase`1.TIsAssignableFromSingleMonoBaseT">
             <summary>
-            检查泛型是否为当前类派生，也就是说这个是单例系统吗，还是旁例
+            检查泛型是否为当前类派生，也就是说是直系单例系统吗，否则旁系
             </summary>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SingleMonoBase`1.EditorModeEscapeInCase(`0)">
+            <summary>
+            插入编辑器转义
+            </summary>
+            <param name="ins"></param>
             <returns></returns>
         </member>
         <member name="M:XericLibrary.Runtime.Type.SingleMonoBase`1.Awake">
@@ -15928,6 +16443,11 @@
             烘焙循环平均距离
             </summary>
         </member>
+        <member name="F:XericLibrary.Runtime.XericComponent.Spline.SplineBakeData._bakeMinPoint">
+            <summary>
+            烘焙尺寸
+            </summary>
+        </member>
         <member name="P:XericLibrary.Runtime.XericComponent.Spline.SplineBakeData.BakeTotalDistance">
             <summary>
             累计的总长度
@@ -16304,16 +16824,18 @@
             <param name="rot"></param>
             <returns></returns>
         </member>
-        <member name="M:XericLibrary.Runtime.XericComponent.XericSplinePath.FindNearestPointFast(UnityEngine.Vector3,UnityEngine.Vector3@)">
+        <member name="M:XericLibrary.Runtime.XericComponent.XericSplinePath.FindNearestPoint(UnityEngine.Vector3,UnityEngine.Vector3@)">
             <summary>
-            找到最近点(快速二分法，要求曲线形状不能太复杂，否则很有可能陷入局部最优)
+            找到最近点(线性查询，复杂度O(n))
             </summary>
             <returns></returns>
         </member>
-        <member name="T:XericLibrary.Runtime.XericComponent.XericSplinePath.ComparerMinimumDistanceSplinePoint">
+        <member name="M:XericLibrary.Runtime.XericComponent.XericSplinePath.FindNearestPointFast(UnityEngine.Vector3)">
             <summary>
-            比较两个参数内当前点的距离
+            找到最近点(八叉树查询，复杂度O(log n))
             </summary>
+            <param name="point"></param>
+            <param name="findPoint"></param>
         </member>
         <member name="T:XericLibrary.Runtime.XericComponent.UserInterface.OstracizeGrid">
             <summary>
