@@ -1,4 +1,4 @@
-<h1 align="center">Xeric Library</h1>
+<h1 align="center">Xeric Library (WebGL)</h1>
 
 <a href="https://xeric.zicp.fun/LiRuochen_WorkFlow/XericLibrary-Publish">个人发布页面(最新)</a>  
 <a href="https://gitee.com/none_9_0/xeric-library2">Gitee发布页面</a>  

@@ -3532,7 +3532,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.FisherYatesShuffle(System.Int32,System.Int32)">
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.FisherYatesShuffle(System.Int32,System.Int32,System.Collections.Generic.List{System.Int32})">
             <summary>
             Fisher-Yates洗牌算法，时间复杂度为O(n*n),空间复杂度为O(n);
             <code>
@@ -5256,6 +5256,22 @@
             <summary>
             使用循环累加验证小数步长的平方和
             </summary>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.SqrMagnitudeDistance(UnityEngine.Vector2,UnityEngine.Vector2)">
+            <summary>
+            平方绝对值距离
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.SqrMagnitudeDistance(UnityEngine.Vector3,UnityEngine.Vector3)">
+            <summary>
+            平方绝对值距离
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <returns></returns>
         </member>
         <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.GetCirclePoints(System.Single,System.Single,System.Int32,System.Boolean)">
             <summary>
@@ -7716,18 +7732,26 @@
             <param name="self"></param>
             <returns></returns>
         </member>
-        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroRectTransform.AnchorPoint(UnityEngine.RectTransform,UnityEngine.Vector2)">
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroRectTransform.GetScreenPosition(UnityEngine.RectTransform,UnityEngine.Vector2,UnityEngine.Camera)">
             <summary>
-            设置组件的锚点为一个点
+            获取元素在屏幕上的绝对坐标
             </summary>
-            <param name="self"></param>
-            <param name="point"></param>
+            <param name="rectTransform">目标UI元素的RectTransform</param>
+            <param name="pivotRelativePoint">相对于元素 pivot 的偏移点（默认是元素中心点）</param>
+            <returns>屏幕绝对坐标（原点在屏幕左下角）</returns>
         </member>
         <member name="M:XericLibrary.Runtime.MacroLibrary.MacroRectTransform.AbsoluteSizeDelta(UnityEngine.RectTransform)">
             <summary>
             获取绝对尺寸
             </summary>
             <param name="self"></param>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroRectTransform.AbsoluteLossySizeDelta(UnityEngine.RectTransform)">
+            <summary>
+            获取世界绝对尺寸（递归向上计算尺寸）
+            </summary>
+            <param name="self"></param>
+            <returns></returns>
         </member>
         <member name="M:XericLibrary.Runtime.MacroLibrary.MacroRectTransform.TransformPointLocal2World(UnityEngine.RectTransform,UnityEngine.Vector3)">
             <summary>
@@ -7756,6 +7780,13 @@
             <param name="position"></param>
             <param name="delta"></param>
             <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroRectTransform.AnchorPoint(UnityEngine.RectTransform,UnityEngine.Vector2)">
+            <summary>
+            设置组件的锚点为一个点
+            </summary>
+            <param name="self"></param>
+            <param name="point"></param>
         </member>
         <member name="M:XericLibrary.Runtime.MacroLibrary.MacroRectTransform.SaveAsImage(UnityEngine.RectTransform,UnityEngine.Canvas)">
             <summary>
@@ -10110,7 +10141,100 @@
             <param name="index"></param>
             <returns></returns>
         </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroObject.GetActivity(UnityEngine.GameObject)">
+            <summary>
+            获取对象自身有效性
+            </summary>
+            <param name="go"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroObject.GetActivityInHierarchy(UnityEngine.GameObject)">
+            <summary>
+            获取对象世界有效性
+            </summary>
+            <param name="go"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroObject.GetActivityInHierarchy(UnityEngine.GameObject,System.Int32)">
+            <summary>
+            获取对象在有限父级中的有效性
+            </summary>
+            <param name="go"></param>
+            <param name="limitParent"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroObject.SetActivity(UnityEngine.GameObject,System.Boolean)">
+            <summary>
+            设置对象有效性
+            </summary>
+            <param name="go"></param>
+            <param name="active"></param>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroObject.SetActivityInHierarchy(UnityEngine.GameObject,System.Boolean)">
+            <summary>
+            设置对象有效性
+            </summary>
+            <param name="go"></param>
+            <param name="active"></param>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroObject.SetActivityInHierarchy(UnityEngine.GameObject,System.Boolean,System.Int32)">
+            <summary>
+            设置对象有效性在有限的父级中
+            </summary>
+            <param name="go"></param>
+            <param name="active"></param>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroObject.GetActivity(UnityEngine.Transform)">
+            <summary>
+            获取对象自身有效性
+            </summary>
+            <param name="go"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroObject.GetActivityInHierarchy(UnityEngine.Transform)">
+            <summary>
+            获取对象世界有效性
+            </summary>
+            <param name="go"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroObject.GetActivityInHierarchy(UnityEngine.Transform,System.Int32)">
+            <summary>
+            获取对象在有限父级中的有效性
+            </summary>
+            <param name="go"></param>
+            <param name="limitParent"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroObject.SetActivity(UnityEngine.Transform,System.Boolean)">
+            <summary>
+            设置对象有效性
+            </summary>
+            <param name="go"></param>
+            <param name="active"></param>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroObject.SetActivityInHierarchy(UnityEngine.Transform,System.Boolean)">
+            <summary>
+            设置对象有效性
+            </summary>
+            <param name="go"></param>
+            <param name="active"></param>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroObject.SetActivityInHierarchy(UnityEngine.Transform,System.Boolean,System.Int32)">
+            <summary>
+            设置对象有效性在有限的父级中
+            </summary>
+            <param name="go"></param>
+            <param name="active"></param>
+        </member>
         <member name="M:XericLibrary.Runtime.MacroLibrary.MacroObject.GetParents(UnityEngine.Transform)">
+            <summary>
+            按顺序获取一个节点的所有父级节点
+            </summary>
+            <param name="trans"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroObject.GetParents(UnityEngine.GameObject)">
             <summary>
             按顺序获取一个节点的所有父级节点
             </summary>
@@ -10124,7 +10248,21 @@
             <param name="trans"></param>
             <returns></returns>
         </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroObject.GetParentsSafety(UnityEngine.GameObject)">
+            <summary>
+            按顺序获取一个节点的所有父级节点(安全模式：在遍历中操作循环体时，此处列表保持不变)
+            </summary>
+            <param name="trans"></param>
+            <returns></returns>
+        </member>
         <member name="M:XericLibrary.Runtime.MacroLibrary.MacroObject.GetChildren(UnityEngine.Transform)">
+            <summary>
+            获取一个变换节点下所有的子成员(这个在unity中可以直接通过transform隐式转换)
+            </summary>
+            <param name="trans"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroObject.GetChildren(UnityEngine.GameObject)">
             <summary>
             获取一个变换节点下所有的子成员(这个在unity中可以直接通过transform隐式转换)
             </summary>
@@ -10436,58 +10574,6 @@
             </summary>
             <param name="nodes">节点列表</param>
             <param name="predicate">执行的条件，为真时销毁</param>
-        </member>
-        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroObject.GetIfComponent``1(``0,UnityEngine.GameObject)">
-            <summary>
-            获取组件，如果组件为空则在节点中查找，如果还没有则创建这个组件
-            <code>
-            要注意使用格式应当类似于这样：
-            rigidbody = rigidbody.GetIfComponent(this);
-            </code>
-            </summary>
-            <typeparam name="T">组件类型</typeparam>
-            <param name="target">组件引用</param>
-            <param name="content">要查找组件的位置</param>
-            <returns></returns>
-        </member>
-        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroObject.GetIfComponent``1(``0,UnityEngine.RectTransform)">
-            <summary>
-            获取组件，如果组件为空则在节点中查找，如果还没有则创建这个组件
-            <code>
-            要注意使用格式应当类似于这样：
-            rigidbody = rigidbody.GetIfComponent(this);
-            </code>
-            </summary>
-            <typeparam name="T">组件类型</typeparam>
-            <param name="target">组件引用</param>
-            <param name="content">要查找组件的位置</param>
-            <returns></returns>
-        </member>
-        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroObject.GetIfComponent``1(``0,UnityEngine.Transform)">
-            <summary>
-            获取组件，如果组件为空则在节点中查找，如果还没有则创建这个组件
-            <code>
-            要注意使用格式应当类似于这样：
-            rigidbody = rigidbody.GetIfComponent(this);
-            </code>
-            </summary>
-            <typeparam name="T">组件类型</typeparam>
-            <param name="target">组件引用</param>
-            <param name="content">要查找组件的位置</param>
-            <returns></returns>
-        </member>
-        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroObject.GetIfComponent``1(``0,UnityEngine.MonoBehaviour)">
-            <summary>
-            获取组件，如果组件为空则在节点中查找，如果还没有则创建这个组件
-            <code>
-            要注意使用格式应当类似于这样：
-            rigidbody = rigidbody.GetIfComponent(this);
-            </code>
-            </summary>
-            <typeparam name="T">组件类型</typeparam>
-            <param name="target">组件引用</param>
-            <param name="content">要查找组件的位置</param>
-            <returns></returns>
         </member>
         <member name="T:XericLibrary.Runtime.MacroLibrary.MacroResources">
             <summary>
@@ -14702,6 +14788,11 @@
             灵活的四叉树实现，支持多种坐标类型
             </summary>
         </member>
+        <member name="P:XericLibrary.Runtime.Type.SpatialAlgorithm.QuadTree`1.RootRect">
+            <summary>
+            获取此四叉树的范围
+            </summary>
+        </member>
         <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.QuadTree`1.#ctor(UnityEngine.Rect,System.Func{`0,UnityEngine.Rect},System.Int32,System.Int32)">
             <summary>
             初始化四叉树
@@ -14714,10 +14805,13 @@
             插入元素
             </summary>
         </member>
-        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.QuadTree`1.Retrieve(UnityEngine.Rect)">
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.QuadTree`1.Retrieve(UnityEngine.Rect,System.Collections.Generic.HashSet{`0})">
             <summary>
             查找范围内的元素
             </summary>
+            <param name="area">查找范围</param>
+            <param name="result">建议使用数据容器对象池控制，避免频繁GC，默认空将自动创建新的数据容器</param>
+            <returns></returns>
         </member>
         <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.QuadTree`1.FindNearest(UnityEngine.Vector2,System.Single)">
             <summary>
@@ -14744,7 +14838,7 @@
             查找最近的元素
             </summary>
         </member>
-        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.QuadTree`1.Node.Retrieve(UnityEngine.Rect)">
+        <member name="M:XericLibrary.Runtime.Type.SpatialAlgorithm.QuadTree`1.Node.Retrieve(UnityEngine.Rect,System.Collections.Generic.HashSet{`0})">
             <summary>
             查找范围内的元素
             </summary>

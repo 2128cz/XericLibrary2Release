@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Deconstruction.UI.Interface;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -121,7 +122,7 @@ namespace XericLibrary.Runtime.MacroLibrary
         /// </code>
         /// </summary>
         [Serializable]
-        public class ToggleMapping : IEnumerable<Toggle>
+        public class ToggleMapping : IEnumerable<Toggle>, IHierarchyControl
         {
             #region 事件委托
 
@@ -149,7 +150,6 @@ namespace XericLibrary.Runtime.MacroLibrary
 
             // 当前选中的项目
             private int _nowSelectToggleIndex = -1;
-
 
             public Transform TogglesContext => ToggleGroup.transform;
 
@@ -479,6 +479,27 @@ namespace XericLibrary.Runtime.MacroLibrary
                 => DestroyAllToggle();
 
             #endregion
+
+            #region 额外方法
+
+            public bool GetActive() => toggleList.Any(a => a.gameObject.activeSelf);
+
+            public bool GetActiveInHierarchy() => toggleList.Any(a => a.gameObject.activeInHierarchy);
+
+            public void SetActive(bool active)
+            {
+                ToggleGroup.gameObject.SetActivity(active);
+                toggleList.ForEachDo(a => a.gameObject.SetActive(active));
+            }
+
+            public void SetActiveInHierarchy(bool active)
+            {
+                ToggleGroup.gameObject.SetActivity(active);
+                toggleList.ForEachDo(a => a.gameObject.SetActivityInHierarchy(active));
+            }
+            
+            #endregion
+
         }
 
         #endregion
