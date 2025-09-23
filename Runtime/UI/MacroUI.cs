@@ -7,6 +7,8 @@ using Deconstruction.UI.Interface;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Pool;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using XericLibrary.Runtime.CustomEditor;
 
@@ -32,6 +34,17 @@ namespace XericLibrary.Runtime.MacroLibrary
         private static FieldInfo togglesFieldInfo = typeof(ToggleGroup).GetField("m_Toggles",
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
+        /// <summary>
+        /// 获取给定单选项组中的所有单选项目
+        /// </summary>
+        /// <code>
+        /// 注意：操作具有一定的危险性，你可以自行制作这个列表对象的拷贝，但注意不要直接对返回的列表对象进行操作。
+        /// </code>
+        /// <param name="toggleGroup"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="InvalidCastException"></exception>
         public static List<Toggle> GetToggles(this ToggleGroup toggleGroup)
         {
             if (toggleGroup == null)
@@ -115,6 +128,50 @@ namespace XericLibrary.Runtime.MacroLibrary
 
         #region toggle 索引
 
+        [Serializable]
+        public class ToggleValueMapping<T> : ToggleMapping
+        {
+            #region 事件委托
+
+            public Action<Toggle, T> OnAnyToggleValueSwitchOn;
+            
+            #endregion
+            
+            #region 字段属性
+
+#if ODIN_INSPECTOR
+            [SerializeField, LabelText("编辑单选项目值")]
+#endif
+            private List<T> toggleValue;
+            
+            #endregion
+
+            public override void BakeToggleGroupItems()
+            {
+                base.BakeToggleGroupItems();
+                if (toggleValue is not { Count: > 0 } || toggleValue.Count != toggleList.Count)
+                {
+                    toggleValue = new List<T>();
+                    for (var i = 0; i < toggleList.Count; i++)
+                        toggleValue.Add(default(T));
+                }
+            }
+
+            public T GetValueByIndex(int index)
+            {
+                if (toggleValue is not { Count: > 0 } || index < 0 || index >= toggleValue.Count)
+                    return default;
+                return toggleValue[index];
+            }
+            
+            protected override void ToggleRegister(Toggle t)
+            {
+                base.ToggleRegister(t);
+                OnAnyToggleValueSwitchOn?.Invoke(t, GetValueByIndex(GetIndex(t)));
+            }
+        }
+        
+        
         /// <summary>
         /// toggle映射集
         /// <code>
@@ -139,114 +196,167 @@ namespace XericLibrary.Runtime.MacroLibrary
             #endregion
 
             #region 字段属性
+
 #if ODIN_INSPECTOR
-            [LabelText("单选组")] 
+            [LabelText("单选组")]
 #endif
             public ToggleGroup ToggleGroup;
-#if ODIN_INSPECTOR  
-            [SerializeField, LabelText("编辑单选项目顺序")] [ListDrawerSettings(OnTitleBarGUI = "GetAndSortToggle")]
+#if ODIN_INSPECTOR
+            [SerializeField, LabelText("编辑单选项目顺序")]
 #endif
-            private List<Toggle> toggleList = new List<Toggle>();
+            protected List<Toggle> toggleList = new List<Toggle>();
 
-            // 当前选中的项目
-            private int _nowSelectToggleIndex = -1;
-
-            public Transform TogglesContext => ToggleGroup.transform;
-
-            /// <summary>
-            /// 当前选中的toggle索引，依赖缓存，对于绕过该容器的单选项控制行为可能存在追踪不准确的问题。
-            /// </summary>
-            public int NowSelectToggleIndex => _nowSelectToggleIndex;
-
-            /// <summary>
-            /// 当前激活的toggle索引，直接进行查找而不是依赖当前缓存
-            /// </summary>
-            public int CurrentSelectToggleIndex
+            public List<Toggle> ToggleList
             {
                 get
                 {
-                    for (var i = 0; i < toggleList.Count; i++)
-                    {
-                        if (!toggleList[i].isOn) continue;
-                        _nowSelectToggleIndex = i;
-                        return _nowSelectToggleIndex;
-                    }
-                    return -1;
-                }
-            }
-
-            /// <summary>
-            /// 当前选中的toggle
-            /// </summary>
-            public Toggle NowSelectToggle => toggleList[_nowSelectToggleIndex];
-
-            #endregion
-
-            #region 编辑器方法
-
-            /// <summary>
-            /// 获取并给列表排序(顺序不一定与拼音有关)
-            /// </summary>
-            public void GetAndSortToggle()
-            {
-#if UNITY_EDITOR && ODIN_INSPECTOR
-                // 自动获取并排序
-                if (SirenixEditorGUI.ToolbarButton(EditorIcons.Refresh))
-                {
-                    GetSortToggle();
-                }
-                // 反转顺序
-                if (SirenixEditorGUI.ToolbarButton(EditorIcons.TriangleDown))
-                {
-                    toggleList.Reverse();
-                }
-#else
-                 GetSortToggle();
+#if UNITY_EDITOR
+                    if (!Application.isPlaying)
+                        return toggleList;
 #endif
-                void GetSortToggle()
-                {
-                    var newToggleList = MacroSort.FullCharacterOrderSort(ToggleGroup.GetToggles(), a => a.name)
-                        .ToList();
-                    if (newToggleList.Count <= 0 || newToggleList == null)
-                        Debug.LogError("如果无法更新获取自动排序toggle，可能是因为toggleGroup被隐藏了，手动将其激活后再获取即可。");
-                    else
-                        toggleList = newToggleList;
+                    if (_mappingDirty)
+                    {
+                        BakeToggleGroupItems();
+                        _mappingDirty = false;
+                    }
+
+                    if (_noInit)
+                    {
+                        Initialize();
+                        _noInit = false;
+                    }
+
+                    return toggleList;
                 }
             }
 
-            #endregion
-            
-            #region 接口
 
             /// <summary>
             /// 获取索引下的单选项组件
             /// </summary>
             /// <param name="index"></param>
-            public Toggle this[int index] => toggleList[index];
+            public Toggle this[int index] => ToggleList[index];
 
-            public int Count => toggleList.Count;
+            public int Count => ToggleList.Count;
 
-            public IEnumerator<Toggle> GetEnumerator()
+            /// <summary>
+            /// 直接获取缓存选中索引
+            /// </summary>
+            public int CurrentSelectIndex => _nowSelectToggleIndex;
+
+            /// <summary>
+            /// 选中项目实例
+            /// </summary>
+            public Toggle CurrentSelectToggle => ToggleList[_nowSelectToggleIndex];
+
+            /// <summary>
+            /// 允许清空选项的选中状态
+            /// </summary>
+            public bool AllowSwitchOff
             {
-                return toggleList.GetEnumerator();
+                get => ToggleGroup.allowSwitchOff;
+                set => ToggleGroup.allowSwitchOff = value;
             }
+            
+            // 映射关系脏
+            private bool _mappingDirty = true;
 
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                return GetEnumerator();
-            }
+            // 未初始化
+            private bool _noInit = true;
+
+            // 当前选中的项目
+            private int _nowSelectToggleIndex = -1;
 
             #endregion
 
-            #region 初始化 和 增删改查
+            #region 结构更新
 
             /// <summary>
-            /// 初始化
-            /// <code>
-            /// 自动将所有的按键绑定回调事件；如果作为刷新函数调用，请确保已经完全组索引。
-            /// 或者可以直接清空旧项目(CleanToggle)，然后逐个添加(AddToggle)
-            /// </code>
+            /// 烘焙单选项组
             /// </summary>
+            /// <code>
+            /// 注意不要再这里面使用ToggleList
+            /// </code>
+#if ODIN_INSPECTOR
+            [HorizontalGroup("GetGroup"), Button("GetGroup")]
+#endif
+            public virtual void BakeToggleGroupItems()
+            {
+                if (ToggleGroup == null)
+                {
+                    if (toggleList is not { Count: > 0 })
+                    {
+                        Debug.LogError("未指定单选项目组中的任何引用成员，无法初始化");
+                        return;
+                    }
+
+                    var validToggle = toggleList.FirstOrDefault(a => a.group != null);
+                    if (validToggle != null)
+                    {
+                        ToggleGroup = validToggle.group;
+                        Debug.LogWarning("未指定单选项目组中的任何引用成员，但使用成员代偿");
+                    }
+                    else
+                    {
+                        Debug.LogError("未指定单选项目组中的任何引用成员，且无法利用成员代偿");
+                        return;
+                    }
+                }
+
+                List<Toggle> tempToggleList = null;
+#if UNITY_EDITOR
+                if (!Application.isPlaying)
+                {
+                    if (!ToggleGroup.gameObject.activeInHierarchy)
+                    {
+                        var tempParents = ToggleGroup.transform.GetParents()
+                            .Select(a => a.GetActivity()).ToList();
+                        ToggleGroup.gameObject.SetActivityInHierarchy(true);
+                        tempToggleList = ToggleGroup.GetToggles();
+                        ToggleGroup.transform.GetParents()
+                            .Zip(tempParents, (go, act) => (go, act))
+                            .ForEachDo(a => a.go.SetActivity(a.act));
+                        if (tempToggleList is not { Count: > 0 })
+                            Debug.LogError("无法获取ToggleGroup中的成员，可能由于toggleGroup被隐藏导致其无法初始化");
+                    }
+                    else
+                        tempToggleList = ToggleGroup.GetToggles();
+                }
+                else
+#endif
+                {
+                    if (!ToggleGroup.gameObject.activeInHierarchy && toggleList is not { Count: > 0 })
+                        Debug.LogError(
+                            $"当前运行状态导致无法直接获取ToggleGroup中的成员，且运行时我无法自行决定目标ToggleGroup（{ToggleGroup.name}）所属生命周期，请提前在编辑器中对相关状态进行烘焙");
+                    else
+                        tempToggleList = ToggleGroup.GetToggles();
+                }
+                // 需要注意的是，这里不能随意释放掉原来的选项列表
+                if (tempToggleList is { Count: > 0 })
+                    toggleList = tempToggleList;
+            }
+#if ODIN_INSPECTOR
+            [HorizontalGroup("GetGroup"), Button("GetGroup(Sort)")]
+#endif
+            public void BakeSortToggelGroupItems()
+            {
+                BakeToggleGroupItems();
+                if (toggleList is not { Count: > 0 })
+                    toggleList = MacroSort.FullCharacterOrderSort(toggleList, a => a.name)
+                        .ToList();
+            }
+#if ODIN_INSPECTOR
+            [HorizontalGroup("GetGroup"), Button("GetGroup(Reverse Sort)")]
+#endif
+            public void BakeReverseSortToggelGroupItems()
+            {
+                BakeToggleGroupItems();
+                if (toggleList is not { Count: > 0 })
+                    toggleList = MacroSort.FullCharacterOrderSort(toggleList, a => a.name)
+                        .Reverse()
+                        .ToList();
+            }
+
             public void Initialize()
             {
                 // 啥也没有，压根没用这部分功能，用不着初始化。
@@ -268,6 +378,7 @@ namespace XericLibrary.Runtime.MacroLibrary
                         return;
                     }
                 }
+
                 // 防傻
                 if (ToggleGroup == null)
                     ToggleGroup = toggleList[0].group;
@@ -277,9 +388,10 @@ namespace XericLibrary.Runtime.MacroLibrary
                     foreach (var toggle in toggleList)
                         toggle.group = ToggleGroup;
                 }
+
                 // 防空
                 toggleList = toggleList.Where(a => a != null).ToList();
-                
+
                 // 事件初始化
                 for (var i = 0; i < toggleList.Count; i++)
                 {
@@ -294,7 +406,14 @@ namespace XericLibrary.Runtime.MacroLibrary
                 // 如果不允许为空的情况下还为空，那就默认标记一个
                 if (!ToggleGroup.allowSwitchOff && _nowSelectToggleIndex < 0)
                     SetToggleOnWithoutNotify(0);
+
+                _mappingDirty = false;
+                _noInit = false;
             }
+
+            #endregion
+
+            #region 初始化 和 增删改查
 
             /// <summary>
             /// 添加一个toggle
@@ -305,27 +424,28 @@ namespace XericLibrary.Runtime.MacroLibrary
             {
                 ToggleAddEvent(t);
 
-                var resultIndex = toggleList.Count;
-                toggleList.Add(t);
+                var resultIndex = ToggleList.Count;
+                ToggleList.Add(t);
                 return resultIndex;
             }
 
             /// <summary>
             /// 移除一个toggle，这不会影响其他toggle的索引，但此处移除的位置会为空。
             /// <code>
-            /// 注 ：这不会销毁toggle。
+            /// 注意mapping管理的toggle在移除后会被清空事件
+            /// 此举这不会销毁toggle。
             /// </code>
             /// </summary>
             /// <param name="t"></param>
             /// <returns>是否成功移除toggle</returns>
             public bool RemoveToggle(Toggle t)
             {
-                var index = toggleList.IndexOf(t);
+                var index = ToggleList.IndexOf(t);
                 if (index < 0)
                     return false;
 
                 t.onValueChanged.RemoveAllListeners();
-                toggleList[index] = null;
+                ToggleList[index] = null;
                 return true;
             }
 
@@ -335,37 +455,66 @@ namespace XericLibrary.Runtime.MacroLibrary
             /// <param name="allowDestroy">是否同时销毁所有toggle</param>
             public void CleanToggle(bool allowDestroy)
             {
-                foreach (var t in toggleList)
+                foreach (var t in ToggleList)
                 {
                     t.onValueChanged.RemoveAllListeners();
                     if (allowDestroy)
                         Object.Destroy(t);
                 }
 
-                toggleList.Clear();
+                ToggleList.Clear();
             }
 
             #endregion
 
             #region 事件流程
-            
+
+            /// <summary>
+            /// 强制标记映射关系脏，在下次运行时将自动按需更新
+            /// </summary>
+            public void SetDirty()
+            {
+                _mappingDirty = true;
+            }
+
+
+            /// <summary>
+            /// 查找当前选中实例在列表中的索引位置
+            /// </summary>
+            public int CurrentSelectToggleIndex()
+            {
+                for (var i = 0; i < ToggleList.Count; i++)
+                {
+                    if (!ToggleList[i].isOn) continue;
+                    _nowSelectToggleIndex = i;
+                    return _nowSelectToggleIndex;
+                }
+
+                return -1;
+            }
+
+
             /// <summary>
             /// toggle注册的事件，只有当按下时才需要调用此事件。
             /// </summary>
             /// <param name="t"></param>
             private void ToggleAddEvent(Toggle t)
             {
-                t.onValueChanged.AddListener(a =>
+                t.onValueChanged.RemoveListener(Listener);
+                t.onValueChanged.AddListener(Listener);
+                return;
+
+                void Listener(bool b)
                 {
-                    if (a) ToggleRegister(t);
-                });
+                    if (b) ToggleRegister(t);
+                }
             }
 
             /// <summary>
             /// toggle注册的事件，只有当按下时才需要调用此事件。
             /// </summary>
             /// <param name="t"></param>
-            private void ToggleRegister(Toggle t)
+            protected virtual void ToggleRegister(Toggle t)
             {
                 _nowSelectToggleIndex = GetIndex(t);
                 OnAnyToggleSwitchOn?.Invoke(t);
@@ -373,6 +522,8 @@ namespace XericLibrary.Runtime.MacroLibrary
             }
 
 
+            
+            
             /// <summary>
             /// 获取toggle代表的索引
             /// </summary>
@@ -385,7 +536,8 @@ namespace XericLibrary.Runtime.MacroLibrary
                     Debug.LogError("无法查询空toggle的索引");
                     return 0;
                 }
-                var index = toggleList.IndexOf(target);
+
+                var index = ToggleList.IndexOf(target);
                 if (index >= 0)
                     return index;
                 Debug.LogError($"无法查询 {target.name} 在当前单选项组中的索引。");
@@ -400,18 +552,17 @@ namespace XericLibrary.Runtime.MacroLibrary
             /// <returns></returns>
             public bool TryGetIndex(Toggle target, out int index)
             {
-                index = toggleList.IndexOf(target);
+                index = ToggleList.IndexOf(target);
                 return index >= 0;
             }
 
-            
+
             /// <summary>
             /// 设置单选项激活
             /// </summary>
             /// <param name="target"></param>
             public void SetToggleOn(Toggle target)
             {
-                _nowSelectToggleIndex = GetIndex(target);
                 target.isOn = true;
             }
 
@@ -421,9 +572,9 @@ namespace XericLibrary.Runtime.MacroLibrary
             /// <param name="index"></param>
             public void SetToggleOn(int index)
             {
-                if (0 < index && index < toggleList.Count)
+                if (0 < index && index < ToggleList.Count)
                 {
-                    SetToggleOn(toggleList[index]);
+                    SetToggleOn(ToggleList[index]);
                 }
             }
 
@@ -443,9 +594,9 @@ namespace XericLibrary.Runtime.MacroLibrary
             /// <param name="index"></param>
             public void SetToggleOnWithoutNotify(int index)
             {
-                if (0 < index && index < toggleList.Count)
+                if (0 < index && index < ToggleList.Count)
                 {
-                    SetToggleOnWithoutNotify(toggleList[index]);
+                    SetToggleOnWithoutNotify(ToggleList[index]);
                 }
             }
 
@@ -456,7 +607,7 @@ namespace XericLibrary.Runtime.MacroLibrary
             public void Clear()
             {
                 ToggleGroup.RemoveToggleGroupChangeEvent();
-                toggleList.Clear();
+                ToggleList.Clear();
             }
 
             /// <summary>
@@ -464,13 +615,49 @@ namespace XericLibrary.Runtime.MacroLibrary
             /// </summary>
             public void DestroyAllToggle()
             {
-                for (int i = toggleList.Count - 1; i >= 0; i--)
+                for (int i = ToggleList.Count - 1; i >= 0; i--)
                 {
-                    Object.Destroy(toggleList[i]);
+                    Object.Destroy(ToggleList[i]);
                 }
+
                 Clear();
             }
-            
+
+
+            public IEnumerator<Toggle> GetEnumerator()
+            {
+                return ToggleList.GetEnumerator();
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return GetEnumerator();
+            }
+
+            #endregion
+
+            #region 额外方法
+
+            public bool GetActive() => ToggleList.Any(a => a.gameObject.activeSelf);
+
+            public bool GetActiveInHierarchy() => ToggleList.Any(a => a.gameObject.activeInHierarchy);
+
+            public void SetActive(bool active)
+            {
+                ToggleGroup.gameObject.SetActivity(active);
+                ToggleList.ForEachDo(a => a.gameObject.SetActive(active));
+            }
+
+            public void SetActiveInHierarchy(bool active)
+            {
+                ToggleGroup.gameObject.SetActivity(active);
+                ToggleList.ForEachDo(a => a.gameObject.SetActivityInHierarchy(active));
+            }
+
+            #endregion
+
+            #region 过时
+
             /// <summary>
             /// 清除映射结构，并销毁所有toggle组件 
             /// </summary>
@@ -478,28 +665,19 @@ namespace XericLibrary.Runtime.MacroLibrary
             public void RemoveAllToggle()
                 => DestroyAllToggle();
 
+            /// <summary>
+            /// 当前选中的toggle索引，依赖缓存，对于绕过该容器的单选项控制行为可能存在追踪不准确的问题。
+            /// </summary>
+            [Obsolete("命名过时")]
+            public int NowSelectToggleIndex => CurrentSelectIndex;
+
+            /// <summary>
+            /// 当前选中的toggle
+            /// </summary>
+            [Obsolete("命名规范过时")]
+            public Toggle NowSelectToggle => CurrentSelectToggle;
+
             #endregion
-
-            #region 额外方法
-
-            public bool GetActive() => toggleList.Any(a => a.gameObject.activeSelf);
-
-            public bool GetActiveInHierarchy() => toggleList.Any(a => a.gameObject.activeInHierarchy);
-
-            public void SetActive(bool active)
-            {
-                ToggleGroup.gameObject.SetActivity(active);
-                toggleList.ForEachDo(a => a.gameObject.SetActive(active));
-            }
-
-            public void SetActiveInHierarchy(bool active)
-            {
-                ToggleGroup.gameObject.SetActivity(active);
-                toggleList.ForEachDo(a => a.gameObject.SetActivityInHierarchy(active));
-            }
-            
-            #endregion
-
         }
 
         #endregion

@@ -10292,7 +10292,7 @@
         </member>
         <member name="M:XericLibrary.Runtime.MacroLibrary.MacroObject.GetChildrenRecursion(UnityEngine.Transform,System.Int32)">
             <summary>
-            递归获取一个变换节点下指定深度的子成员
+            深度优先地递归获取一个变换节点下指定深度内的子成员
             </summary>
             <param name="trans"></param>
             <param name="recursion">递归深度，1表示仅在第一子集中寻找，2表示在包含下一级在内的所有成员中寻找</param>
@@ -10332,11 +10332,19 @@
             <returns></returns>
         </member>
         <!-- Badly formed XML comment ignored for member "M:XericLibrary.Runtime.MacroLibrary.MacroObject.GetObjectNameInParentsFilterByChildrenMeanDifferen(UnityEngine.Transform,System.Int32)" -->
-        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroObject.GetAllChildrenBFS(System.Collections.Generic.IEnumerable{UnityEngine.Transform})">
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroObject.GetBrother(UnityEngine.Transform)">
             <summary>
-            广度优先地获取一系列节点下的子成员
+            获取同级的兄弟节点
             </summary>
             <param name="trans"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroObject.GetBrother(UnityEngine.Transform,System.Int32)">
+            <summary>
+            广度优先地获取跨多个父级的同级兄弟节点
+            </summary>
+            <param name="trans"></param>
+            <param name="parentDepth">查找的父级数量，1表示当前的父级，数量越高，查找的父级越高</param>
             <returns></returns>
         </member>
         <member name="M:XericLibrary.Runtime.MacroLibrary.MacroObject.GetComponentAnyway``1(UnityEngine.GameObject)">
@@ -10369,6 +10377,14 @@
             </summary>
             <typeparam name="T"></typeparam>
             <param name="target"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroObject.GetComponentInBrother``1(UnityEngine.Transform)">
+            <summary>
+            在兄弟节点中获取这个组件
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="trans"></param>
             <returns></returns>
         </member>
         <member name="M:XericLibrary.Runtime.MacroLibrary.MacroObject.GetComponent``1(System.Collections.Generic.IEnumerable{UnityEngine.Transform},``0@)">
@@ -10405,6 +10421,32 @@
             <typeparam name="T"></typeparam>
             <param name="trans"></param>
             <param name="comp"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroObject.GetComponents``1(System.Collections.Generic.IEnumerable{UnityEngine.Transform})">
+            <summary>
+            在给定的集合中寻找一个组件
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="trans"></param>
+            <param name="comp"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroObject.GetComponents``1(System.Collections.Generic.IEnumerable{UnityEngine.GameObject})">
+            <summary>
+            在给定的集合中寻找一个组件
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="trans"></param>
+            <param name="comp"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroObject.GetComponentsInBrother``1(UnityEngine.Transform)">
+            <summary>
+            在兄弟节点中获取这个组件
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="trans"></param>
             <returns></returns>
         </member>
         <member name="M:XericLibrary.Runtime.MacroLibrary.MacroObject.GetComponentsOTO``1(System.Collections.Generic.IEnumerable{UnityEngine.Transform})">
@@ -14987,7 +15029,7 @@
         </member>
         <member name="T:XericLibrary.Runtime.Type.SingleBase`1">
             <summary>
-            单例
+            杂项单例系统
             </summary>
             <typeparam name="T"></typeparam>
         </member>
