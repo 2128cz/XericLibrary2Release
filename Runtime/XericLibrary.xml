@@ -3669,6 +3669,15 @@
             <param name="interpolationSyntax">内插语法，表示此foreachdo不会作为执行器运行，而是作为其中一步执行</param>
             <returns>返回值可能是有效的，根据是否启用内插来判断</returns>
         </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.Repeat``1(``0,System.Int32)">
+            <summary>
+            重复对象
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source"></param>
+            <param name="repeatEachCount"></param>
+            <returns></returns>
+        </member>
         <member name="M:XericLibrary.Runtime.MacroLibrary.MacroMath.Repeat``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
             <summary>
             重复枚举器中的每个对象
@@ -12980,7 +12989,7 @@
         </member>
         <member name="T:XericLibrary.Runtime.Type.Base.HashSetTwins`1">
             <summary>
-            双胞胎哈希表
+            双生哈希表
             </summary>
         </member>
         <member name="P:XericLibrary.Runtime.Type.Base.HashSetTwins`1.AValues">
@@ -15762,14 +15771,14 @@
             额外代理的单例
             </summary>
         </member>
-        <member name="F:XericLibrary.Runtime.Type.SingleMonoBase`1.m_agentSelfInstance">
-            <summary>
-            额外代理的单例
-            </summary>
-        </member>
         <member name="F:XericLibrary.Runtime.Type.SingleMonoBase`1.m_selfInstance">
             <summary>
             组件自身单例(如果目标源并非自身，则可以使用自身引用获取)
+            </summary>
+        </member>
+        <member name="F:XericLibrary.Runtime.Type.SingleMonoBase`1.m_agentSelfInstance">
+            <summary>
+            额外代理的单例
             </summary>
         </member>
         <member name="F:XericLibrary.Runtime.Type.SingleMonoBase`1.specificRuntimeClassInstance">
@@ -16160,6 +16169,16 @@
             移除此处的单例实例
             </summary>
         </member>
+        <member name="M:XericLibrary.Runtime.Type.SingleMonoBase`1.DestroyExistInstance">
+            <summary>
+            移除已有的单例实例，以当前代理实例为准
+            </summary>
+        </member>
+        <member name="M:XericLibrary.Runtime.Type.SingleMonoBase`1.DestoryThisInstance">
+            <summary>
+            移除当前代理实例，以首个单例实例为准
+            </summary>
+        </member>
         <member name="M:XericLibrary.Runtime.Type.SingleMonoBase`1.AssignInstance(`0)">
             <summary>
             手动指派一个实例到此
@@ -16301,20 +16320,9 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="F:XericLibrary.Runtime.Type.WeaklyMonoBase.rectTransform">
-            <summary>
-            此处的矩形变换组件
-            </summary>
-        </member>
         <member name="M:XericLibrary.Runtime.Type.WeaklyMonoBase.GetWeaklyRectTransform">
             <summary>
             定义如何获取弱矩形变换组件，用于重载所有弱变换组件检查
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:XericLibrary.Runtime.Type.WeaklyMonoBase.GetWeaklyTransform">
-            <summary>
-            定义如何获取弱变换组件，用于重载所有弱变换组件检查
             </summary>
             <returns></returns>
         </member>
@@ -16333,36 +16341,6 @@
         <member name="M:XericLibrary.Runtime.Type.WeaklyMonoBase.GetWeaklyName">
             <summary>
             定义如何获取此弱名称，用于重载所有弱名称检查的目标
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="P:XericLibrary.Runtime.Type.WeaklyMonoBase.WeaklyPosition">
-            <summary>
-            定义此弱三维坐标，用于重载所有弱检查
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="P:XericLibrary.Runtime.Type.WeaklyMonoBase.WeaklyRotation">
-            <summary>
-            定义此弱三维旋转，用于重载所有弱检查
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="P:XericLibrary.Runtime.Type.WeaklyMonoBase.WeaklyScale">
-            <summary>
-            定义此弱三维缩放，用于重载所有弱检查
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="P:XericLibrary.Runtime.Type.WeaklyMonoBase.WeaklyAnchoredPosition3">
-            <summary>
-            定义此弱界面三维坐标，用于重载所有弱检查
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="P:XericLibrary.Runtime.Type.WeaklyMonoBase.WeaklyAnchoredPosition">
-            <summary>
-            定义此弱界面坐标，用于重载所有弱检查
             </summary>
             <returns></returns>
         </member>

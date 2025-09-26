@@ -209,7 +209,7 @@ namespace Deconstruction.UI.TmpText
         /// </summary>
         /// <param name="forceRefesh">强制刷新，如果刷新过一次，之后不论设定如何都将直接从缓存中返回对象，置位将跳过这个缓存</param>
         /// <param name="requirementHyperlink">强制给带有link标记的对象加上超链接组件</param>
-        /// <param name="includeRepeatedMarking">包括重复标记（也就是是否包含另一个超链接管理器作用域下的超链接对象）</param>
+        /// <param name="includeRepeatedMarking">是否包含重复引用的链接（是否包含当前超链接管理器下其他超链接管理器作用域下的超链接对象）</param>
         /// <returns></returns>
         public List<TMPHyperlinkReceiver> GetChildrenTmpText2Hyperlink(
             bool forceRefesh = false,
@@ -255,5 +255,11 @@ namespace Deconstruction.UI.TmpText
     
             return result;
         }
+
+#if ODIN_INSPECTOR
+        [Button]
+#endif
+        public void RefreshHyperLink()
+            => GetChildrenTmpText2Hyperlink(true);
     }
 }

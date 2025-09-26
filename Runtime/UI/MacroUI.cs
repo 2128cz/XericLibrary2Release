@@ -202,10 +202,13 @@ namespace XericLibrary.Runtime.MacroLibrary
 #endif
             public ToggleGroup ToggleGroup;
 #if ODIN_INSPECTOR
-            [SerializeField, LabelText("编辑单选项目顺序")]
+            [LabelText("编辑单选项目顺序")]
 #endif
+            [SerializeField]
             protected List<Toggle> toggleList = new List<Toggle>();
 
+            protected bool ToggleListInvalid => toggleList is not { Count: > 0 };
+            
             public List<Toggle> ToggleList
             {
                 get
@@ -214,7 +217,7 @@ namespace XericLibrary.Runtime.MacroLibrary
                     if (!Application.isPlaying)
                         return toggleList;
 #endif
-                    if (_mappingDirty)
+                    if (_mappingDirty || ToggleListInvalid)
                     {
                         BakeToggleGroupItems();
                         _mappingDirty = false;
@@ -259,7 +262,7 @@ namespace XericLibrary.Runtime.MacroLibrary
             }
             
             // 映射关系脏
-            private bool _mappingDirty = true;
+            private bool _mappingDirty = false;
 
             // 未初始化
             private bool _noInit = true;
@@ -284,7 +287,7 @@ namespace XericLibrary.Runtime.MacroLibrary
             {
                 if (ToggleGroup == null)
                 {
-                    if (toggleList is not { Count: > 0 })
+                    if (ToggleListInvalid)
                     {
                         Debug.LogError("未指定单选项目组中的任何引用成员，无法初始化");
                         return;
@@ -325,7 +328,7 @@ namespace XericLibrary.Runtime.MacroLibrary
                 else
 #endif
                 {
-                    if (!ToggleGroup.gameObject.activeInHierarchy && toggleList is not { Count: > 0 })
+                    if (!ToggleGroup.gameObject.activeInHierarchy && ToggleListInvalid)
                         Debug.LogError(
                             $"当前运行状态导致无法直接获取ToggleGroup中的成员，且运行时我无法自行决定目标ToggleGroup（{ToggleGroup.name}）所属生命周期，请提前在编辑器中对相关状态进行烘焙");
                     else
@@ -341,7 +344,7 @@ namespace XericLibrary.Runtime.MacroLibrary
             public void BakeSortToggelGroupItems()
             {
                 BakeToggleGroupItems();
-                if (toggleList is not { Count: > 0 })
+                if (ToggleListInvalid)
                     toggleList = MacroSort.FullCharacterOrderSort(toggleList, a => a.name)
                         .ToList();
             }
@@ -351,10 +354,25 @@ namespace XericLibrary.Runtime.MacroLibrary
             public void BakeReverseSortToggelGroupItems()
             {
                 BakeToggleGroupItems();
-                if (toggleList is not { Count: > 0 })
+                if (ToggleListInvalid)
                     toggleList = MacroSort.FullCharacterOrderSort(toggleList, a => a.name)
                         .Reverse()
                         .ToList();
+            }
+#if ODIN_INSPECTOR
+            [HorizontalGroup("GetGroup"), Button("SaveGroup")]
+#endif
+            public void SetToggelGroupItems()
+            {
+                var realToggleGroup = ToggleGroup.GetToggles();
+                if (ToggleListInvalid || toggleList.Count != realToggleGroup.Count)
+                {
+                    Debug.LogError("编组无效，或编组成员与实际不符");
+                    return;
+                }
+                realToggleGroup.Clear();
+                realToggleGroup.AddRange(toggleList);
+                Debug.Log("编组设置成功");
             }
 
             public void Initialize()
@@ -379,18 +397,18 @@ namespace XericLibrary.Runtime.MacroLibrary
                     }
                 }
 
+                // 防空
+                toggleList = toggleList.Where(a => a != null).ToList();
+
                 // 防傻
                 if (ToggleGroup == null)
-                    ToggleGroup = toggleList[0].group;
+                    ToggleGroup = toggleList.FirstOrDefault(a => a.group != null)?.group;
                 if (ToggleGroup == null)
                 {
-                    ToggleGroup = toggleList[0].gameObject.AddComponent<ToggleGroup>();
+                    ToggleGroup = toggleList[0].transform.parent.gameObject.AddComponent<ToggleGroup>();
                     foreach (var toggle in toggleList)
                         toggle.group = ToggleGroup;
                 }
-
-                // 防空
-                toggleList = toggleList.Where(a => a != null).ToList();
 
                 // 事件初始化
                 for (var i = 0; i < toggleList.Count; i++)
@@ -407,6 +425,9 @@ namespace XericLibrary.Runtime.MacroLibrary
                 if (!ToggleGroup.allowSwitchOff && _nowSelectToggleIndex < 0)
                     SetToggleOnWithoutNotify(0);
 
+                if (_noInit)
+                    SetToggelGroupItems();
+                
                 _mappingDirty = false;
                 _noInit = false;
             }
@@ -572,7 +593,7 @@ namespace XericLibrary.Runtime.MacroLibrary
             /// <param name="index"></param>
             public void SetToggleOn(int index)
             {
-                if (0 < index && index < ToggleList.Count)
+                if (0 <= index && index < ToggleList.Count)
                 {
                     SetToggleOn(ToggleList[index]);
                 }
@@ -622,7 +643,7 @@ namespace XericLibrary.Runtime.MacroLibrary
 
                 Clear();
             }
-
+            
 
             public IEnumerator<Toggle> GetEnumerator()
             {
