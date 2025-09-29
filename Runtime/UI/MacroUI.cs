@@ -134,16 +134,16 @@ namespace XericLibrary.Runtime.MacroLibrary
             #region 事件委托
 
             public Action<Toggle, T> OnAnyToggleValueSwitchOn;
-            
+
             #endregion
-            
+
             #region 字段属性
 
 #if ODIN_INSPECTOR
             [SerializeField, LabelText("编辑单选项目值")]
 #endif
             private List<T> toggleValue;
-            
+
             #endregion
 
             public override void BakeToggleGroupItems()
@@ -163,15 +163,15 @@ namespace XericLibrary.Runtime.MacroLibrary
                     return default;
                 return toggleValue[index];
             }
-            
+
             protected override void ToggleRegister(Toggle t)
             {
                 base.ToggleRegister(t);
                 OnAnyToggleValueSwitchOn?.Invoke(t, GetValueByIndex(GetIndex(t)));
             }
         }
-        
-        
+
+
         /// <summary>
         /// toggle映射集
         /// <code>
@@ -208,7 +208,7 @@ namespace XericLibrary.Runtime.MacroLibrary
             protected List<Toggle> toggleList = new List<Toggle>();
 
             protected bool ToggleListInvalid => toggleList is not { Count: > 0 };
-            
+
             public List<Toggle> ToggleList
             {
                 get
@@ -250,7 +250,9 @@ namespace XericLibrary.Runtime.MacroLibrary
             /// <summary>
             /// 选中项目实例
             /// </summary>
-            public Toggle CurrentSelectToggle => ToggleList[_nowSelectToggleIndex];
+            public Toggle CurrentSelectToggle => _nowSelectToggleIndex < 0 || _nowSelectToggleIndex > ToggleList.Count 
+                ? null 
+                : ToggleList[_nowSelectToggleIndex];
 
             /// <summary>
             /// 允许清空选项的选中状态
@@ -260,7 +262,7 @@ namespace XericLibrary.Runtime.MacroLibrary
                 get => ToggleGroup.allowSwitchOff;
                 set => ToggleGroup.allowSwitchOff = value;
             }
-            
+
             // 映射关系脏
             private bool _mappingDirty = false;
 
@@ -269,6 +271,9 @@ namespace XericLibrary.Runtime.MacroLibrary
 
             // 当前选中的项目
             private int _nowSelectToggleIndex = -1;
+
+            // 在任意选项选中时复位允许反选toggle的功能
+            private bool _resetAllowToggleOffAtAnyIsOn;
 
             #endregion
 
@@ -334,6 +339,7 @@ namespace XericLibrary.Runtime.MacroLibrary
                     else
                         tempToggleList = ToggleGroup.GetToggles();
                 }
+
                 // 需要注意的是，这里不能随意释放掉原来的选项列表
                 if (tempToggleList is { Count: > 0 })
                     toggleList = tempToggleList;
@@ -360,8 +366,9 @@ namespace XericLibrary.Runtime.MacroLibrary
                         .ToList();
             }
 #if ODIN_INSPECTOR
-            [HorizontalGroup("GetGroup"), Button("SaveGroup")]
+            [HorizontalGroup("GetGroup"), Button("SaveGroup")] [DisableInEditorMode]
 #endif
+            [Obsolete("正常流程单选项组中的标签已经呈现了必要对象，无需重新设置")]
             public void SetToggelGroupItems()
             {
                 var realToggleGroup = ToggleGroup.GetToggles();
@@ -370,8 +377,6 @@ namespace XericLibrary.Runtime.MacroLibrary
                     Debug.LogError("编组无效，或编组成员与实际不符");
                     return;
                 }
-                realToggleGroup.Clear();
-                realToggleGroup.AddRange(toggleList);
                 Debug.Log("编组设置成功");
             }
 
@@ -427,7 +432,7 @@ namespace XericLibrary.Runtime.MacroLibrary
 
                 if (_noInit)
                     SetToggelGroupItems();
-                
+
                 _mappingDirty = false;
                 _noInit = false;
             }
@@ -537,14 +542,13 @@ namespace XericLibrary.Runtime.MacroLibrary
             /// <param name="t"></param>
             protected virtual void ToggleRegister(Toggle t)
             {
+                TryResetToggleGroupAutoOff();
                 _nowSelectToggleIndex = GetIndex(t);
                 OnAnyToggleSwitchOn?.Invoke(t);
                 OnAnyToggleIndexSwitchOn?.Invoke(_nowSelectToggleIndex);
             }
 
 
-            
-            
             /// <summary>
             /// 获取toggle代表的索引
             /// </summary>
@@ -585,6 +589,7 @@ namespace XericLibrary.Runtime.MacroLibrary
             public void SetToggleOn(Toggle target)
             {
                 target.isOn = true;
+                TryResetToggleGroupAutoOff();
             }
 
             /// <summary>
@@ -606,6 +611,7 @@ namespace XericLibrary.Runtime.MacroLibrary
             public void SetToggleOnWithoutNotify(Toggle target)
             {
                 _nowSelectToggleIndex = GetIndex(target);
+                TryResetToggleGroupAutoOff();
                 target.SetIsOnWithoutNotify(true);
             }
 
@@ -621,7 +627,42 @@ namespace XericLibrary.Runtime.MacroLibrary
                 }
             }
 
+            
+            /// <summary>
+            /// 将整个单选项组复位，这同时会标记单选项组上的允许取消操作。
+            /// 在下次选中标签时，会自动复位这个标记，确保全部反选的状态仅出现一次。
+            /// </summary>
+#if ODIN_INSPECTOR
+            [Button("ResetAllToggleOff")]
+#endif
+            public void ResetGroupAllToggleOff()
+            {
+                _nowSelectToggleIndex = -1;
+                if (ToggleGroup == null)
+                {
+                    Debug.LogError("单选项组不存在...");
+                    if (!ToggleGroup.allowSwitchOff)
+                    {
+                        _resetAllowToggleOffAtAnyIsOn = true;
+                        ToggleGroup.allowSwitchOff = true;
+                    }
+                }
+                ToggleList.ForEachDo(a => a.SetIsOnWithoutNotify(false));
+            }
 
+            /// <summary>
+            /// 如果此次按下是发生在全部反选之后的首次操作，那么关闭允许关闭的操作。
+            /// </summary>
+            private void TryResetToggleGroupAutoOff()
+            {
+                if (_resetAllowToggleOffAtAnyIsOn)
+                {
+                    _resetAllowToggleOffAtAnyIsOn = false;
+                    ToggleGroup.allowSwitchOff = false;
+                }
+            }
+
+            
             /// <summary>
             /// 清除映射结构(不会清除toggle实例)
             /// </summary>
@@ -643,7 +684,7 @@ namespace XericLibrary.Runtime.MacroLibrary
 
                 Clear();
             }
-            
+
 
             public IEnumerator<Toggle> GetEnumerator()
             {

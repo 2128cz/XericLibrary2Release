@@ -8027,77 +8027,6 @@
             <returns></returns>
             <exception cref="T:System.ArgumentException"></exception>
         </member>
-        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.SoftInterfaceTodo(System.Object,System.String,System.Action{System.Reflection.FieldInfo},System.Action{System.Reflection.PropertyInfo})">
-            <summary>
-            获取软接口反射目标，并执行相应的步骤
-            </summary>
-            <param name="target"></param>
-            <param name="interfaceName"></param>
-            <param name="isField"></param>
-            <param name="isProperty"></param>
-            <returns>失败返回否，比如字段和属性中都没有找到</returns>
-        </member>
-        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.GetSoftInterface(System.Object,System.String,System.Object@)">
-            <summary>
-            使用软接口名称（对象以及类上成员名称）获取字段属性的值；
-            </summary>
-            <param name="target"></param>
-            <param name="interfaceName"></param>
-            <param name="value"></param>
-            <returns>失败返回否，比如字段和属性中都没有找到</returns>
-        </member>
-        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.SetSoftInterface(System.Object,System.String,System.Object)">
-            <summary>
-            使用软接口名称（对象以及类上成员名称）设置字段属性的值；
-            </summary>
-            <param name="target"></param>
-            <param name="interfaceName"></param>
-            <param name="value"></param>
-            <returns>失败返回否，比如字段和属性中都没有找到</returns>
-        </member>
-        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.GetSoftInterface``1(System.Object,System.String,``0@)">
-            <summary>
-            使用软接口名称（对象以及类上成员名称）获取字段属性的值
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="target"></param>
-            <param name="interfaceName"></param>
-            <param name="value"></param>
-            <returns></returns>
-        </member>
-        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.GetSoftInterface``1(System.Object,System.Collections.Generic.IEnumerable{System.String})">
-            <summary>
-            使用一系列软接口名称（对象以及类上成员名称）获取多个字段属性的值
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="target"></param>
-            <param name="interfaceName"></param>
-            <returns>如果给定名称找不到字段，则返回default</returns>
-        </member>
-        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.SetSoftInterface``1(System.Object,System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.Object})">
-            <summary>
-            使用一系列候选软接口名称设置一系列对象上的字段属性值
-            </summary>
-            <param name="targets"></param>
-            <param name="interfaceNames"></param>
-            <returns></returns>
-        </member>
-        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.GetSoftInterface``1(System.Collections.Generic.IEnumerable{``0},System.String)">
-            <summary>
-            在一系列对象上使用相同软接口名称获取字段属性值
-            </summary>
-            <param name="targets"></param>
-            <param name="interfaceNames"></param>
-            <returns></returns>
-        </member>
-        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.SetSoftInterface``1(System.Collections.Generic.IEnumerable{``0},System.Object,System.String)">
-            <summary>
-            在一系列对象上使用相同软接口名称设置字段属性值
-            </summary>
-            <param name="targets"></param>
-            <param name="interfaceNames"></param>
-            <returns></returns>
-        </member>
         <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.OverridingInstance``1">
             <summary>
             超驰实例化
@@ -8458,6 +8387,377 @@
             </summary>
             <param name="assembly"></param>
             <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="T:XericLibrary.Runtime.MacroLibrary.MacroReflection.ReflectionDictionary">
+            <summary>
+            反射加速配置
+            </summary>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.ReflectionDictionary.GetMethodHashCode(System.Type,System.String,System.Type[],System.Type[])">
+            <summary>
+            获取方法的哈希值
+            </summary>
+            <param name="methodname"></param>
+            <param name="inParamTypes"></param>
+            <param name="outParamTypes"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.ReflectionDictionary.GetInterfaceHashCode(System.Type,System.String)">
+            <summary>
+            获取接口的哈希值
+            </summary>
+            <param name="targetType"></param>
+            <param name="interfaceName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.SoftInterfaceTodo(System.Object,System.String,System.Action{System.Reflection.FieldInfo},System.Action{System.Reflection.PropertyInfo})">
+            <summary>
+            获取软接口反射目标，并执行相应的步骤
+            </summary>
+            <param name="target"></param>
+            <param name="interfaceName"></param>
+            <param name="isField"></param>
+            <param name="isProperty"></param>
+            <returns>失败返回否，比如字段和属性中都没有找到</returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.GetSoftInterface(System.Object,System.String,System.Object@)">
+            <summary>
+            使用软接口名称（对象以及类上成员名称）获取字段属性的值；
+            </summary>
+            <param name="target"></param>
+            <param name="interfaceName"></param>
+            <param name="value"></param>
+            <returns>失败返回否，比如字段和属性中都没有找到</returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.SetSoftInterface(System.Object,System.String,System.Object)">
+            <summary>
+            使用软接口名称（对象以及类上成员名称）设置字段属性的值；
+            </summary>
+            <param name="target"></param>
+            <param name="interfaceName"></param>
+            <param name="value"></param>
+            <returns>失败返回否，比如字段和属性中都没有找到</returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.GetSoftInterface``1(System.Object,System.String,``0@)">
+            <summary>
+            使用软接口名称（对象以及类上成员名称）获取字段属性的值
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="target"></param>
+            <param name="interfaceName"></param>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.GetSoftInterfaces``1(System.Object,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            使用一系列软接口名称（对象以及类上成员名称）获取多个字段属性的值
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="target"></param>
+            <param name="interfaceName"></param>
+            <returns>如果给定名称找不到字段，则返回default</returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.SetSoftInterfaces``1(System.Object,System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>
+            使用一系列候选软接口名称设置一系列对象上的字段属性值
+            </summary>
+            <param name="targets"></param>
+            <param name="interfaceNames"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.GetSoftInterfaces``1(System.Collections.Generic.IEnumerable{``0},System.String)">
+            <summary>
+            在一系列对象上使用相同软接口名称获取字段属性值
+            </summary>
+            <param name="targets"></param>
+            <param name="interfaceNames"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.SetSoftInterfaces``1(System.Collections.Generic.IEnumerable{``0},System.Object,System.String)">
+            <summary>
+            在一系列对象上使用相同软接口名称设置字段属性值
+            </summary>
+            <param name="targets"></param>
+            <param name="interfaceNames"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.FindAndCreateInstance(System.Type,System.Object[],System.Action{System.Reflection.ConstructorInfo,System.Object},System.Action{System.Collections.Generic.IEnumerable{System.Reflection.ConstructorInfo}})">
+            <summary>
+            查找符合参数条件的构造方法并创建实例
+            </summary>
+            <param name="type">目标类型</param>
+            <param name="parameters">构造方法参数</param>
+            <param name="isConstructor">找到单个构造方法时的回调</param>
+            <param name="hasConstructors">找到多个构造方法时的回调</param>
+            <returns>是否找到符合条件的构造方法</returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.IsConstructorMatching(System.Reflection.ConstructorInfo,System.Type[])">
+            <summary>
+            检查构造方法是否匹配参数条件
+            </summary>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.InvokeConstructor(System.Type,System.Reflection.ConstructorInfo,System.Object[])">
+            <summary>
+            直接调用指定的构造方法创建实例
+            </summary>
+            <param name="type">目标类型</param>
+            <param name="constructor">要调用的构造方法</param>
+            <param name="parameters">构造方法参数</param>
+            <returns>创建的实例</returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.FindMethod(System.Type,System.String,System.Type,System.Object[],System.Type[],System.Action{System.Reflection.MethodInfo},System.Action{System.Collections.Generic.IEnumerable{System.Reflection.MethodInfo}})">
+            <summary>
+            查找符合条件的方法
+            </summary>
+            <param name="target">目标对象</param>
+            <param name="methodName">方法名称</param>
+            <param name="overrideClass">限定的类（null表示不限定）</param>
+            <param name="inParams">输入参数（不包含out参数）</param>
+            <param name="outParamTypes">输出参数类型（包含返回值作为第一个元素, 为空时表示不参考）</param>
+            <param name="isMethod">找到单个方法时的回调</param>
+            <param name="hasMethods">找到多个方法时的回调</param>
+            <returns>是否找到符合条件的方法</returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.IsMethodMatching(System.Reflection.MethodInfo,System.Type[],System.Type[])">
+            <summary>
+            检查方法是否匹配参数条件(out算作输出值，而ref则输入和输出都算)
+            </summary>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.ExecuteMethod(System.Object,System.Reflection.MethodInfo,System.Object[],System.Object[]@)">
+            <summary>
+            执行找到的方法
+            </summary>
+            <param name="target">目标对象</param>
+            <param name="method">要执行的方法</param>
+            <param name="inParams">输入参数</param>
+            <param name="outParams">输出参数（将被填充）</param>
+            <returns>方法的返回值（如果有）</returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.ExecuteMethod(System.Object,System.Reflection.MethodInfo)">
+            <summary>
+            直接执行无参数方法
+            </summary>
+            <param name="target"></param>
+            <param name="method"></param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.InvokeSoftPureMethod``1(System.String)">
+            <summary>
+            调用一个静态无参方法
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="methodName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.InvokeSoftPureMethod(System.Object,System.String)">
+            <summary>
+            调用一个实例无参方法
+            </summary>
+            <param name="target"></param>
+            <param name="methodName"></param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.InvokeSoftMethod``1(System.String,System.Object[],System.Type)">
+            <summary>
+            调用一个有参静态方法，但不对输出类型作限制
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="methodName"></param>
+            <param name="inParams">仅包括输入类型，out标记不算在内</param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.InvokeSoftMethod``2(System.String,System.Object[],System.Type)">
+            <summary>
+            调用一个有参静态方法
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="methodName"></param>
+            <param name="inParams">仅包括输入类型，out标记不算在内</param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.InvokeSoftMethod``3(System.String,System.Object[],System.Type)">
+            <summary>
+            调用一个有参静态方法
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="methodName"></param>
+            <param name="inParams">仅包括输入类型，out标记不算在内</param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.InvokeSoftMethod``4(System.String,System.Object[],System.Type)">
+            <summary>
+            调用一个有参静态方法
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="methodName"></param>
+            <param name="inParams">仅包括输入类型，out标记不算在内</param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.InvokeSoftMethod``5(System.String,System.Object[],System.Type)">
+            <summary>
+            调用一个有参静态方法
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="methodName"></param>
+            <param name="inParams">仅包括输入类型，out标记不算在内</param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.InvokeSoftMethod``6(System.String,System.Object[],System.Type)">
+            <summary>
+            调用一个有参静态方法
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="methodName"></param>
+            <param name="inParams">仅包括输入类型，out标记不算在内</param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.InvokeSoftMethod``7(System.String,System.Object[],System.Type)">
+            <summary>
+            调用一个有参静态方法
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="methodName"></param>
+            <param name="inParams">仅包括输入类型，out标记不算在内</param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.InvokeSoftMethod``8(System.String,System.Object[],System.Type)">
+            <summary>
+            调用一个有参静态方法
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="methodName"></param>
+            <param name="inParams">仅包括输入类型，out标记不算在内</param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.InvokeSoftMethod``9(System.String,System.Object[],System.Type)">
+            <summary>
+            调用一个有参静态方法
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="methodName"></param>
+            <param name="inParams">仅包括输入类型，out标记不算在内</param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.InvokeSoftMethod``10(System.String,System.Object[],System.Type)">
+            <summary>
+            调用一个有参静态方法
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="methodName"></param>
+            <param name="inParams">仅包括输入类型，out标记不算在内</param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.InvokeSoftMethod(System.Object,System.String,System.Object[])">
+            <summary>
+            调用一个有参实例方法，但不对输出类型作限制
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="methodName"></param>
+            <param name="inParams">仅包括输入类型，out标记不算在内</param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.InvokeSoftMethod(System.Object,System.String,System.Type,System.Object[])">
+            <summary>
+            调用一个有参实例方法
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="methodName"></param>
+            <param name="outParamType1"></param>
+            <param name="inParams">仅包括输入类型，out标记不算在内</param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.InvokeSoftMethod(System.Object,System.String,System.Type[],System.Object[])">
+            <summary>
+            调用一个有参实例方法
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="methodName"></param>
+            <param name="outParamType"></param>
+            <param name="inParams">仅包括输入类型，out标记不算在内</param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.InvokeSoftMethod``1(System.Object,System.String,System.Object[],System.Type)">
+            <summary>
+            调用一个有参静态方法
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="methodName"></param>
+            <param name="inParams">仅包括输入类型，out标记不算在内</param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.InvokeSoftMethod``2(System.Object,System.String,System.Object[],System.Type)">
+            <summary>
+            调用一个有参静态方法
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="methodName"></param>
+            <param name="inParams">仅包括输入类型，out标记不算在内</param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.InvokeSoftMethod``3(System.Object,System.String,System.Object[],System.Type)">
+            <summary>
+            调用一个有参静态方法
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="methodName"></param>
+            <param name="inParams">仅包括输入类型，out标记不算在内</param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.InvokeSoftMethod``4(System.Object,System.String,System.Object[],System.Type)">
+            <summary>
+            调用一个有参静态方法
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="methodName"></param>
+            <param name="inParams">仅包括输入类型，out标记不算在内</param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.InvokeSoftMethod``5(System.Object,System.String,System.Object[],System.Type)">
+            <summary>
+            调用一个有参静态方法
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="methodName"></param>
+            <param name="inParams">仅包括输入类型，out标记不算在内</param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.InvokeSoftMethod``6(System.Object,System.String,System.Object[],System.Type)">
+            <summary>
+            调用一个有参静态方法
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="methodName"></param>
+            <param name="inParams">仅包括输入类型，out标记不算在内</param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.InvokeSoftMethod``7(System.Object,System.String,System.Object[],System.Type)">
+            <summary>
+            调用一个有参静态方法
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="methodName"></param>
+            <param name="inParams">仅包括输入类型，out标记不算在内</param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.InvokeSoftMethod``8(System.Object,System.String,System.Object[],System.Type)">
+            <summary>
+            调用一个有参静态方法
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="methodName"></param>
+            <param name="inParams">仅包括输入类型，out标记不算在内</param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroReflection.InvokeSoftMethod``9(System.Object,System.String,System.Object[],System.Type)">
+            <summary>
+            调用一个有参静态方法
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="methodName"></param>
+            <param name="inParams">仅包括输入类型，out标记不算在内</param>
             <returns></returns>
         </member>
         <member name="T:XericLibrary.Runtime.MacroLibrary.PremadeLinkedNode">
