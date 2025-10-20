@@ -371,6 +371,11 @@ namespace XericLibrary.Runtime.MacroLibrary
             [Obsolete("正常流程单选项组中的标签已经呈现了必要对象，无需重新设置")]
             public void SetToggelGroupItems()
             {
+                if (!ToggleGroup.gameObject.activeInHierarchy)
+                {
+                    Debug.LogWarning("编组尚未激活，成员与实际可能存在差异。");
+                    return;
+                }
                 var realToggleGroup = ToggleGroup.GetToggles();
                 if (ToggleListInvalid || toggleList.Count != realToggleGroup.Count)
                 {
@@ -641,11 +646,11 @@ namespace XericLibrary.Runtime.MacroLibrary
                 if (ToggleGroup == null)
                 {
                     Debug.LogError("单选项组不存在...");
-                    if (!ToggleGroup.allowSwitchOff)
-                    {
-                        _resetAllowToggleOffAtAnyIsOn = true;
-                        ToggleGroup.allowSwitchOff = true;
-                    }
+                }
+                if (!ToggleGroup.allowSwitchOff)
+                {
+                    _resetAllowToggleOffAtAnyIsOn = true;
+                    ToggleGroup.allowSwitchOff = true;
                 }
                 ToggleList.ForEachDo(a => a.SetIsOnWithoutNotify(false));
             }
