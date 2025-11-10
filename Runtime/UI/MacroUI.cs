@@ -626,7 +626,7 @@ namespace XericLibrary.Runtime.MacroLibrary
             /// <param name="index"></param>
             public void SetToggleOnWithoutNotify(int index)
             {
-                if (0 < index && index < ToggleList.Count)
+                if (0 <= index && index < ToggleList.Count)
                 {
                     SetToggleOnWithoutNotify(ToggleList[index]);
                 }

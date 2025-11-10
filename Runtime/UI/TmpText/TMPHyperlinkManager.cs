@@ -211,6 +211,10 @@ namespace Deconstruction.UI.TmpText
         /// <param name="requirementHyperlink">强制给带有link标记的对象加上超链接组件</param>
         /// <param name="includeRepeatedMarking">是否包含重复引用的链接（是否包含当前超链接管理器下其他超链接管理器作用域下的超链接对象）</param>
         /// <returns></returns>
+        /// <remarks>
+        /// 这个操作会扫描所有对象，然后在具有超链接特征的文本组件上生成超链接管理器。  
+        /// 超链接响应的前提是开启 Raycast Target 选项。
+        /// </remarks>
         public List<TMPHyperlinkReceiver> GetChildrenTmpText2Hyperlink(
             bool forceRefesh = false,
             bool requirementHyperlink = true,
@@ -256,6 +260,9 @@ namespace Deconstruction.UI.TmpText
             return result;
         }
 
+        /// <summary>
+        /// 直接刷新所有超链接
+        /// </summary>
 #if ODIN_INSPECTOR
         [Button]
 #endif
