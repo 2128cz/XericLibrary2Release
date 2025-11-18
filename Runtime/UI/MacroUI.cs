@@ -431,12 +431,13 @@ namespace XericLibrary.Runtime.MacroLibrary
                         _nowSelectToggleIndex = i;
                 }
 
-                // 如果不允许为空的情况下还为空，那就默认标记一个
-                if (!ToggleGroup.allowSwitchOff && _nowSelectToggleIndex < 0)
-                    SetToggleOnWithoutNotify(0);
-
                 if (_noInit)
+                {
+                    // 如果不允许为空的情况下还为空，那就默认标记一个
+                    if (!ToggleGroup.allowSwitchOff && _nowSelectToggleIndex < 0)
+                        SetToggleOnWithoutNotify(0);
                     SetToggelGroupItems();
+                }
 
                 _mappingDirty = false;
                 _noInit = false;
