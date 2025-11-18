@@ -225,8 +225,8 @@ namespace XericLibrary.Runtime.MacroLibrary
 
                     if (_noInit)
                     {
+                        _noInit = false; 
                         Initialize();
-                        _noInit = false;
                     }
 
                     return toggleList;
