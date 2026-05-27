@@ -12,7 +12,6 @@ using Deconstruction.Manager;
 using Deconstruction.Tool;
 using Deconstruction.Type.Area;
 using Deconstruction.Type.Serialize;
-using Newtonsoft.Json;
 using SerializerHelper.Type;
 using UnityEngine.UI;
 using XericLibrary.Runtime.Debuger;
@@ -148,7 +147,7 @@ namespace SesothoLine
             if (Input.GetKeyDown(KeyCode.S))
             {
                 var obj = _wiresTool.ToolSerializeDispost();
-                serializeContext = JsonConvert.SerializeObject(obj);
+                serializeContext = MacroFile.JsonSerializerFormatter.formatter.Serializer(obj);
                 Debug.Log(obj.ToString());
             }
             if (Input.GetKeyDown(KeyCode.D))
@@ -159,7 +158,7 @@ namespace SesothoLine
                     return;
                 }
 
-                var obj = JsonConvert.DeserializeObject<SerializeUnion>(serializeContext);
+                var obj = MacroFile.JsonSerializerFormatter.formatter.Deserializer<SerializeUnion>(serializeContext);
                 _wiresTool.ToolDiserializDispost(obj);
             }
 

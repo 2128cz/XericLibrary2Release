@@ -5796,6 +5796,36 @@
             </summary>
             <param name="message"></param>
         </member>
+        <member name="T:XericLibrary.Runtime.MacroLibrary.MacroCecil">
+            <summary>
+            il指令分析库
+            </summary>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroCecil.GetAssemblyDefinition(System.Type)">
+            <summary>
+            从类上获取IL程序集
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroCecil.CallsBaseMethod(System.Type,System.String)">
+            <summary>
+            检查类上的方法是否调用了基类的类
+            </summary>
+            <param name="type"></param>
+            <param name="methodName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroCecil.CallsBaseMethod(System.String,System.String,System.String,System.String)">
+            <summary>
+            检查一个方法里是否通过base.调用基类的方法
+            </summary>
+            <param name="assemblyPath"></param>
+            <param name="typeName"></param>
+            <param name="methodName"></param>
+            <param name="baseMethodName"></param>
+            <returns></returns>
+        </member>
         <member name="T:XericLibrary.Runtime.MacroLibrary.MacroMenu">
             <summary>
             菜单宏
@@ -10488,20 +10518,6 @@
             <summary>
             获取当前活动场景的所有根节点对象
             </summary>
-            <returns></returns>
-        </member>
-        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroObject.GetSceneComponentFirst``1">
-            <summary>
-            在场景中查找组件
-            </summary>
-            <typeparam name="T"></typeparam>
-            <returns></returns>
-        </member>
-        <member name="M:XericLibrary.Runtime.MacroLibrary.MacroObject.GetSceneComponentLast``1">
-            <summary>
-            在场景中查找组件
-            </summary>
-            <typeparam name="T"></typeparam>
             <returns></returns>
         </member>
         <member name="M:XericLibrary.Runtime.MacroLibrary.MacroObject.GetAllSceneComponents``1">
@@ -15771,15 +15787,6 @@
             原生支持各种宏用法的mono脚本
             </summary>
         </member>
-        <member name="T:XericLibrary.Runtime.Type.Weakly.XericJumpWire`1">
-            <summary>
-            组件跳线
-            </summary>
-            <typeparam name="T"></typeparam>
-            <remarks>
-            跳线基于场景进行组件查找，并保存关联在该实例类中供后续成员快速查找。
-            </remarks>
-        </member>
         <member name="T:XericLibrary.Runtime.Type.Weakly.XericSeriousMonoBehaviour">
             <summary>
             严格模式脚本
@@ -17017,15 +17024,6 @@
             </summary>
             <param name="attributeName"></param>
             <param name="hookPass"></param>
-        </member>
-        <member name="T:XericLibrary.Runtime.Type.PreferredDerivedSingleMonoClassAttribute">
-            <summary>
-            单例首选派生类
-            </summary>
-            <remarks>
-            只在目标单例的类型不明确，泛型类型与单例模式不成封闭关系的时候，且这样的类型不止一个的时候。
-            使用这个特性标记实际需要实例化的类，在某些特殊的情况下，单例会自动根据特性进行生成。
-            </remarks>
         </member>
         <member name="T:XericLibrary.Runtime.Type.WeaklyHistoryMonoBase">
             <summary>

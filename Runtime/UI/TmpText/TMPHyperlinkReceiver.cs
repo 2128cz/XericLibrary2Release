@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+#if ODIN_INSPECTOR
 using Sirenix.OdinInspector;
+#endif
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -79,8 +81,18 @@ namespace Deconstruction.UI.TmpText
 
         protected virtual void OnEnable()
         {
+            // xchart会自动设置射线不可见
             if (autoFixRayCastTargetState)
-                _tmpText.raycastTarget = true;
+                SetRayCastVisible();
+        }
+
+        internal void SetRayCastVisible()
+        {
+            if (!_tmpText)
+                return;
+            if (_tmpText.raycastTarget)
+                return;
+            _tmpText.raycastTarget = true;
         }
 
         public void OnPointerClick(PointerEventData eventData)

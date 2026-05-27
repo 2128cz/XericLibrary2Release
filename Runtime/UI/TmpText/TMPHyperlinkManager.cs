@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+#if ODIN_INSPECTOR
 using Sirenix.OdinInspector;
+#endif
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Pool;
 using XericLibrary.Runtime.MacroLibrary;
 using XericLibrary.Runtime.Type;
 
@@ -14,6 +17,28 @@ namespace Deconstruction.UI.TmpText
     /// <summary>
     /// TMP超链接点击管理组件
     /// </summary>
+    /// <remarks>
+    /// 在tmp文本中使用id块创建超链接区域，鼠标点击后，该tmp文本会发出事件。
+    /// 超链接管理器可以快速管理这个事件，在事件根节点上挂载这个组件后，执行刷新操作将会自动绑定所有带有超链接的文本到此，然后由管理器发送统一的触发事件。
+    /// 超链接事件由id块的id决定，当用户触发超链接后，管理器上的 onClickLink 委托会被触发。
+    ///
+    /// 当超链接管理器的层级下包含另一个超链接管理器时，默认不会触发这个管理器下的超链接。
+    /// 你可以在使用 GetChildrenTmpText2Hyperlink 追踪时手动设置 includeRepeatedMarking 为 ture 来强制包含。
+    /// GetChildrenTmpText2Hyperlink是主要的用来绑定所有文本到管理器的方法，如果你只是为了刷新文本，可以直接调用 RefreshHyperLink 。
+    ///
+    /// 注意在使用Xchart，XchartUI等动态创建tmp文本组件的功能时，需要频繁进行刷新。
+    /// 特别是xchartui在刷新数据后，tmp文本会换成新的，这时必须重新刷新，否则表格中的超链接点击会没有反应。
+    /// 
+    /// 疑难解答：
+    /// * 文本超链接点击没有反应。
+    ///     首先检查格式是否为 <link=xxx></link> ，注意末尾一定要带上结束标记，不然tmp不识别。
+    ///     其次检查是否开启了射线检测，文本上方有没有其他也处于射线检测的对象遮挡。
+    ///     可以开启每个文本上的 自动解决射线检测问题 来解决。
+    /// 
+    /// * 文本没有被管理器识别。
+    ///     检查文本中是否带有<link=>的标记，只要有一个标记就会被识别为可能的链接，然后挂载超链接脚本。
+    ///     被挂载超链接脚本的文本后续无论如何都会被识别为超链接。
+    /// </remarks>
     public class TMPHyperlinkManager : MonoBehaviour
     {
         /// <summary>
@@ -32,7 +57,16 @@ namespace Deconstruction.UI.TmpText
         [SerializeField]
         public UnityEvent<string> onClickLink = new UnityEvent<string>();
 
-        
+        /// <summary>
+        /// 当前超链接管理器下的所有超链接
+        /// </summary>
+        [ShowInInspector]
+        public List<TMPHyperlinkReceiver> Children { get; internal set; }
+
+        /// <summary>
+        /// 子项发生变更
+        /// </summary>
+        private bool _dirty;
         /// <summary>
         /// 当前摄像机
         /// </summary>
@@ -64,6 +98,17 @@ namespace Deconstruction.UI.TmpText
                 _camera = null;
             else
                 _camera = canvas.worldCamera;
+        }
+
+        protected void LateUpdate()
+        {
+            if (Children == null || Children.Count <= 0)
+                return;
+            for (int i = 0; i < Children.Count; i++)
+            {
+                if (Children[i].autoFixRayCastTargetState)
+                    Children[i].SetRayCastVisible();
+            }
         }
 
         /// <summary>
@@ -225,11 +270,11 @@ namespace Deconstruction.UI.TmpText
                 _tempGetChildrenTmpText2Hyperlink.Count > 0)
                 return _tempGetChildrenTmpText2Hyperlink;
             
-            var children = includeRepeatedMarking
+            var children = (includeRepeatedMarking
                 ? transform.GetChildrenBFS()
-                : transform.GetChildrenBFS<TMPHyperlinkManager>();
+                : transform.GetChildrenBFS<TMPHyperlinkManager>()).ToList();
     
-            var result = new List<TMPHyperlinkReceiver>();
+            var result = ListPool<TMPHyperlinkReceiver>.Get();
             var hyperlinkType = typeof(TMPHyperlinkReceiver);
             var tmpTextType = typeof(TMP_Text);
     
@@ -256,7 +301,11 @@ namespace Deconstruction.UI.TmpText
                     result.Add(child.gameObject.AddComponent<TMPHyperlinkReceiver>());
                 }
             }
-    
+
+            _dirty = true;
+            if (Children != null)
+                ListPool<TMPHyperlinkReceiver>.Release(Children);
+            Children = result;
             return result;
         }
 
