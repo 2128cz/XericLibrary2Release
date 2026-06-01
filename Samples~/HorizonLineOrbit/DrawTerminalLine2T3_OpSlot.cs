@@ -1,12 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using Deconstruction.Element;
-using Deconstruction.Interface;
 using Deconstruction.Manager;
-using Deconstruction.Tool;
-using Deconstruction.Trajectory;
 using Deconstruction.Type.DMToolSlot;
 using Deconstruction.Type.Linkable;
 using UnityEngine;
@@ -14,8 +6,6 @@ using XericLibrary.Runtime.MacroLibrary;
 
 namespace SesothoLine
 {
-    using LineSegment2 = Deconstruction.Element.PromptLine2.LineSegment2;
-
     /// <summary>
     /// 绘制轨迹线的操作
     /// <code>
@@ -83,6 +73,7 @@ namespace SesothoLine
         // public SesothoArrangementWiresTool myWiresTool;
         // myWiresTool = targetTool as SesothoArrangementWiresTool;
 
+        public static bool 判断是否在绘制区域内;
         #endregion
 
         #region 引用封装
@@ -179,7 +170,13 @@ namespace SesothoLine
                 ReplaceThis(new DrawTerminalLine2T3_OpSlot());
             }
             // 取消
-            else if (IsReleaseCanelKey())
+            else if (IsReleaseCanelKey() || (!判断是否在绘制区域内))
+            {
+                RemoveThis();
+                EndPrecondition();
+            }
+            // 判断按下ESC取消线段绘制 2024.8.8
+            else if (Input.GetKeyDown(KeyCode.Escape))
             {
                 RemoveThis();
                 EndPrecondition();
@@ -191,6 +188,8 @@ namespace SesothoLine
              * 需要分为工具运行期间撤回和常规撤回。
              */
         }
+
+
 
         protected override void AsyncBeforeUpdate()
         {
@@ -245,8 +244,8 @@ namespace SesothoLine
                     {
                         _isStartPointSubstitute = false;
                         selfWiresTool.GetElement(out _startPoint);
-                        _lastPointPosition = SesothoArrangementWiresTool.OpKey_IgnoreNeighborAdsorption.Getkey() ? 
-                            wfui_Slot.MouseHelperPosition : 
+                        _lastPointPosition = SesothoArrangementWiresTool.OpKey_IgnoreNeighborAdsorption.Getkey() ?
+                            wfui_Slot.MouseHelperPosition :
                             CameraMouseInputHelper.Inst.GetGridAdsorb(wfui_Slot.MouseHelperPosition);
                         _lastPointNormal = default;
                     }
@@ -272,15 +271,17 @@ namespace SesothoLine
             selfWiresTool.DeleteElement(_endPoint);
         }
 
-
         /// <summary>
         /// 线路绘制过程
         /// </summary>
         private void DrawingProcess()
         {
+            var forceStr = SesothoArrangementWiresTool.OpKey_ForceStr.Getkey();
+            var forceStraightLine = SesothoArrangementWiresTool.OpKey_ForceStraightLine.Getkey();
+            var force90Arc = SesothoArrangementWiresTool.OpKey_90Arc.Getkey();
+
             // 获取当前的坐标
             _helperPosition = PlaceElementManager.Inst.InputHelper.CurrentGridPosition;
-
             _startPoint.transform.position = _lastPointPosition;
 
             _isFreeEndPoint = true;
@@ -292,7 +293,7 @@ namespace SesothoLine
                 _isFreeEndPoint = false;
                 if (_endPoint.gameObject.activeSelf)
                     _endPoint.gameObject.SetActive(false);
-                
+
                 _helperPosition = SesothoPeManager.NearestPoint;
                 _endPoint.transform.position = SesothoPeManager.NearestPoint;
                 if (SesothoArrangementWiresTool.GetNearestObjectAsLine(_otherPoint, out var terminalLine,
@@ -304,7 +305,7 @@ namespace SesothoLine
             // {   
             //     NearestLineTangentPoint
             // }
-            
+
             // 否则自由点
             if (_isFreeEndPoint)
             {
@@ -314,6 +315,36 @@ namespace SesothoLine
                 _helperNormal = default;
                 _endPoint.transform.position = _helperPosition;
             }
+
+            if (forceStr)
+            {
+                Vector3 startPos = _startPoint.GetPosition3();
+                Vector3 endPoint = _endPoint.GetPosition3();
+                if ((int)startPos.x != (int)endPoint.x && (int)startPos.z != (int)endPoint.z)
+                {
+                    Vector3 vector3 = endPoint - startPos;
+                    if (Mathf.Abs(vector3.x) > Mathf.Abs(vector3.z))
+                    {
+                        Vector3 vector = new Vector3(endPoint.x, endPoint.y, startPos.z);
+                        _endPoint.SetPosition3(vector);
+                    }
+                    else if (Mathf.Abs(vector3.x) < Mathf.Abs(vector3.z))
+                    {
+                        Vector3 vector = new Vector3(startPos.x, endPoint.y, endPoint.z);
+                        _endPoint.SetPosition3(vector);
+                    }
+                    _helperPosition = _endPoint.GetPosition3();
+                    _line.SetLineSegment(
+                        _lastPointPosition, _helperPosition,
+                        _lastPointNormal, _helperNormal
+                    );
+                }
+            }
+            else if (force90Arc)
+            {
+                _helperPosition = _line.GetEndPointWorldPosition();
+            }
+
 
             _line.SetLineSegment(
                 _lastPointPosition, _helperPosition,
@@ -326,22 +357,24 @@ namespace SesothoLine
             //     Debug.Log($"角度{arc.Angle} {arc.AngleExact}");
             // }
 
-            var forceStr = SesothoArrangementWiresTool.OpKey_ForceStr.Getkey();
-            if (forceStr)
+            if (forceStr || forceStraightLine)
+            {
                 _line.DrawStraightLine();
+            }
             else
             {
-                var force90Arc = SesothoArrangementWiresTool.OpKey_90Arc.Getkey();
                 var force180Arc = SesothoArrangementWiresTool.OpKey_180Arc.Getkey();
                 var forceRevCisoid = SesothoArrangementWiresTool.OpKey_RevCisoid.Getkey();
-
 
                 var angle = -1;
                 if (force90Arc || force180Arc)
                 {
                     angle = 0;
                     if (force90Arc)
+                    {
                         angle += 90;
+
+                    }
                     if (force180Arc)
                         angle += 180;
                 }

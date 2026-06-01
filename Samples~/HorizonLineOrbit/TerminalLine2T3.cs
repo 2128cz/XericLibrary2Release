@@ -1,21 +1,14 @@
-using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;  
-using System.Text;  
 using Deconstruction.Element;
-using Deconstruction.Interface;
 
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
 using UnityEngine;
-using UnityEngine.Serialization;
+using UnityEngine.UIElements;
 using XericLibrary.Runtime.Debuger;
 using XericLibrary.Runtime.MacroLibrary;
-using XericLibrary.Runtime.Type;
 
 namespace SesothoLine
 {
@@ -38,7 +31,9 @@ namespace SesothoLine
         private LineSegment2 _lineSegment = new LineSegment2();
 
         public bool DebugDrawGrid = false;
-        
+
+        public Vector3 ah, bh;
+
         #endregion
         
         #region 生命周期
@@ -61,10 +56,7 @@ namespace SesothoLine
             SesothoPeManager.Inst.RemoveEmbedded(this);
         }
 
-        protected virtual void OnDestroy()
-        {
-            
-        }
+        
         
         protected override void AgencyOnEnable()
         {
@@ -86,9 +78,10 @@ namespace SesothoLine
             {
                 foreach (var index in indexs.Indexs)
                 {
+                    MacroDebugDraw.SetColor(Color.red);
                     MacroDebugDraw.DrawDownArrow(
-                        index.GetCellWorldIndexPosition() + MacroMath.RandomVector3(0.1f, Identifier), Quaternion.identity,
-                        Color.red);
+                        index.GetCellWorldIndexPosition() + MacroMath.RandomVector3(0.1f, Identifier));
+                    MacroDebugDraw.ResetColor();
                 }
             }
             
@@ -128,8 +121,12 @@ namespace SesothoLine
                 b.UpwardPlaneToVector2(),
                 ah.UpwardPlaneToVector2(),
                 bh.UpwardPlaneToVector2());
-                // ah?.GetEndPointNormal ?? default,
-                // bh?.GetStartPointNormal ?? default);
+            // ah?.GetEndPointNormal ?? default,
+            // bh?.GetStartPointNormal ?? default);
+
+            this.ah = ah;
+            this.bh = bh;
+
             return _lineSegment;
         }
 
@@ -145,7 +142,6 @@ namespace SesothoLine
             AutomaticDrawCircularLine(straightLine);
         }
 
-        
         /// <summary>
         /// 重新计算原点
         /// <code>

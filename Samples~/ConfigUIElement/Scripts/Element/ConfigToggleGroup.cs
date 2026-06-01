@@ -78,6 +78,8 @@ namespace LRC
             //     toggle.isOn = true;
             //     Debug.Log(TitleName +":设置布尔项目");
             // }
+
+            //toggles[newIndex].isOn = true;
             toggles[newIndex].SetIsOnWithoutNotify(true);
         }
         

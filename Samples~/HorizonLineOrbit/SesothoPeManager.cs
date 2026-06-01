@@ -12,10 +12,12 @@ using Deconstruction.Manager;
 using Deconstruction.Tool;
 using Deconstruction.Type.Area;
 using Deconstruction.Type.Serialize;
+using Newtonsoft.Json;
 using SerializerHelper.Type;
 using UnityEngine.UI;
 using XericLibrary.Runtime.Debuger;
 using XericLibrary.Runtime.MacroLibrary;
+using Deconstruction.Type.DMToolSlot;
 
 namespace SesothoLine
 {
@@ -29,9 +31,6 @@ namespace SesothoLine
     {
         #region 静态成员
 
-        /// <summary>
-        /// 此处提供的单例与父类单例是独立的
-        /// </summary>
         public new static SesothoPeManager Inst => _inst;
         private static SesothoPeManager _inst;
 
@@ -57,52 +56,47 @@ namespace SesothoLine
         /// 光标下最近的对象
         /// </summary>
         public static PlacementBase NearestObject => TrackingTool.TrackingCurrentTarget;
-        
+
         private static TrajectoryTrackingTool.TrackPersistentCommunicate _lineTangentTraceTool;
-        
         #endregion
 
         #region 调试功能
 
 #if UNITY_EDITOR
-        
+
         public bool EnableGridDebugDraw = false;
 
 
         public void DebugFunc()
         {
             if (EnableGridDebugDraw)
-            {
-                PlacementNeighbor.DebugDrawGrid(); 
-            }
+                PlacementNeighbor.DebugDrawGrid();
         }
-        
+
 #endif
-        
+
         #endregion
-        
+
         #region 生命周期
-        
+
         protected override void Awake()
         {
             base.Awake();
             _inst = this;
-            
+
             if (LineMaterial == null)
                 Debug.LogError("需要给管理器提供一个线段材质");
             if (PointMaterial == null)
                 Debug.LogError("需要给管理器提供一个点材质");
-            
+
             // 初始化画线工具
             _wiresTool = new SesothoArrangementWiresTool();
             _wiresTool.InitializeParent(transform);
 
             _lineTangentTraceTool = TrackingTool.InstantiationTrackCaculate(PlaceholdersAreaType.LinearContinuity);
-            
+
             // 手动开启代理更新
             EnableUpdate = true;
-            
-            
         }
 
         protected override void Start()
@@ -127,7 +121,6 @@ namespace SesothoLine
             // new SerializeUnion();
         }
 
-        private string serializeContext = null;
         protected override void LateUpdate()
         {
             base.LateUpdate();
@@ -136,18 +129,27 @@ namespace SesothoLine
 #if !UNITY_EDITOR || !_DEBUG_
             return;
 #endif
+            // 取消路线绘制 2024.8.8
+            /*if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                _wiresTool.EnableTool = false;
+                
+                //DrawTerminalLine2T3_OpSlot.RemoveThis();
+                //DrawTerminalLine2T3_OpSlot.EndPrecondition();
+            }*/
+
             // 工具功能测试
-            if (Input.GetKeyDown(KeyCode.L))
+            /*if (Input.GetKeyDown(KeyCode.L))
             {
                 _wiresTool.EnableTool = !_wiresTool.EnableTool;
                 Debug.Log($"{(_wiresTool.EnableTool ? "绘制工具已激活" : "工具已取消激活")}");
-            }
-            
+            }*/
+
             // 存档功能测试
-            if (Input.GetKeyDown(KeyCode.S))
+            /*if (Input.GetKeyDown(KeyCode.S))
             {
                 var obj = _wiresTool.ToolSerializeDispost();
-                serializeContext = MacroFile.JsonSerializerFormatter.formatter.Serializer(obj);
+                serializeContext = JsonConvert.SerializeObject(obj);
                 Debug.Log(obj.ToString());
             }
             if (Input.GetKeyDown(KeyCode.D))
@@ -158,29 +160,31 @@ namespace SesothoLine
                     return;
                 }
 
-                var obj = MacroFile.JsonSerializerFormatter.formatter.Deserializer<SerializeUnion>(serializeContext);
+                var obj = JsonConvert.DeserializeObject<SerializeUnion>(serializeContext);
                 _wiresTool.ToolDiserializDispost(obj);
             }
 
             if (Input.GetKeyDown(KeyCode.A))
             {
                 _wiresTool.EnableCompress = !_wiresTool.EnableCompress;
-                if (_wiresTool.EnableCompress )
+                if (_wiresTool.EnableCompress)
                     Debug.Log("开启压缩");
                 else
                     Debug.Log("关闭压缩");
-            }
-            
-            
+            }*/
+
+
             // 绘制一下吸附的目标位置
             if (TrackingTool.EnableTool || TrackingTool._enableAuxiliaryTool)
             {
-                MacroDebugDraw.DrawDownArrow(NearestPoint, Quaternion.identity, Color.magenta);
-                MacroDebugDraw.DrawDownArrow(NearestLineTangentPoint, Quaternion.identity, Color.green);
+                MacroDebugDraw.SetColor(Color.magenta);
+                MacroDebugDraw.DrawDownArrow(NearestPoint);
+                MacroDebugDraw.SetColor(Color.green);
+                MacroDebugDraw.DrawDownArrow(NearestLineTangentPoint);
+                MacroDebugDraw.ResetColor();
             }
         }
 
         #endregion
-
     }
 }

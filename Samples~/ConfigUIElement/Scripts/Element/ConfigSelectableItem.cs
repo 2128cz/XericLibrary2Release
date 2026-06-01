@@ -1,11 +1,9 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using XericLibrary.Runtime.CustomEditor;
 using XericLibrary.Runtime.MacroLibrary;
@@ -51,10 +49,10 @@ namespace LRC
         /// <summary>
         /// 当数值收到修改时，产生事件，其中值的含义是修改前的值
         /// </summary>
-        public static event Action<ConfigSelectableItem, object> OnAnyValueChange; 
-        
+        public static event Action<ConfigSelectableItem, object> OnAnyValueChange;
+
         #endregion
-        
+
         #region 静态成员
 
         /// <summary>
@@ -66,7 +64,7 @@ namespace LRC
         /// 项目列表有效成员的数量
         /// </summary>
         public static int ConfigItemListCount => ConfigItemList.Count;
-        
+
         /// <summary>
         /// 获取
         /// </summary>
@@ -74,7 +72,7 @@ namespace LRC
         /// <returns></returns>
         public static ConfigSelectableItem GetConfigItemByIndex(int index) => ConfigItemList[index];
         public static IEnumerable<ConfigSelectableItem> ConfigItemLists => ConfigItemList;
-        
+
         private static bool autoUpdateValueAll;
         /// <summary>
         /// 自动更新所有数值
@@ -89,9 +87,9 @@ namespace LRC
                 autoUpdateValueAll = value;
             }
         }
-        
+
         #endregion
-        
+
         #region 状态
 
         /// <summary>
@@ -147,7 +145,7 @@ namespace LRC
         /// </code>
         /// </summary>
         public event Func<ConfigSelectableItem, bool> GetSourceValueAutoUpdate;
-        
+
         /// <summary>
         /// 当前属性的自动更新请求设置
         /// <code>
@@ -157,9 +155,9 @@ namespace LRC
         /// </code>
         /// </summary>
         public event Action<bool> SetSourceValueAutoUpdate;
-        
-        
-        
+
+
+
         /// <summary>
         /// 请求此属性设置值(将值应用到寄存中)
         /// </summary>
@@ -167,9 +165,9 @@ namespace LRC
         {
             SetSourceValue?.Invoke(this, Value);
         }
-        
+
         #endregion
-        
+
         #region 属性字段
 
         /// <summary>
@@ -177,7 +175,7 @@ namespace LRC
         /// </summary>
         [Rename("映射标记")]
         public string configTag;
-        
+
         /// <summary>
         /// 设定是否有效。
         /// 如果无效，则不允许输入
@@ -199,14 +197,14 @@ namespace LRC
         [SerializeField]
         [Rename("允许阻塞自动更新")]
         private bool allowBlockUpdate = true;
-        
+
         /// <summary>
         /// 阻塞自动更新，一般由程序自动根据焦点更新
         /// </summary>
         [SerializeField]
         [Rename("阻塞自动更新")]
         private bool forceBlockUpdate = false;
-        
+
         /// <summary>
         /// 格式化文本
         /// </summary>
@@ -253,7 +251,7 @@ namespace LRC
 
         [Rename("反转自动更新状态")]
         public bool autoUpdateValueReversalState;
-        
+
         /// <summary>
         /// 脏属性自动复位。
         /// 当属性被重新开关时，将取消脏状态
@@ -262,7 +260,7 @@ namespace LRC
         public bool dirtyAutoReset = false;
 
         // ==== 属性 ==== //
-        
+
         /// <summary>
         /// 设定是否输入有效
         /// </summary>
@@ -295,13 +293,13 @@ namespace LRC
                     return;
                 }
                 if (!value) return;
-                
+
                 _isDirty = true;
                 OnAnyValueDirty?.Invoke(this);
                 OnValueDirty?.Invoke(this);
             }
         }
-        
+
         /// <summary>
         /// 设定自动更新状态，并同步选框
         /// <code>
@@ -333,16 +331,20 @@ namespace LRC
         public bool ForceBlockUpdate
         {
             get => forceBlockUpdate;
-            set => forceBlockUpdate = value;    
+            set => forceBlockUpdate = value;
         }
-        
+
         /// <summary>
         /// 项目标题
         /// </summary>
         public string TitleName
         {
             get => titleLabel.text;
-            set => titleLabel.text = value;
+            set
+            {
+                if (titleLabel != null)
+                    titleLabel.text = value;
+            }
         }
 
         /// <summary>
@@ -375,7 +377,7 @@ namespace LRC
             get => unitLabel.text;
             set => unitLabel.text = value;
         }
-        
+
         [SerializeField]
         // [Obsolete("请使用访问器")]
         private object _value;
@@ -385,7 +387,7 @@ namespace LRC
         /// </summary>
         public object Value
         {
-            get => _value; 
+            get => _value;
             protected set
             {
                 if (IsValueInitNull && value != null)
@@ -395,11 +397,11 @@ namespace LRC
         }
 
         // ==== 暂存 ==== //
-        
+
         public FieldInfo FieldInfo;
 
         public Type FieldType;
-        
+
         #endregion
 
         #region 生命周期
@@ -431,7 +433,7 @@ namespace LRC
             ConfigItemList.Add(this);
             ForceUpdateAllConfigEvent += ForceUpdate;
             ForceSetAllSourceValueEvent += SetSourceValueRequest;
-            
+
             if (dirtyAutoReset)
                 IsDirty = false;
         }
@@ -535,9 +537,9 @@ namespace LRC
                 _ => Vector3.zero
             };
         }
-        
+
         #endregion
-        
+
         #region 初始化方法
 
         /// <summary>
@@ -600,7 +602,7 @@ namespace LRC
         #endregion
 
         #region 更新方法
-        
+
         /// <summary>
         /// 更新函数
         /// <code>
@@ -614,7 +616,7 @@ namespace LRC
                 IsDirty = false;
             var value = GetSourceValue?.Invoke(this);
             if (value == null)
-                return ;
+                return;
             RefreshValueWithoutEvent(value, forceSet);
             RefreshAutoUpdateValue();
         }
@@ -665,15 +667,15 @@ namespace LRC
         {
             var isSourceValueAutoUpdate = GetSourceValueAutoUpdate?.Invoke(this);
             if (isSourceValueAutoUpdate != null)
-                AutoUpdateValue = isSourceValueAutoUpdate.Value; 
+                AutoUpdateValue = isSourceValueAutoUpdate.Value;
         }
-        
+
         /// <summary>
         /// 刷新格式化文本，在触发刷新时将产生更新 
         /// </summary>
         protected virtual void RefreshFormatValue(object newValue)
         {
-            
+
         }
 
         protected void WhenStartEdit()
@@ -681,7 +683,7 @@ namespace LRC
             // Debug.Log("开始编辑");
             ForceBlockUpdate = true;
         }
-        
+
         /// <summary>
         /// 数值输入完毕，或焦点移除时调用。
         /// </summary>
@@ -691,7 +693,7 @@ namespace LRC
             ForceBlockUpdate = false;
             OnEndEdit?.Invoke(this, Value);
         }
-        
+
         #endregion
 
         #region 外观设定
@@ -705,7 +707,7 @@ namespace LRC
             Destroy(autoUpdateValueToggle.gameObject);
             this.autoUpdateValue = autoUpdateValueReversalState ^ autoUpdateValue;
         }
-        
+
         #endregion
 
     }

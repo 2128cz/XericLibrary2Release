@@ -1,8 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using Deconstruction.Element;
 using Deconstruction.Interface;
 using Deconstruction.Manager;
@@ -13,7 +10,6 @@ using Deconstruction.Type.Linkable;
 using SerializerHelper.Type;
 using UnityEngine;
 using UnityEngine.Pool;
-using XericLibrary.Runtime.MacroLibrary;
 using XericLibrary.Runtime.Nav;
 
 namespace SesothoLine
@@ -39,19 +35,19 @@ namespace SesothoLine
         /// 工具中成员移除事件
         /// </summary>
         public event ToolMemberChange OnDecreasing;
-        
+
         /// <summary>
         /// 当任意元素苏醒
         /// </summary>
         public event ToolMemberChange OnAnyVivification;
-        
+
         /// <summary>
         /// 当任意元素休眠
         /// </summary>
         public event ToolMemberChange OnAnyDormancy;
-        
+
         #endregion
-        
+
         #region 快捷键
 
         /*
@@ -61,11 +57,19 @@ namespace SesothoLine
          * shift+b 忽略对象吸附
          * shift+n 忽略网格吸附
          */
-        
+
+        /// <summary>
+        /// 强制X轴或Y轴
+        /// </summary>
+        public static KeyPack OpKey_PlotTheXAndYAxes = new KeyPack();
+        /// <summary>
+        /// 强制X轴或Y轴直线
+        /// </summary>
+        public static KeyPack OpKey_ForceStr = new KeyPack(KeyCode.LeftControl);
         /// <summary>
         /// 强制直线
         /// </summary>
-        public static KeyPack OpKey_ForceStr = new KeyPack(KeyCode.Alpha1);
+        public static KeyPack OpKey_ForceStraightLine = new KeyPack(KeyCode.LeftShift, KeyCode.Q);
         /// <summary>
         /// 强制90度圆弧
         /// </summary>
@@ -82,18 +86,20 @@ namespace SesothoLine
         /// <summary>
         /// 忽略吸附功能
         /// </summary>
-        public static KeyPack OpKey_IgnoreNeighborAdsorption = new KeyPack(KeyCode.LeftShift, KeyCode.B);
+        public static KeyPack OpKey_IgnoreNeighborAdsorption = new KeyPack(KeyCode.Alpha1);
         /// <summary>
         /// 忽略网格吸附
         /// </summary>
         public static KeyPack OpKey_IgnoreGridAdsorption = new KeyPack(KeyCode.LeftShift, KeyCode.N);
-        
+
         #endregion
 
         #region 字段属性
 
         private ObjectPool<TerminalLine2T3> _linePool;
         private ObjectPool<TerminalPoint> _pointPool;
+        public ObjectPool<TerminalLine2T3> LinePool => _linePool;
+        public ObjectPool<TerminalPoint> PointPool => _pointPool;
 
         #endregion
 
@@ -115,7 +121,7 @@ namespace SesothoLine
             point = null;
             return false;
         }
-        
+
         /// <summary>
         /// 获取光标下最近的对象为线
         /// </summary>
@@ -146,27 +152,27 @@ namespace SesothoLine
             if (point is null)
                 goto End;
             // 检查最近线切线是否有效，是否相连
-            if (SesothoPeManager.NearestLineTangentObject is TerminalLine2T3 otherLine && 
+            if (SesothoPeManager.NearestLineTangentObject is TerminalLine2T3 otherLine &&
                 point.TryGetLinkLineNormal(otherLine, out normal))
             {
                 line = otherLine;
                 return true;
             }
-           
-            End:
+
+        End:
             line = null;
             normal = default;
             return false;
         }
 
         #endregion
-        
+
         #region 生命周期
 
         protected override void Awake()
         {
             base.Awake();
-            
+
             _linePool = new ObjectPool<TerminalLine2T3>(
                 createFunc: CreatElement<TerminalLine2T3>,
                 actionOnGet: ElementActive,
@@ -176,7 +182,7 @@ namespace SesothoLine
                 collectionCheck: true,
                 defaultCapacity: 10,
                 maxSize: 10000);
-            
+
             _pointPool = new ObjectPool<TerminalPoint>(
                 createFunc: CreatElement<TerminalPoint>,
                 actionOnGet: ElementActive,
@@ -186,7 +192,7 @@ namespace SesothoLine
                 collectionCheck: true,
                 defaultCapacity: 10,
                 maxSize: 10000);
-            
+
         }
 
         protected override void OnEnableTool()
@@ -194,13 +200,13 @@ namespace SesothoLine
             // 启用时创建一个输入等待行为，随后进入绘制行为
             var target = GenerateOperateSlot<WaitForUserInput_OpSlot>();
             target.InitializeNextTodo(() => new DrawTerminalLine2T3_OpSlot());
-            
+
             Debug.Log("激活线路绘制工具");
         }
 
         protected override void OnDisableTool()
         {
-	        
+
         }
 
         protected override void OnFinalEnd()
@@ -232,11 +238,11 @@ namespace SesothoLine
         {
             if (!base.ToolDiserializDispost(context))
                 return false;
-            
+
             var deserializeList = new List<(PlacementBase, SerializeUnion)>();
             var safeCount = ushort.MaxValue;
             Debug.Log("反序列化过程开始创建对象");
-            while (0 <-- safeCount && SerializeTemp.IndexMoveToNext(out var block))
+            while (0 < --safeCount && SerializeTemp.IndexMoveToNext(out var block))
             {
                 var union = SerializeTemp.GetDeserializeObject<SerializeUnion>();
                 var type = TypeConsignMap.GetMapType(union.Index);
@@ -258,18 +264,18 @@ namespace SesothoLine
                 }
                 else
                     Debug.LogError($"无法创建序列化元素，原因是类型不支持{type}");
-                
+
                 if (block) break;
             }
             Debug.Log("反序列化过程开始恢复链接关系");
             foreach (var item in deserializeList)
                 item.Item1.DeserializeHysteresisOccurs(item.Item2);
-            
+
             return true;
         }
 
         #endregion
-        
+
         #region 方法
 
         /// <summary>
@@ -319,7 +325,7 @@ namespace SesothoLine
             obj.gameObject.SetActive(false);
             OnAnyDormancy?.Invoke(obj);
         }
-        
+
         /// <summary>
         /// 获取元素
         /// </summary>
@@ -343,7 +349,7 @@ namespace SesothoLine
             obj = null;
             return false;
         }
-        
+
         /// <summary>
         /// 获取元素
         /// </summary>
@@ -368,7 +374,7 @@ namespace SesothoLine
             obj = null;
             return false;
         }
-        
+
 
         /// <summary>
         /// 删除元素
@@ -376,7 +382,7 @@ namespace SesothoLine
         /// <param name="obj"></param>
         /// <typeparam name="T"></typeparam>
         public void DeleteElement<T>(T obj)
-            where T : PlacementBase, 
+            where T : PlacementBase,
             ILinkconfidentPe
         {
             var name = typeof(T).Name;
@@ -394,8 +400,8 @@ namespace SesothoLine
             }
         }
 
-        
-        
+
+
         /// <summary>
         /// 保存元素链，在创建并常态化元素后都需要执行的操作 (注意不是在创建后立刻保存)
         /// <code>
@@ -404,7 +410,7 @@ namespace SesothoLine
         /// </code>
         /// </summary>
         public void PersistentElement<T>(T obj)
-            where T : PlacementBase, 
+            where T : PlacementBase,
             ILinkconfidentPe
         {
             // 保存链表结构，反过来也持有这个节点，便于后续查找
@@ -418,14 +424,14 @@ namespace SesothoLine
         /// <param name="obj"></param>
         /// <typeparam name="T"></typeparam>
         public void ExcisionElement<T>(T obj)
-            where T : PlacementBase, 
+            where T : PlacementBase,
             ILinkconfidentPe
         {
             if (obj.GetLinkedNode(out var node))
                 SesothoPeManager.Inst.RemoveLinkedTarget(node);
         }
-        
-        
+
+
         /// <summary>
         /// 添加小型元素到网格中
         /// </summary>
@@ -442,7 +448,7 @@ namespace SesothoLine
             }
             SesothoPeManager.Inst.InsertNeighbor(obj, out var index);
             obj.NeighborGridIndex = index;
-            
+
             // 回调事件
             OnAdditional?.Invoke(obj);
         }
@@ -451,8 +457,8 @@ namespace SesothoLine
         /// 添加大型元素到网格中
         /// </summary>
         public void AddBulkPeToNeighborGrid<T>(T obj)
-            where T : PlacementBase, 
-            ILinkconfidentPe, 
+            where T : PlacementBase,
+            ILinkconfidentPe,
             IPossessorTrajectory2
         {
             if (obj.NeighborGridIndex != null)
@@ -462,7 +468,7 @@ namespace SesothoLine
             }
             SesothoPeManager.Inst.InsertGiantNeighbor<T>(obj, out var index);
             obj.NeighborGridIndex = index;
-            
+
             // 回调事件
             OnAdditional?.Invoke(obj);
         }
@@ -476,7 +482,7 @@ namespace SesothoLine
             where T : PlacementBase,
             ILinkconfidentPe
         {
-            if (obj.NeighborGridIndex != null && 
+            if (obj.NeighborGridIndex != null &&
                 obj.NeighborGridIndex.GetAsIndex(out var index))
                 SesothoPeManager.Inst.RemoveNeighbor(index);
             else
@@ -485,16 +491,16 @@ namespace SesothoLine
             // 回调事件
             OnDecreasing?.Invoke(obj);
         }
-        
+
         /// <summary>
         /// 移除这个大型元素
         /// </summary>
         public void RemoveBulkPeFormNeighborGrid<T>(T obj)
-            where T : PlacementBase, 
-            ILinkconfidentPe, 
+            where T : PlacementBase,
+            ILinkconfidentPe,
             IPossessorTrajectory2
         {
-            if (obj.NeighborGridIndex != null && 
+            if (obj.NeighborGridIndex != null &&
                 obj.NeighborGridIndex.GetAsMappingIndex(out var index))
                 SesothoPeManager.Inst.RemoveGiantNeighbor(index);
             else
@@ -513,7 +519,7 @@ namespace SesothoLine
          *
          * 主要提供绘制线路时的多段线拟合，障碍物避让
          */
-        
+
         /// <summary>
         /// 获取一个可以通过的路径
         /// <code>
