@@ -60,7 +60,9 @@ namespace Deconstruction.UI.TmpText
         /// <summary>
         /// 当前超链接管理器下的所有超链接
         /// </summary>
+#if ODIN_INSPECTOR
         [ShowInInspector]
+#endif
         public List<TMPHyperlinkReceiver> Children { get; internal set; }
 
         /// <summary>

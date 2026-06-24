@@ -4,7 +4,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using XericLibrary.Runtime.MacroLibrary;
 
-namespace DigitalTwinTool
+namespace Deconstruction.Runtime
 {
     public static class MacroEventTrigger
     {
@@ -84,49 +84,49 @@ namespace DigitalTwinTool
 
         #region 细节事件
 
-        public static EventTrigger.TriggerEvent OnPointerEnter(this EventTrigger eventTrigger)
+        public static EventTrigger.TriggerEvent onPointerEnter(this EventTrigger eventTrigger)
             => eventTrigger.GetEventTrigger(EventTriggerType.PointerEnter);
 
-        public static EventTrigger.TriggerEvent OnPointerExit(this EventTrigger eventTrigger)
+        public static EventTrigger.TriggerEvent onPointerExit(this EventTrigger eventTrigger)
             => eventTrigger.GetEventTrigger(EventTriggerType.PointerExit);
 
-        public static EventTrigger.TriggerEvent OnPointerDown(this EventTrigger eventTrigger)
+        public static EventTrigger.TriggerEvent onPointerDown(this EventTrigger eventTrigger)
             => eventTrigger.GetEventTrigger(EventTriggerType.PointerDown);
 
-        public static EventTrigger.TriggerEvent OnPointerUp(this EventTrigger eventTrigger)
+        public static EventTrigger.TriggerEvent onPointerUp(this EventTrigger eventTrigger)
             => eventTrigger.GetEventTrigger(EventTriggerType.PointerUp);
 
-        public static EventTrigger.TriggerEvent OnPointerClick(this EventTrigger eventTrigger)
+        public static EventTrigger.TriggerEvent onPointerClick(this EventTrigger eventTrigger)
             => eventTrigger.GetEventTrigger(EventTriggerType.PointerClick);
 
-        public static EventTrigger.TriggerEvent OnDrag(this EventTrigger eventTrigger)
+        public static EventTrigger.TriggerEvent onDrag(this EventTrigger eventTrigger)
             => eventTrigger.GetEventTrigger(EventTriggerType.Drag);
 
-        public static EventTrigger.TriggerEvent OnDrop(this EventTrigger eventTrigger)
+        public static EventTrigger.TriggerEvent onDrop(this EventTrigger eventTrigger)
             => eventTrigger.GetEventTrigger(EventTriggerType.Drop);
 
-        public static EventTrigger.TriggerEvent OnScroll(this EventTrigger eventTrigger)
+        public static EventTrigger.TriggerEvent onScroll(this EventTrigger eventTrigger)
             => eventTrigger.GetEventTrigger(EventTriggerType.Scroll);
 
-        public static EventTrigger.TriggerEvent OnUpdateSelected(this EventTrigger eventTrigger)
+        public static EventTrigger.TriggerEvent onUpdateSelected(this EventTrigger eventTrigger)
             => eventTrigger.GetEventTrigger(EventTriggerType.UpdateSelected);
 
-        public static EventTrigger.TriggerEvent OnSelect(this EventTrigger eventTrigger)
+        public static EventTrigger.TriggerEvent onSelect(this EventTrigger eventTrigger)
             => eventTrigger.GetEventTrigger(EventTriggerType.Select);
 
-        public static EventTrigger.TriggerEvent OnDeselect(this EventTrigger eventTrigger)
+        public static EventTrigger.TriggerEvent onDeselect(this EventTrigger eventTrigger)
             => eventTrigger.GetEventTrigger(EventTriggerType.Deselect);
 
-        public static EventTrigger.TriggerEvent OnMove(this EventTrigger eventTrigger)
+        public static EventTrigger.TriggerEvent onMove(this EventTrigger eventTrigger)
             => eventTrigger.GetEventTrigger(EventTriggerType.Move);
 
-        public static EventTrigger.TriggerEvent OnInitializePotentialDrag(this EventTrigger eventTrigger)
+        public static EventTrigger.TriggerEvent onInitializePotentialDrag(this EventTrigger eventTrigger)
             => eventTrigger.GetEventTrigger(EventTriggerType.InitializePotentialDrag);
 
-        public static EventTrigger.TriggerEvent OnBeginDrag(this EventTrigger eventTrigger)
+        public static EventTrigger.TriggerEvent onBeginDrag(this EventTrigger eventTrigger)
             => eventTrigger.GetEventTrigger(EventTriggerType.BeginDrag);
 
-        public static EventTrigger.TriggerEvent OnEndDrag(this EventTrigger eventTrigger)
+        public static EventTrigger.TriggerEvent onEndDrag(this EventTrigger eventTrigger)
             => eventTrigger.GetEventTrigger(EventTriggerType.EndDrag);
 
         /// <summary>
@@ -134,10 +134,10 @@ namespace DigitalTwinTool
         /// </summary>
         /// <param name="eventTrigger"></param>
         /// <returns></returns>
-        public static EventTrigger.TriggerEvent OnSubmit(this EventTrigger eventTrigger)
+        public static EventTrigger.TriggerEvent onSubmit(this EventTrigger eventTrigger)
             => eventTrigger.GetEventTrigger(EventTriggerType.Submit);
 
-        public static EventTrigger.TriggerEvent OnCancel(this EventTrigger eventTrigger)
+        public static EventTrigger.TriggerEvent onCancel(this EventTrigger eventTrigger)
             => eventTrigger.GetEventTrigger(EventTriggerType.Cancel);
 
         private static EventTrigger.TriggerEvent GetEventTrigger(this EventTrigger eventTrigger, EventTriggerType type)
@@ -159,6 +159,8 @@ namespace DigitalTwinTool
 
             return e;
         }
+
+        public static void ClearAllEventTrigger(this EventTrigger eventTrigger) => eventTrigger.triggers.Clear();
 
         #endregion
     }

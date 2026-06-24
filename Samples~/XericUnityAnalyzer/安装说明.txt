@@ -1,0 +1,23 @@
+安装说明
+--------
+
+这个目录包含 Xeric Library 的 Roslyn 语法分析器 DLL。
+
+重要：DLL 不能放在深层目录！
+==============================
+
+Rider / VS 等 IDE 在扫描 Roslyn Analyzer 时，只会识别浅层目录下的 DLL。
+如果 DLL 被放在过深的路径中，IDE 将不会加载它，代码检查也会失效。
+
+推荐放置位置（任选其一）：
+
+  Assets/                           ← 项目根目录（直接放入）
+  Assets/Editor/                    ← Editor 专用目录
+  Assets/Plugins/                   ← 传统插件目录
+
+不推荐的位置：
+
+  Assets/Samples/.../XericUnityAnalyzer/  ← Sample 导入后默认在这里，IDE 可能不识别！
+
+因此，从 Package Manager 导入此 Sample 后，请手动将 XericUnityAnalyzer.dll
+移动到上述推荐位置之一，然后删除原 Sample 目录即可。

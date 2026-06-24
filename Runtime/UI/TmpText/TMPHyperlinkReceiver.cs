@@ -115,7 +115,7 @@ namespace Deconstruction.UI.TmpText
             }
             catch (Exception e)
             {
-                Debug.LogError($"超链接目标事件存在错误 {_tmpText.text.LimitStringLength(32)} ：\n{e.Message}\n{e.Data}", this);
+                Debug.LogError($"超链接目标事件存在错误 {_tmpText.text.LimitStringLength(32)} ：\n{e.Message}\n{e}\n\n", this);
             }
         }
     }
