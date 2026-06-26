@@ -4,6 +4,37 @@
 
 
 
+## [0.6.0] 2026-06-26
+
+添加:
+* 添加了一个从屏幕上摄取模型材质的功能。
+* xericLogger添加了常规的日志方法，不用每次都写cc。
+* 添加了判断当前帧是否第一次调用的方法。
+* 添加了摄像机视锥方相关方法。
+* 多维布尔添加了更多的运算符。
+* 添加趋势预测器。
+* 添加卡尔曼滤波。
+* 全局生命周期调度器 XericLifeCycleCore，支持 Update/LateUpdate/FixedUpdate/Coroutine 四阶段调度，按发布者管理任务。
+* XericLifeCycleCore 协程阶段：基于卡尔曼滤波的帧预算控制，自动 Yield 跨帧续接。
+* XLifeCycleProfile Editor 窗口：发布者分组折叠区 + 任务甘特图 + Profiler API 监视。
+* PID 动画控制器 GetPIDAnimaterV3/V2/Float/Color，基于调度器实现平滑过渡。
+* PIDController 对象池，减少 GC。
+* IPIDEqualityComparer 接口及四种默认实现，支持自定义到达目标判断。
+* 数学库添加了最大最小公约数公倍数的计算。
+* 添加了语义化版本号和语义化定时器
+* 整合了协程库
+* 添加了样式表用法
+* 添加了unity上预处理命令管理器
+
+修复:
+* SingleMonoBase.EditorInstance 重写：移除 Obsolete，父节点+子节点统一 HideAndDontSave，编辑器内不再因 GlobalInstance 报错。
+* XericLifeCycleCore.GlobalInstance：编辑器模式自动走 EditorInstance（场景世界），不再走 DontDestroyOnLoad。
+* 修复 PID 控制器导数公式（除以 Δt² 改为 Δt），解决无穷大溢出问题。
+* 删除 PID 中无效的 NaN 安全检查（只能拦截 NaN，无法拦截 Infinity）。
+
+优化：
+* 优化按键宏逻辑，添加了按键趋势统计。
+
 ## [0.5.7] 2026-05-27
 
 添加:
@@ -17,11 +48,14 @@
 * 添加使用windows文件窗口的窗口调用函数（包含文件和目录访问）。
 * 配置宏添加了获取方法。
 * json序列化器添加了部分基础类型的null处理方案。
+* 添加了一种通过整数获取excel列文本函数
 优化:
 * TextBlockBuilder文本拼接逻辑，减少GC。
 * 优化枚举库中的对比方法，改为了泛型模型，避免枚举装箱操作
 修复:
 * 对象池宏中联合对象池间接释放对象有可能报错导致无法释放的问题。
+
+装配岛部分的插件功能已经同步更新。
 
 ## [0.5.6] 2025-12-30
 
