@@ -11,6 +11,12 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.lrss3.deconstruction",
+            "expression": "",
+            "define": "XERICLIBRARY"
+        }
+    ],
     "noEngineReferences": false
 }
