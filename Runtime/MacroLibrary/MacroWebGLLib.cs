@@ -13,7 +13,7 @@ namespace XericLibrary.Runtime.MacroLibrary
 	/// <summary>
 	/// Web 平台文件句柄。
 	/// </summary>
-	public class WebGLHandle : CrossPlatformFileHandle
+	public class WebGLHandle : MacroFile.CrossPlatformFileHandle
 	{
 		public override string PlatformName => "WebGL";
 		public static WebGLHandle handle = new WebGLHandle();
@@ -28,14 +28,54 @@ namespace XericLibrary.Runtime.MacroLibrary
 				handle = this;
 		}
 
+#if XERIC_WEBGL_DOWNLOAD
 		[DllImport("__Internal")]
 		private static extern void Download(string base64str, string fileName);
+#endif
 
-		//[DllImport("__Internal")]
-		//private static extern void OpenFileDialog(string gameObjectName, string callbackMethodName);
+#if XERIC_WEBGL_FILEBROWSER
+		[DllImport("__Internal")]
+		private static extern void OpenFileDialog(string gameObjectName, string callbackMethodName);
 
-		//[DllImport("__Internal")]
-		//private static extern void OpenFileDialogBinary(string gameObjectName, string callbackMethodName);
+		[DllImport("__Internal")]
+		private static extern void OpenFileDialogBinary(string gameObjectName, string callbackMethodName);
+#endif
+
+#if XERIC_WEBGL_JSBRIDGE
+		/// <summary>
+		/// 从 JS 端发送消息到 Unity（对应 xeric-jsbridge.js 中的 SendToUnity）
+		/// </summary>
+		public static void SendToUnity(string gameObject, string method, string message)
+		{
+#if UNITY_WEBGL && !UNITY_EDITOR
+			SendMessageToUnity(gameObject, method, message);
+#else
+			// Editor 回退：尝试直接查找并调用
+			var go = GameObject.Find(gameObject);
+			if (go != null)
+				go.SendMessage(method, message, SendMessageOptions.DontRequireReceiver);
+#endif
+		}
+
+		[DllImport("__Internal")]
+		private static extern void SendMessageToUnity(string gameObject, string method, string message);
+
+		/// <summary>
+		/// 通知 JS 端 Canvas 获得焦点（Unity 可捕获输入）
+		/// </summary>
+		public static void NotifyCanvasFocus()
+		{
+			// JS 端 OnCanvasFocus() 会反向调用 Unity.SendMessage
+		}
+
+		/// <summary>
+		/// 通知 JS 端 Canvas 失去焦点（前端可处理输入）
+		/// </summary>
+		public static void NotifyCanvasBlur()
+		{
+			// JS 端 OnCanvasBlur() 会反向调用 Unity.SendMessage
+		}
+#endif
 
 		public override bool ReadTextFromFile(string absolutePathname, out string content)
 		{
@@ -58,6 +98,7 @@ namespace XericLibrary.Runtime.MacroLibrary
 			return waitFlag;
 		}
 
+#if XERIC_WEBGL_DOWNLOAD
 		public override bool WriteTextIntoFile(string absolutePathname, string content)
 		{
 			try
@@ -71,6 +112,7 @@ namespace XericLibrary.Runtime.MacroLibrary
 				return false;
 			}
 		}
+#endif
 
 		public override async Task<bool> AsyncReadTextFromFile(string absolutePathname, Action<string> complete, Action<string> loadError)
 		{
@@ -86,6 +128,7 @@ namespace XericLibrary.Runtime.MacroLibrary
 			return result;
 		}
 
+#if XERIC_WEBGL_DOWNLOAD
 		public override async Task<bool> AsyncWriteTextIntoFile(string absolutePathname, string content, Action complete, Action<string> loadError)
 		{
 			await Task.Yield();
@@ -101,6 +144,7 @@ namespace XericLibrary.Runtime.MacroLibrary
 			await Task.CompletedTask;
 			return false;
 		}
+#endif
 
 		public override string CombinePath(string pathA, string pathB)
 		{
