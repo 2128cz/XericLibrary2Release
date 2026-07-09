@@ -302,16 +302,16 @@ public static class MacroDXXL
 
     #region 标注 / 标签 / 文本
 
-    /// <summary>在 3D 位置绘制文本标签</summary>
-    public static void Label(Vector3 position, string text, Color? color = null, float size = 0.1f)
+    /// <summary>在 3D 位置绘制文本标签（rotation 控制朝向，默认 Quaternion.identity 即 xy 平面正向）</summary>
+    public static void Label(Vector3 position, string text, Color? color = null, float size = 0.1f, Quaternion? rotation = null)
     {
-        DrawText.Write(text, position, color ?? Color.white, size, default(Vector3), default(Vector3));
-    }
+        DrawText.Write(text, position, color ?? Color.white, size, rotation ?? Quaternion.identity);
+    } 
 
-    /// <summary>在 3D 位置绘制带框文本标签</summary>
-    public static void LabelFramed(Vector3 position, string text, Color? color = null, float size = 0.1f)
+    /// <summary>在 3D 位置绘制带框文本标签（rotation 控制朝向，默认 Quaternion.identity 即 xy 平面正向）</summary>
+    public static void LabelFramed(Vector3 position, string text, Color? color = null, float size = 0.1f, Quaternion? rotation = null)
     {
-        DrawText.WriteFramed(text, position, color ?? Color.white, size, default(Vector3), default(Vector3));
+        DrawText.WriteFramed(text, position, color ?? Color.white, size, rotation ?? Quaternion.identity);
     }
 
     /// <summary>给 GameObject 绘制屏幕空间标签（始终面向相机）</summary>

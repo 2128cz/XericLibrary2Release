@@ -30,7 +30,6 @@ namespace Deconstruction.Runtime
         {
             LayoutRebuilder.ForceRebuildLayoutImmediate(rectTrans);
         }
-
         
         private static HashSet<RectTransform> _rebuildSet = new HashSet<RectTransform>();
         /// <summary>

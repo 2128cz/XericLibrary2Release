@@ -2,7 +2,21 @@
 
 ## [Unrealse]
 
+* 添加运行时蓝图框架
 
+## [0.6.1] 2026-07-09
+
+添加：
+* 添加支持跨平台的剪贴板功能。（webgl除外）
+* 增加webgl的模板管理面板，可以管理并添加预设的js功能。
+* 添加MacroPrefs库。
+* 添加密码对话框。
+* 嵌入了quickgraph
+* 添加了更多高级绘制组件
+* 添加了文本过滤器库
+
+删除：
+* 删除了nav导航接口，现在可以通过quickgraph实现导航。
 
 ## [0.6.0] 2026-06-26
 
@@ -27,10 +41,8 @@
 * 添加了unity上预处理命令管理器
 
 修复:
-* SingleMonoBase.EditorInstance 重写：移除 Obsolete，父节点+子节点统一 HideAndDontSave，编辑器内不再因 GlobalInstance 报错。
-* XericLifeCycleCore.GlobalInstance：编辑器模式自动走 EditorInstance（场景世界），不再走 DontDestroyOnLoad。
-* 修复 PID 控制器导数公式（除以 Δt² 改为 Δt），解决无穷大溢出问题。
-* 删除 PID 中无效的 NaN 安全检查（只能拦截 NaN，无法拦截 Infinity）。
+* SingleMonoBase.EditorInstance 重写：修复编辑器报错的问题
+* 修复 PID 控制器导数公式中无穷大溢出问题。
 
 优化：
 * 优化按键宏逻辑，添加了按键趋势统计。

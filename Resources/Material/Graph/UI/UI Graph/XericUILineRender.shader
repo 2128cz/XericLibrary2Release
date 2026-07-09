@@ -1,6 +1,5 @@
-// Made with Amplify Shader Editor v1.9.9.1
-// Available at the Unity Asset Store - http://u3d.as/y3X 
-Shader "XUIDotBasic"
+
+Shader "XericLibrary/UIGraph/UILineRender"
 {
     Properties
     {
@@ -48,7 +47,7 @@ Shader "XUIDotBasic"
         {
             Name "Default"
         CGPROGRAM
-            #define ASE_VERSION 19901
+            #define ASE_VERSION 19908
 
             #pragma vertex vert
             #pragma fragment frag
@@ -60,7 +59,9 @@ Shader "XUIDotBasic"
             #pragma multi_compile_local _ UNITY_UI_CLIP_RECT
             #pragma multi_compile_local _ UNITY_UI_ALPHACLIP
 
-            
+            #define ASE_NEEDS_TEXTURE_COORDINATES0
+            #define ASE_NEEDS_FRAG_TEXTURE_COORDINATES0
+
 
             struct appdata_t
             {
@@ -127,10 +128,11 @@ Shader "XUIDotBasic"
                 const half invAlphaPrecision = half(1.0/alphaPrecision);
                 IN.color.a = round(IN.color.a * alphaPrecision)*invAlphaPrecision;
 
-                float4 appendResult2 = (float4(0.0 , 0.0 , 0.0 , 1.0));
+                float2 texCoord1 = IN.texcoord.xy * float2( 1,1 ) + float2( 0,0 );
+                float4 appendResult3 = (float4(texCoord1 , 0.0 , 1.0));
                 
 
-                half4 color = appendResult2;
+                half4 color = appendResult3;
 
                 #ifdef UNITY_UI_CLIP_RECT
                 half2 m = saturate((_ClipRect.zw - _ClipRect.xy - abs(IN.mask.xy)) * IN.mask.zw);
@@ -152,11 +154,3 @@ Shader "XUIDotBasic"
 	
 	Fallback Off
 }
-/*ASEBEGIN
-Version=19901
-Node;AmplifyShaderEditor.DynamicAppendNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;2;-256,0;Inherit;False;FLOAT4;4;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;1;False;1;FLOAT4;0
-Node;AmplifyShaderEditor.TextureCoordinatesNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;3;-1024,-128;Inherit;False;0;-1;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode, AmplifyShaderEditor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null;0;0,0;Float;False;True;-1;3;AmplifyShaderEditor.MaterialInspector;0;3;XUIDotBasic;5056123faa0c79b47ab6ad7e8bf059a4;True;Default;0;0;Default;2;False;True;3;1;False;;10;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;False;True;True;True;True;True;0;True;_ColorMask;False;False;False;False;False;False;False;True;True;0;True;_Stencil;255;True;_StencilReadMask;255;True;_StencilWriteMask;0;True;_StencilComp;0;True;_StencilOp;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;2;False;;True;0;True;unity_GUIZTestMode;False;True;5;Queue=Transparent=Queue=0;IgnoreProjector=True;RenderType=Transparent=RenderType;PreviewType=Plane;CanUseSpriteAtlas=True;False;False;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;3;False;0;;0;0;Standard;0;0;1;True;False;;False;0
-WireConnection;0;0;2;0
-ASEEND*/
-//CHKSM=2D7C452CAA9F9AC9B28539E122A9F5072E3B0DC3
