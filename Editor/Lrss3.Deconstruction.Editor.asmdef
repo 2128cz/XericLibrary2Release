@@ -2,8 +2,8 @@
     "name": "Lrss3.SesothoLine.Editor",
     "rootNamespace": "SesothoLineEditor",
     "references": [
-        "Lrss3.SesothoLine",
-        "Lrss3.Deconstruction"
+        "Lrss3.Deconstruction",
+        "Unity.InputSystem"
     ],
     "includePlatforms": [
         "Editor"

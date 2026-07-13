@@ -1,4 +1,5 @@
 
+
 Shader "XericLibrary/UIGraph/UIPattern"
 {
     Properties
@@ -121,7 +122,7 @@ Shader "XericLibrary/UIGraph/UIPattern"
                 OUT.ase_texcoord3.xy = v.ase_texcoord2.xy;
                 OUT.ase_tangent = v.ase_tangent;
                 
-                //setting value to unused interpolator channels and avoid initialization warnings
+                
                 OUT.ase_texcoord3.zw = 0;
 
                 v.vertex.xyz +=  float3( 0, 0, 0 ) ;
@@ -144,9 +145,9 @@ Shader "XericLibrary/UIGraph/UIPattern"
 
             fixed4 frag(v2f IN ) : SV_Target
             {
-                //Round up the alpha color coming from the interpolator (to 1.0/256.0 steps)
-                //The incoming alpha could have numerical instability, which makes it very sensible to
-                //HDR color transparency blend, when it blends with the world's texture.
+                
+                
+                
                 const half alphaPrecision = half(0xff);
                 const half invAlphaPrecision = half(1.0/alphaPrecision);
                 IN.color.a = round(IN.color.a * alphaPrecision)*invAlphaPrecision;

@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ab3d3829c73815468ed8c5ae306a6ee, type: 3}
+  m_Name: QuickGraphNodeRenderConfig
+  m_EditorClassIdentifier: 
+  NodeWidth: 120
+  NodeHeight: 80
+  BorderThickness: 5
+  ChamferSize: 0.5
+  ChamferSegments: 6
+  DefaultBackgroundColor: {r: 0.16037738, g: 0.16037738, b: 0.16037738, a: 1}
+  DefaultTextColor: {r: 0.6156863, g: 0.6156863, b: 0.6156863, a: 1}
+  TitleFontSize: 20
+  TitleFont: {fileID: 0}
+  Lod0Threshold: 0.1
+  Lod1Threshold: 0.15

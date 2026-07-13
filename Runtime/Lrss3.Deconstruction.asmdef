@@ -2,7 +2,8 @@
     "name": "Lrss3.Deconstruction",
     "rootNamespace": "Deconstruction",
     "references": [
-        "Unity.TextMeshPro"
+        "Unity.TextMeshPro",
+        "Unity.InputSystem"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

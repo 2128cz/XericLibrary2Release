@@ -43,6 +43,11 @@ Xeric Library 是一个专注代码的 Unity 扩展库。
 
 ---
 
+## 蓝图 (Blueprint)
+
+蓝图系统，用于创建运行时轻量蓝图渲染框架。
+通过内置的渲染工具实现分层绘制。
+
 ## 样式表 (XSSS)
 
 自研 Xeric Super Style Sheet (XSSS) 系统，使用 `.xsss` 自定义文本格式，类 CSS/USS 语法，专为 Unity 组件样式设计。基于字典树进行样式路径查找与匹配，支持命名空间隔离、动态监听热重载。提供完整的编辑器导入、Inspector 编辑及 PropertyDrawer 支持。
