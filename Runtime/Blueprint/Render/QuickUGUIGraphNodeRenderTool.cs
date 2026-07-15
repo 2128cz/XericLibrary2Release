@@ -29,7 +29,7 @@ namespace XericLibrary.Runtime.Blueprint.Render
 		private QuickGraphNodeRenderConfig _defaultConfig;
 
 		// --- 当前生效的配置 ---
-		private QuickGraphNodeRenderConfig Config
+		public QuickGraphNodeRenderConfig Config
 		{
 			get
 			{
@@ -56,12 +56,6 @@ namespace XericLibrary.Runtime.Blueprint.Render
 			_layerMgr = LayerContainerManager.GetForGraph(Graph, _renderRoot);
 
 			var cfg = Config;
-
-			// ── 将配置默认值写入所有节点（config → node property） ──
-			foreach (var node in Graph.Nodes)
-			{
-				ApplyConfigToNode(node, cfg);
-			}
 
 			// 视口裁剪：只渲染画布可见范围内的节点
 			var viewport = Graph.Canvas.GetViewportRect();
@@ -172,8 +166,8 @@ namespace XericLibrary.Runtime.Blueprint.Render
 						sideCount = 4,
 						chamferSize = cfg.ChamferSize,
 						chamferSegments = cfg.ChamferSegments,
-						bgColor = bgColor,
-						centerColor = Color.white,
+						bgColor = new Color32(0,0,0,0),
+						centerColor = bgColor,
 						borderColor = borderColor,
 						borderThickness = border,
 					}
@@ -235,15 +229,6 @@ namespace XericLibrary.Runtime.Blueprint.Render
 			var tmp = _layerMgr.TryGetNodeText(node, layer);
 			if (tmp != null)
 				tmp.gameObject.SetActive(false);
-		}
-
-		/// <summary>
-		/// 将配置默认值写入节点，使渲染工具直接读取节点值。
-		/// config 只控制背景色，边框色和文本色由节点初始化时定义。
-		/// </summary>
-		private static void ApplyConfigToNode(BlueprintNode node, QuickGraphNodeRenderConfig cfg)
-		{
-			node.NodeBGColor = cfg.DefaultBackgroundColor;
 		}
 
 		private void EnsureRenderRoot()

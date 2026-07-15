@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: QuickGraphInputConfig
   m_EditorClassIdentifier: 
   PanLerpSpeed: 8
-  ZoomLerpSpeed: 8
-  ZoomDivisor: 1100
+  ZoomLerpSpeed: 8.2
+  ZoomDivisor: 53
+  DragPanSpeed: 1
   MinZoom: 0.1
   MaxZoom: 3
   KeyboardPanSpeed: 600
   KeyboardZoomSpeed: 0.05
-  DragThreshold: 5
+  BoxSelectThreshold: 10

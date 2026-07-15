@@ -100,5 +100,10 @@ namespace XericLibrary.Runtime.Blueprint.Canvas
 		{
 			return _canvasTransform;
 		}
+
+		/// <summary>
+		/// Transform 组件未被销毁，画布可正常使用。
+		/// </summary>
+		public override bool IsAlive => _canvasTransform != null;
 	}
 }

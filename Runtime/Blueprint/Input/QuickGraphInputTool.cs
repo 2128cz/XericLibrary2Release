@@ -66,24 +66,21 @@ namespace XericLibrary.Runtime.Blueprint
 				_viewInitialized = true;
 			}
 
-			// ── 键盘轮询（新输入系统 Pan 动作值） ──
-			_targetPanOffset += BlueprintInputManager.LastPanDirection
+			// ── 键盘 Pan ──
+			_targetPanOffset += GraphInputTool.LastPanDirection
 				* cfg.KeyboardPanSpeed * deltaTime;
 
-			// ── 键盘轮询（新输入系统 Zoom 动作值） ──
-			// zoomInput 对键盘按键是 ±1（按下一下），对轴是 0~1 连续值。
-			// 统一按一个 scroll notch = 120 缩放，scale = 120 / ZoomDivisor
-			float zoomInput = BlueprintInputManager.LastZoomAxis;
+			// ── 键盘 / 滚轮 Zoom ──
+			float zoomInput = GraphInputTool.LastZoomAxis;
 			if (!Mathf.Approximately(zoomInput, 0f))
 			{
 				float oldZoom = _targetZoomLevel;
+				float zoomDelta = zoomInput / cfg.ZoomDivisor;
 				_targetZoomLevel = Mathf.Clamp(
-					_targetZoomLevel + zoomInput / cfg.ZoomDivisor,
+					_targetZoomLevel + zoomDelta,
 					canvas.MinZoom, canvas.MaxZoom);
-				// 以鼠标焦点为中心缩放（键盘无光标，从鼠标读取）
 				ApplyZoomFocus(ref _targetPanOffset, _targetZoomLevel, oldZoom);
-				// 归零，避免持续累加
-				BlueprintInputManager.LastZoomAxis = 0f;
+				GraphInputTool.LastZoomAxis = 0f;
 			}
 
 			// ── 平滑插值到目标值 ──
@@ -103,7 +100,7 @@ namespace XericLibrary.Runtime.Blueprint
 
 		// ===== 鼠标移动 =====
 
-		public override void OnPointerMove(Vector2 canvasPoint, Vector2 delta)
+		public override void OnPointerMove(GraphInputTool sender, Vector2 canvasPoint, Vector2 delta)
 		{
 			if (Graph == null || _isDragging) return;
 
@@ -113,22 +110,21 @@ namespace XericLibrary.Runtime.Blueprint
 
 		// ===== 鼠标按下 =====
 
-		public override void OnPointerDown(Vector2 canvasPoint, int mouseButton)
+		public override void OnPointerDown(GraphInputTool sender, Vector2 canvasPoint, int mouseButton)
 		{
 			if (Graph == null) return;
 
-			if (mouseButton == 2) // 中键 → 平移
+			if (mouseButton == 2)
 			{
 				_isDragging = true;
 				_activeDragButton = 2;
 				_dragStartPan = _targetPanOffset;
 			}
-			// 左键点击选择由元素层的 IBlueprintEventHandler.OnPointerDown 处理
 		}
 
 		// ===== 鼠标释放 =====
 
-		public override void OnPointerUp(Vector2 canvasPoint, int mouseButton)
+		public override void OnPointerUp(GraphInputTool sender, Vector2 canvasPoint, int mouseButton)
 		{
 			if (_isDragging && _activeDragButton == mouseButton)
 			{
@@ -139,20 +135,20 @@ namespace XericLibrary.Runtime.Blueprint
 
 		// ===== 拖拽 =====
 
-		public override void OnPointerDrag(Vector2 canvasPoint, Vector2 delta, int mouseButton)
+		public override void OnPointerDrag(GraphInputTool sender, Vector2 canvasPoint, Vector2 delta, int mouseButton)
 		{
 			if (Graph?.Canvas == null) return;
 
-			if (mouseButton == 2) // 中键拖拽 = 平移
+			if (mouseButton == 2)
 			{
-				_targetPanOffset += delta * Graph.Canvas.ZoomLevel;
+				_targetPanOffset += delta * Config.DragPanSpeed;
 				Graph.MarkDirty();
 			}
 		}
 
 		// ===== 滚轮 =====
 
-		public override void OnScroll(Vector2 canvasPoint, Vector2 scrollDelta)
+		public override void OnScroll(GraphInputTool sender, Vector2 canvasPoint, Vector2 scrollDelta)
 		{
 			if (Graph == null) return;
 
@@ -164,15 +160,14 @@ namespace XericLibrary.Runtime.Blueprint
 
 			if (!Mathf.Approximately(oldZoom, _targetZoomLevel))
 			{
-				// 以鼠标光标为中心缩放
 				_targetPanOffset += canvasPoint * (oldZoom - _targetZoomLevel);
 				Graph.MarkDirty();
 			}
 		}
 
-		// ===== 快捷键（仅新输入系统） =====
+		// ===== 快捷键 =====
 
-		public override void OnAction(string actionName)
+		public override void OnAction(GraphInputTool sender, string actionName)
 		{
 			if (Graph?.Canvas == null) return;
 
@@ -182,11 +177,11 @@ namespace XericLibrary.Runtime.Blueprint
 					ResetView();
 					break;
 				case BlueprintInputConstants.Undo:
-					break; // TODO
+					break;
 				case BlueprintInputConstants.Redo:
-					break; // TODO
+					break;
 				case BlueprintInputConstants.NavigateParent:
-					break; // TODO
+					break;
 			}
 		}
 

@@ -15,8 +15,8 @@ MonoBehaviour:
   NodeWidth: 120
   NodeHeight: 80
   BorderThickness: 5
-  ChamferSize: 0.5
-  ChamferSegments: 6
+  ChamferSize: 0.4
+  ChamferSegments: 7
   DefaultBackgroundColor: {r: 0.16037738, g: 0.16037738, b: 0.16037738, a: 1}
   DefaultTextColor: {r: 0.6156863, g: 0.6156863, b: 0.6156863, a: 1}
   TitleFontSize: 20

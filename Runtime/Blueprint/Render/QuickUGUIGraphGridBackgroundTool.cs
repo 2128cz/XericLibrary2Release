@@ -5,9 +5,21 @@ namespace XericLibrary.Runtime.Blueprint.Render
 {
 	/// <summary>
 	/// 快速 UGUI 图论网格背景渲染工具。
-	/// 在蓝图画布最底层创建一个全屏 Image 组件绘制网格背景，
+	/// 在蓝图画布最底层创建一个 Image 组件绘制网格背景，
 	/// 每帧将画布的 zoom / pan 同步到 Shader 的 _Transform 属性。
-	/// 全部可调参数由 QuickGraphGridBackgroundConfig 配置资产提供。
+	/// <para>
+	/// 背景 Image 在 <see cref="__Bp_RenderRoot"/> 下锚点撑满，
+	/// 只响应画布属性和 dirty flag，不会因画布重建而销毁（见 <see cref="OnInitialize"/>）。
+	/// Shader 参数（<c>_Transform</c> 的 scale/offset）在 <see cref="OnRender"/> 中随
+	/// <c>ZoomLevel / PanOffset</c> 更新，与画布拖拽共享同一属性源。
+	/// </para>
+	/// <para>
+	/// <b>材质引用注意：</b>
+	/// 必须缓存材质实例（<see cref="_backgroundMaterial"/>）并直接写入该实例。
+	/// UGUI 的 <c>Graphic.material</c> getter 可能返回 <c>materialForRendering</c>
+	/// 的副本（与 setter 存入的 <c>m_Material</c> 不同），因此 <c>_backgroundImage.material</c>
+	/// 不适合用于写 shader 属性。见 <c>Graphic.material</c> Unity 源码。
+	/// </para>
 	/// </summary>
 	[BlueprintTool(phase: ToolPhase.Render, order: 0)]
 	[BlueprintTheme("QuickGraph")]
@@ -30,7 +42,13 @@ namespace XericLibrary.Runtime.Blueprint.Render
 		}
 
 		private Image _backgroundImage;
-		private Transform _renderRoot;
+
+		/// <summary>
+		/// 缓存的背景材质实例。
+		/// 由 <see cref="Config.GetOrCreateMaterial"/> 创建，终身保留。
+		/// shader 属性始终写入此实例，避免 UGUI <c>materialForRendering</c> 副本问题。
+		/// </summary>
+		private Material _backgroundMaterial;
 
 		public override void OnInitialize()
 		{
@@ -44,14 +62,18 @@ namespace XericLibrary.Runtime.Blueprint.Render
 			SyncMaterialProperties();
 		}
 
+		/// <summary>
+		/// 在 RenderRoot 下查找或创建背景 Image。
+		/// 创建后终身保留，不随画布重建销毁。
+		/// </summary>
 		private void EnsureBackground()
 		{
 			if (_backgroundImage != null) return;
+			if (Graph?.Canvas?.GetRootTransform() == null) return;
 
-			EnsureRenderRoot();
-			if (_renderRoot == null) return;
+			var root = Graph.Canvas.GetRootTransform();
 
-			var existing = _renderRoot.Find(BackgroundGoName);
+			var existing = root.Find(BackgroundGoName);
 			if (existing != null)
 			{
 				_backgroundImage = existing.GetComponent<Image>();
@@ -68,7 +90,7 @@ namespace XericLibrary.Runtime.Blueprint.Render
 
 			var bgGo = new GameObject(BackgroundGoName, typeof(RectTransform));
 			bgGo.hideFlags = HideFlags.HideAndDontSave;
-			bgGo.transform.SetParent(_renderRoot, false);
+			bgGo.transform.SetParent(root, false);
 			bgGo.transform.SetAsFirstSibling();
 
 			var rt = bgGo.GetComponent<RectTransform>();
@@ -79,45 +101,44 @@ namespace XericLibrary.Runtime.Blueprint.Render
 
 			_backgroundImage = bgGo.AddComponent<Image>();
 			_backgroundImage.raycastTarget = true;
+			// 关闭 maskable：运行时背景 Image 不参与 UGUI Mask 裁剪，
+			// 避免父级 Mask 组件触发 materialForRendering 克隆材质实例。
+			// 材质写入（_Transform 等 shader 属性）直通 GPU，不受 IMaterialModifier 干扰。
+			_backgroundImage.maskable = false;
 
 			ApplyMaterial();
 		}
 
 		/// <summary>
-		/// 从配置获取材质并设置到 Image（仅首次执行）。
+		/// 从配置获取材质并缓存到 <see cref="_backgroundMaterial"/>，
+		/// 然后赋值给 Image。
+		/// 此方法仅执行一次，后续材质写入直接使用缓存的引用。
 		/// </summary>
 		private void ApplyMaterial()
 		{
 			if (_backgroundImage == null) return;
-			var mat = Config.GetOrCreateMaterial();
-			if (mat != null)
-				_backgroundImage.material = mat;
+			if (_backgroundMaterial != null) return;
+
+			_backgroundMaterial = Config.GetOrCreateMaterial();
+			if (_backgroundMaterial != null)
+				_backgroundImage.material = _backgroundMaterial;
 		}
 
 		/// <summary>
 		/// 每帧将当前画布 zoom / pan 同步到 Shader，
-		/// 同时写入配置中所有 Shader 属性。
+		/// 使用 <see cref="_backgroundMaterial"/> 缓存写入，确保与 GPU 使用的材质实例一致。
 		/// </summary>
 		private void SyncMaterialProperties()
 		{
 			if (_backgroundImage == null) return;
+			if (_backgroundMaterial == null) return;
 			if (Graph == null || Graph.Canvas == null) return;
-
-			var mat = _backgroundImage.material;
-			if (mat == null) return;
 
 			var rt = _backgroundImage.rectTransform;
 			float zoom = Graph.Canvas.ZoomLevel;
 			Vector2 pan = Graph.Canvas.PanOffset;
 
-			Config.ApplyToMaterial(mat, rt.rect.size, zoom, pan);
-		}
-
-		private void EnsureRenderRoot()
-		{
-			if (_renderRoot != null) return;
-			if (Graph == null || Graph.Canvas == null) return;
-			_renderRoot = Graph.Canvas.GetRootTransform();
+			Config.ApplyToMaterial(_backgroundMaterial, rt.rect.size, zoom, pan);
 		}
 
 		public override void OnDestroy()
@@ -133,9 +154,9 @@ namespace XericLibrary.Runtime.Blueprint.Render
 				_backgroundImage = null;
 			}
 
+			_backgroundMaterial = null;
 			Config.ReleaseMaterial();
 			_defaultConfig = null;
-			_renderRoot = null;
 		}
 	}
 }

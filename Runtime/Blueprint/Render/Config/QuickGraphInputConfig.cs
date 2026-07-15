@@ -31,9 +31,14 @@ namespace XericLibrary.Runtime.Blueprint.Render
 		[Range(1f, 30f)]
 		public float ZoomLerpSpeed = 8f;
 
-		[Tooltip("滚轮缩放除数。公式：zoom += scrollDelta / ZoomDivisor。\nUnity Input System 的 scrollDelta.y 标准值为 120/格，\n1200 = 每格 +0.1，600 = 每格 +0.2，300 = 每格 +0.4")]
-		[Range(100f, 5000f)]
-		public float ZoomDivisor = 1200f;
+		[Tooltip("滚轮缩放除数。公式：zoom += scrollDelta / ZoomDivisor。\n旧输入系统 scrollDelta.y 约 ±3，默认 30 = 每格 ±0.1")]
+		[Range(1f, 200f)]
+		public float ZoomDivisor = 30f;
+
+		[Header("拖拽平移")]
+		[Tooltip("中键拖拽平移速度系数。1=鼠标移动 1px，画布移动 1px（经缩放校正）")]
+		[Range(0.1f, 10f)]
+		public float DragPanSpeed = 1f;
 
 		[Header("缩放范围")]
 		[Tooltip("最小缩放级别")]
@@ -48,13 +53,13 @@ namespace XericLibrary.Runtime.Blueprint.Render
 		[Range(50f, 2000f)]
 		public float KeyboardPanSpeed = 600f;
 
-		[Tooltip("键盘 +/- 缩放速度（每次帧增量，建议 0.01~0.5）")]
+		[Tooltip("键盘 +/- 缩放速度（与 ZoomDivisor 配合，公式：zoom += 1 / ZoomDivisor）")]
 		[Range(0.005f, 0.5f)]
 		public float KeyboardZoomSpeed = 0.05f;
 
 		[Header("框选")]
-		[Tooltip("框选拖拽触发阈值（像素）")]
-		[Range(1f, 20f)]
-		public float DragThreshold = 5f;
+		[Tooltip("框选拖拽触发阈值（画布单位）。拖拽距离超过此值后才显示选框并开始框选")]
+		[Range(1f, 100f)]
+		public float BoxSelectThreshold = 10f;
 	}
 }

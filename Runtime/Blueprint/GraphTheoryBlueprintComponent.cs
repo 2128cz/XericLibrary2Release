@@ -14,7 +14,6 @@ namespace XericLibrary.Runtime.Blueprint
 {
 	/// <summary>
 	/// 图论蓝图组件 —— 在一个 UGUI Canvas 上挂载蓝图系统。
-	/// 使用 ExecuteAlways 在编辑器中也会运行，方便预览。
 	/// <para>驱动方式：
 	///  - 编辑器非运行态：EditorApplication.update → EditorTick
 	///  - 运行时：MonoBehaviour.Update</para>
@@ -45,13 +44,21 @@ namespace XericLibrary.Runtime.Blueprint
 			{
 				if (_inputActions == value) return;
 #if ENABLE_INPUT_SYSTEM
-				if (_inputActions is InputActionAsset oldAsset)
-					BlueprintInputManager.UnregisterAsset(oldAsset);
+				if (Graph != null && _inputActions is InputActionAsset oldAsset)
+				{
+					var oldTool = BlueprintToolProvider.GetToolByType<BlueprintInputTool_InputSystem>(Graph);
+					if (oldTool != null && oldTool.InputActionAsset == oldAsset)
+						oldTool.InputActionAsset = null;
+				}
 #endif
 				_inputActions = value;
 #if ENABLE_INPUT_SYSTEM
-				if (value is InputActionAsset newAsset)
-					BlueprintInputManager.RegisterAsset(newAsset);
+				if (Graph != null && value is InputActionAsset newAsset)
+				{
+					var newTool = BlueprintToolProvider.GetToolByType<BlueprintInputTool_InputSystem>(Graph);
+					if (newTool != null)
+						newTool.InputActionAsset = newAsset;
+				}
 #endif
 			}
 		}
@@ -62,7 +69,7 @@ namespace XericLibrary.Runtime.Blueprint
 
 		[Header("Test")]
 		[Tooltip("是否自动生成测试节点")]
-		[SerializeField] private bool _autoGenerateTestNodes = true;
+		[SerializeField] public bool _autoGenerateTestNodes = true;
 
 		[Header("Debug")]
 		[Tooltip("显示所有隐藏的运行时对象（HideFlags），用于调试。默认关闭。")]
@@ -111,16 +118,36 @@ namespace XericLibrary.Runtime.Blueprint
 			}
 			else
 			{
-				var unityCanvas = GetComponent<UnityEngine.Canvas>();
-				if (unityCanvas == null)
+				// 1) 找父级 Canvas（不在自身挂 Canvas）
+				var parentCanvas = GetComponentInParent<UnityEngine.Canvas>();
+				if (parentCanvas == null)
 				{
-					unityCanvas = gameObject.AddComponent<UnityEngine.Canvas>();
-					unityCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+					// 场景中无 Canvas → 创建全屏 Canvas，将自身移入
+					var canvasGo = new GameObject("Blueprint Canvas",
+						typeof(UnityEngine.Canvas),
+						typeof(UnityEngine.UI.CanvasScaler),
+						typeof(UnityEngine.UI.GraphicRaycaster));
+					var cc = canvasGo.GetComponent<UnityEngine.Canvas>();
+					cc.renderMode = RenderMode.ScreenSpaceOverlay;
+					canvasGo.transform.SetParent(transform.parent, false);
+					canvasGo.transform.SetAsLastSibling();
+					transform.SetParent(canvasGo.transform, false);
+					parentCanvas = cc;
 				}
-				if (GetComponent<UnityEngine.UI.GraphicRaycaster>() == null)
-					gameObject.AddComponent<UnityEngine.UI.GraphicRaycaster>();
 
-				Canvas = new ScreenSpaceBlueprintCanvas(unityCanvas);
+				// 2) 创建渲染根子项（所有蓝图层挂载于此，由外层的 Mask 裁剪）
+				var renderRootGo = new GameObject("__Bp_RenderRoot",
+					typeof(RectTransform));
+				renderRootGo.hideFlags = HideFlags.DontSave;
+				var renderRootRt = renderRootGo.GetComponent<RectTransform>();
+				renderRootRt.SetParent(transform, false);
+				renderRootRt.anchorMin = Vector2.zero;
+				renderRootRt.anchorMax = Vector2.one;
+				renderRootRt.offsetMin = Vector2.zero;
+				renderRootRt.offsetMax = Vector2.zero;
+
+				// 3) 以父级 Canvas + 渲染根构建画布适配器
+				Canvas = new ScreenSpaceBlueprintCanvas(parentCanvas, renderRootRt);
 			}
 		}
 
@@ -143,16 +170,15 @@ namespace XericLibrary.Runtime.Blueprint
 		private void SetupInput()
 		{
 #if ENABLE_INPUT_SYSTEM
-			EnsureEventSystem(_inputActions as InputActionAsset);
-
 			if (_inputActions is InputActionAsset asset)
 			{
-				BlueprintInputManager.RegisterAsset(asset);
+				EnsureEventSystem(asset);
+				// 将 InputActionAsset 传递给输入工具（由工具自身管理绑定）
+				var tool = BlueprintToolProvider.GetToolByType<BlueprintInputTool_InputSystem>(Graph);
+				if (tool != null)
+					tool.InputActionAsset = asset;
 			}
-#else
-			EnsureEventSystem(null);
 #endif
-			BlueprintInputManager.SetFocusedGraph(Graph);
 		}
 
 #if ENABLE_INPUT_SYSTEM
@@ -190,7 +216,7 @@ namespace XericLibrary.Runtime.Blueprint
 			else
 #endif
 			{
-				if (eventSys.currentInputModule == null)
+				if (eventSys.GetComponent<StandaloneInputModule>() == null)
 				{
 					eventSys.gameObject.AddComponent<StandaloneInputModule>();
 				}
@@ -277,15 +303,12 @@ namespace XericLibrary.Runtime.Blueprint
 
 			var node1 = new GraphTheoryNode("Node 1", Color.red);
 			node1.Position = new Vector2(startX, centerY);
-			node1.NodeSize = new Vector2(90, 130);
 
 			var node2 = new GraphTheoryNode("Node 2", Color.green);
 			node2.Position = new Vector2(startX + spacing, centerY);
-			node2.NodeSize = new Vector2(90, 130);
 
 			var node3 = new GraphTheoryNode("Node 3", Color.blue);
 			node3.Position = new Vector2(startX + spacing * 2, centerY);
-			node3.NodeSize = new Vector2(90, 130);
 
 			Graph.AddNode(node1);
 			Graph.AddNode(node2);
@@ -295,12 +318,10 @@ namespace XericLibrary.Runtime.Blueprint
 			Graph.TryConnectPorts(node2.OutputPorts[0], node3.InputPorts[0]);
 
 			var node4 = new GraphTheoryNode("Node 4", Color.yellow);
-			node4.Position = new Vector2(startX + spacing, centerY + branchOffset);
-			node4.NodeSize = new Vector2(90, 130);
+			node4.Position = new Vector2(startX + spacing * 2, centerY + branchOffset);
 
 			var node5 = new GraphTheoryNode("Node 5", Color.cyan);
-			node5.Position = new Vector2(startX + spacing, centerY - branchOffset);
-			node5.NodeSize = new Vector2(90, 130);
+			node5.Position = new Vector2(startX + spacing * 2, centerY - branchOffset);
 
 			Graph.AddNode(node4);
 			Graph.AddNode(node5);
@@ -315,12 +336,6 @@ namespace XericLibrary.Runtime.Blueprint
 		{
 #if UNITY_EDITOR
 			EditorApplication.update -= EditorTick;
-#endif
-			BlueprintInputManager.SetFocusedGraph(null);
-
-#if ENABLE_INPUT_SYSTEM
-			if (_inputActions is InputActionAsset asset)
-				BlueprintInputManager.UnregisterAsset(asset);
 #endif
 
 			if (Graph != null)
