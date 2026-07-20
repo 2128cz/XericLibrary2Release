@@ -2519,6 +2519,13 @@
             <param name="rhs"></param>
             <returns></returns>
         </member>
+        <member name="M:Deconstruction.Trajectory.TrajectoryBase.ToVector2(System.ValueTuple{System.Double,System.Double})">
+            <summary>
+            转为二维矢量
+            </summary>
+            <param name="val"></param>
+            <returns></returns>
+        </member>
         <member name="M:Deconstruction.Trajectory.TrajectoryBase.PolarCoord2UnitSpace(System.Double)">
             <summary>
             极坐标空间转单位空间(指的是将(-π, π)范围的取值转为(0, 1))
@@ -2682,6 +2689,12 @@
             <summary>
             跳转到下一步
             </summary>
+        </member>
+        <member name="M:Deconstruction.Type.DMToolSlot.WaitForUserInput_OpSlot.ReplaceThis(Deconstruction.Type.DMToolSlot.OperateSlotBase)">
+            <summary>
+            替换这个
+            </summary>
+            <param name="newSlot"></param>
         </member>
         <member name="T:Deconstruction.Type.DMToolSlot.OperateSlotBase">
             <summary>

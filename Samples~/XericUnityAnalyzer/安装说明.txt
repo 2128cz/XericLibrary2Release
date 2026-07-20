@@ -1,9 +1,4 @@
-安装说明
---------
-
-这个目录包含 Xeric Library 的 Roslyn 语法分析器 DLL。
-
-重要：DLL 不能放在深层目录！
+Xeric Library Roslyn 语法分析器 DLL 使用说明
 ==============================
 
 Rider / VS 等 IDE 在扫描 Roslyn Analyzer 时，只会识别浅层目录下的 DLL。

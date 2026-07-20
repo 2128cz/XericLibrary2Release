@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Serialization;
+using XericLibrary.Runtime;
 using XericLibrary.Runtime.CustomEditor;
 using XericLibrary.Runtime.MacroLibrary;
-using XericLibrary.Runtime.Type;
 
 #if UNITY_EDITOR
 using UnityEditor;
