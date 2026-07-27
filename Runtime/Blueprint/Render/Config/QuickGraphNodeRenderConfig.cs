@@ -16,10 +16,7 @@ namespace XericLibrary.Runtime.Blueprint.Render
 	public class QuickGraphNodeRenderConfig : BlueprintToolConfigBase
 	{
 		/// <summary>目标工具类型</summary>
-		public override System.Type TargetToolType
-		{
-			get { return typeof(QuickUGUIGraphNodeRenderTool); }
-		}
+		public override System.Type TargetToolType => typeof(NodeCanvasRenderTool);
 
 		[Header("尺寸")]
 		[Tooltip("节点宽度（像素）")]

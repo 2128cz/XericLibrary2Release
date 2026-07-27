@@ -17,10 +17,7 @@ namespace XericLibrary.Runtime.Blueprint.Render
 	public class QuickGraphWireRenderConfig : BlueprintToolConfigBase
 	{
 		/// <summary>目标工具类型</summary>
-		public override System.Type TargetToolType
-		{
-			get { return typeof(QuickUGUIGraphWireRenderTool); }
-		}
+		public override System.Type TargetToolType => typeof(WireCanvasRenderTool);
 
 		[Header("连线")]
 		[Tooltip("连线宽度（像素）")]
