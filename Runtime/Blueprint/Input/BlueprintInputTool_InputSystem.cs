@@ -11,7 +11,6 @@ namespace XericLibrary.Runtime.Blueprint
 	/// 不再依赖 <c>BlueprintInputManager</c> 管理器。
 	/// </summary>
 	[BlueprintTool(phase: ToolPhase.PreUpdate, order: 1)]
-	[BlueprintTheme("QuickGraph")]
 	public class BlueprintInputTool_InputSystem : BlueprintInputTool_UGUI
 	{
 		private InputActionAsset _inputActionAsset;
@@ -47,10 +46,10 @@ namespace XericLibrary.Runtime.Blueprint
 		public override void OnInitialize()
 		{
 			// 创建回调委托（确保 Bind/Unbind 使用同一引用）
-			_panHandler   = ctx => GraphInputTool.LastPanDirection = ctx.ReadValue<Vector2>();
-			_panCanceled  = _   => GraphInputTool.LastPanDirection = Vector2.zero;
-			_zoomHandler  = ctx => GraphInputTool.LastZoomAxis = ctx.ReadValue<float>();
-			_zoomCanceled = _   => GraphInputTool.LastZoomAxis = 0f;
+			_panHandler   = ctx => PanDirection = ctx.ReadValue<Vector2>();
+			_panCanceled  = _   => PanDirection = Vector2.zero;
+			_zoomHandler  = ctx => ZoomAxis = ctx.ReadValue<float>();
+			_zoomCanceled = _   => ZoomAxis = 0f;
 			_homeHandler  = _   => DispatchShortcut(BlueprintInputConstants.FocusHome);
 			_undoHandler  = _   => DispatchShortcut(BlueprintInputConstants.Undo);
 			_redoHandler  = _   => DispatchShortcut(BlueprintInputConstants.Redo);

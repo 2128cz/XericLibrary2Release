@@ -35,23 +35,16 @@ namespace XericLibrary.Runtime.Blueprint.Canvas
 		/// </summary>
 		/// <param name="screenPoint">屏幕空间的坐标点</param>
 		/// <returns>画布空间的坐标点</returns>
-		public override Vector2 ScreenToCanvas(Vector2 screenPoint)
+		public override Vector2 ScreenToLocal(Vector2 screenPoint)
 		{
-			if (_camera == null)
-			{
-				return Vector2.zero;
-			}
+			if (_camera == null) return Vector2.zero;
 
 			Ray ray = _camera.ScreenPointToRay(screenPoint);
 			Plane plane = new Plane(-_canvasTransform.forward, _canvasTransform.position);
-			if (plane.Raycast(ray, out float dist))
-			{
-				Vector3 worldPoint = ray.GetPoint(dist);
-				Vector3 local = _canvasTransform.InverseTransformPoint(worldPoint);
-				return (new Vector2(local.x, local.y) - _panOffset) / _zoomLevel;
-			}
-
-			return Vector2.zero;
+			if (!plane.Raycast(ray, out float dist)) return Vector2.zero;
+			Vector3 worldPoint = ray.GetPoint(dist);
+			Vector3 local = _canvasTransform.InverseTransformPoint(worldPoint);
+			return new Vector2(local.x, local.y);
 		}
 
 		/// <summary>

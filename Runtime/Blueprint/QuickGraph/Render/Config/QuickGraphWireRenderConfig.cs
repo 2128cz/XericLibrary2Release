@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using XericLibrary.Runtime.UIGraph;
 
-namespace XericLibrary.Runtime.Blueprint.Render
+namespace XericLibrary.Runtime.Blueprint.QuickGraph
 {
 	/// <summary>
 	/// QuickGraph 连线渲染配置表 —— 控制贝塞尔曲线宽度、箭头形状等全部视觉参数。
@@ -23,6 +23,10 @@ namespace XericLibrary.Runtime.Blueprint.Render
 		[Tooltip("连线宽度（像素）")]
 		[Range(1f, 20f)]
 		public float WireWidth = 5f;
+
+		[Tooltip("线条额外点击命中半径（画布单位）；实际半径至少为线宽的一半）。")]
+		[Range(0f, 40f)]
+		public float HitTestRadius = 8f;
 
 		[Header("贝塞尔手柄")]
 		[Tooltip("源端手柄从端口伸出的距离（画布单位）。数值越大曲线越平缓。")]

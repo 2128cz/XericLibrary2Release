@@ -23,8 +23,11 @@ namespace XericLibrary.Runtime.Blueprint
 
 		private const string BackgroundGoName = "__Bp_GridBackground";
 
-		// 上一帧的鼠标画布坐标（用于计算 PointerMove delta）
+		// 上一帧坐标：普通交互使用 canvas delta，中键平移使用不受 Pan/Zoom 影响的 local delta。
 		private Vector2 _lastCanvasPos;
+		private Vector2 _lastLocalPos;
+		private Vector2 _dragStartCanvasPos;
+		private Vector2 _dragStartLocalPos;
 
 		/// <summary>
 		/// 是否通过 EventTrigger 处理鼠标按键/拖拽/滚轮事件。
@@ -37,6 +40,7 @@ namespace XericLibrary.Runtime.Blueprint
 
 		public override void OnInitialize()
 		{
+			GraphInputTool.RegisterAdapter(Graph, this);
 			TryBindEventTrigger();
 		}
 
@@ -62,18 +66,17 @@ namespace XericLibrary.Runtime.Blueprint
 				return;
 			}
 
-			var canvasPt = Graph.Canvas != null
-				? Graph.Canvas.ScreenToCanvas(BlueprintUGUIInputManager.MousePosition)
-				: Vector2.zero;
+			var canvasPt = Graph.Canvas.ScreenToCanvas(BlueprintUGUIInputManager.MousePosition);
+			var localPt = Graph.Canvas.ScreenToLocal(BlueprintUGUIInputManager.MousePosition);
+			PointerLocalDelta = localPt - _lastLocalPos;
 			UpdateCursorContext(canvasPt);
 
 			// ── 每帧分发 PointerMove ──
 			var delta = canvasPt - _lastCanvasPos;
 			if (delta.sqrMagnitude > 0.0001f || _lastCanvasPos == Vector2.zero)
-			{
 				BlueprintToolProvider.DispatchPointerMove(Graph, this, canvasPt, delta);
-			}
 			_lastCanvasPos = canvasPt;
+			_lastLocalPos = localPt;
 		}
 
 		/// <summary>
@@ -97,6 +100,7 @@ namespace XericLibrary.Runtime.Blueprint
 
 		public override void OnDestroy()
 		{
+			GraphInputTool.UnregisterAdapter(Graph, this);
 			UnbindEventTrigger();
 		}
 
@@ -237,13 +241,13 @@ namespace XericLibrary.Runtime.Blueprint
 			}
 		}
 
-		private Vector2 _dragStartPos;
 		private bool _hadDragThisClick;
 
 		private void OnBeginDragEvent(BaseEventData data)
 		{
 			if (!(data is PointerEventData pData)) return;
-			_dragStartPos = PointerCanvasPos(pData);
+			_dragStartCanvasPos = PointerCanvasPos(pData);
+			_dragStartLocalPos = Graph.Canvas.ScreenToLocal(pData.position);
 			_hadDragThisClick = true;
 		}
 
@@ -251,10 +255,13 @@ namespace XericLibrary.Runtime.Blueprint
 		{
 			if (!(data is PointerEventData pData)) return;
 			var current = PointerCanvasPos(pData);
-			var delta = current - _dragStartPos;
-			_dragStartPos = current;
+			var currentLocal = Graph.Canvas.ScreenToLocal(pData.position);
+			var canvasDelta = current - _dragStartCanvasPos;
+			PointerLocalDelta = currentLocal - _dragStartLocalPos;
+			_dragStartCanvasPos = current;
+			_dragStartLocalPos = currentLocal;
 			UpdateCursorContext(current);
-			BlueprintToolProvider.DispatchPointerDrag(Graph, this, current, delta, (int)pData.button);
+			BlueprintToolProvider.DispatchPointerDrag(Graph, this, current, canvasDelta, (int)pData.button);
 		}
 
 		private void OnEndDragEvent(BaseEventData data)

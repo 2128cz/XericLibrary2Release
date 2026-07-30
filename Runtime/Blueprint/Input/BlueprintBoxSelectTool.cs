@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using XericLibrary.Runtime.Blueprint.Render;
 
 namespace XericLibrary.Runtime.Blueprint
 {
@@ -9,14 +8,13 @@ namespace XericLibrary.Runtime.Blueprint
 	/// 蓝图框选工具 —— 鼠标左键在空白区域拖拽，绘制矩形选框，
 	/// 释放时计算框选范围内所有元素的交集并输出统计日志。
 	/// <para>选框 UGUI Image 默认渲染在所有层之上（SetAsLastSibling）。</para>
-	/// <para>框选结果保存在 <see cref="SelectedElements"/> 中供其他工具读取。</para>
+	/// <para>框选结果通过 <see cref="BlueprintToolProvider.GetSelector"/>(Graph).<see cref="SelectorHandle.CurrentSelection"/> 读取。</para>
 	/// <para>
-	/// 选框仅在拖拽距离超过 <c>QuickGraphInputConfig.BoxSelectThreshold</c> 后才显示，
+	/// 选框仅在拖拽距离超过 <see cref="BoxSelectThreshold"/> 后才显示，
 	/// 避免误触显示闪烁。
 	/// </para>
 	/// </summary>
 	[BlueprintTool(phase: ToolPhase.PreUpdate, order: 60)]
-	[BlueprintTheme("QuickGraph")]
 	public class BlueprintBoxSelectTool : BlueprintTool
 	{
 		// ---------- 状态 ----------
@@ -34,30 +32,12 @@ namespace XericLibrary.Runtime.Blueprint
 
 		// ---------- 配置 ----------
 
-		private QuickGraphInputConfig _boxConfig;
-
-		private QuickGraphInputConfig BoxConfig
-		{
-			get
-			{
-				if (_boxConfig == null && Graph != null)
-				{
-					foreach (var c in Graph.ConfigAssets)
-					{
-						if (c is QuickGraphInputConfig qc) { _boxConfig = qc; break; }
-					}
-					if (_boxConfig == null)
-					{
-						_boxConfig = ScriptableObject.CreateInstance<QuickGraphInputConfig>();
-					}
-				}
-				return _boxConfig;
-			}
-		}
+		/// <summary>框选拖拽触发阈值（画布单位）。拖拽距离超过此值后才显示选框并开始框选。</summary>
+		public float BoxSelectThreshold = 10f;
 
 		// ---------- 结果 ----------
 
-		/// <summary>结果：通过 Provider.CurrentSelectElements 读取框选结果。</summary>
+		/// <summary>结果：通过 Provider.Selector.CurrentSelection 读取框选结果。</summary>
 
 		// ===== 鼠标按下 =====
 
@@ -85,7 +65,7 @@ namespace XericLibrary.Runtime.Blueprint
 			_dragEndCanvas = canvasPoint;
 
 			// 检查拖拽距离是否超过阈值
-			float threshold = BoxConfig.BoxSelectThreshold;
+			float threshold = BoxSelectThreshold;
 			float dragDist = Vector2.Distance(_dragStartCanvas, _dragEndCanvas);
 
 			if (!_boxVisible && dragDist > threshold)
@@ -183,7 +163,7 @@ namespace XericLibrary.Runtime.Blueprint
 			UpdateSelectionBox();
 
 			// 计算选框内的元素（画布坐标空间）
-			BlueprintToolProvider.CurrentSelectElements.Clear();
+			var selectList = new System.Collections.Generic.List<IBlueprintElement>();
 			var min = new Vector2(
 				Mathf.Min(_dragStartCanvas.x, _dragEndCanvas.x),
 				Mathf.Min(_dragStartCanvas.y, _dragEndCanvas.y));
@@ -192,14 +172,11 @@ namespace XericLibrary.Runtime.Blueprint
 				Mathf.Max(_dragStartCanvas.y, _dragEndCanvas.y));
 			var selectRect = new Rect(min, max - min);
 
-			foreach (var element in Graph.Elements)
-			{
-				if (element == null) continue;
-				if (element.BoundingBox.Overlaps(selectRect))
-				{
-					BlueprintToolProvider.CurrentSelectElements.Add(element);
-				}
-			}
+			var selector = BlueprintToolProvider.GetSelector(Graph);
+			selector.RectHitTest(Graph, selectRect, selectList);
+
+			// 通过当前 Graph 的 SelectorHandle 提交多选
+			selector.CommitMultiSelection(selectList);
 
 			// 销毁选框
 			DestroySelectionBox();
@@ -207,12 +184,14 @@ namespace XericLibrary.Runtime.Blueprint
 
 		private void SelectAtPoint(Vector2 canvasPoint)
 		{
-			BlueprintToolProvider.CurrentSelectElements.Clear();
 			if (Graph == null) return;
 
-			var hit = Graph.HitTest(canvasPoint);
+			var selector = BlueprintToolProvider.GetSelector(Graph);
+			var hit = selector.HitTest(Graph, canvasPoint);
 			if (hit != null)
-				BlueprintToolProvider.CurrentSelectElements.Add(hit);
+				selector.CommitSelection(hit);
+			else
+				selector.SwapToHistory();
 		}
 
 		private void DestroySelectionBox()

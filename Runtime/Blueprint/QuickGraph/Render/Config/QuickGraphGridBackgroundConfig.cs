@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace XericLibrary.Runtime.Blueprint.Render
+namespace XericLibrary.Runtime.Blueprint.QuickGraph
 {
 	/// <summary>
 	/// QuickGraph 网格背景配置表 —— 控制 Shader 全部可调参数。
@@ -99,28 +99,16 @@ namespace XericLibrary.Runtime.Blueprint.Render
 		{
 			if (mat == null) return;
 
-			// ── _Transform: 基于画布 zoom / pan 同步 ──
-			// Shader 中: texCoord2 = uv * _Transform.xy + _Transform.zw
-			// uv (0,0) = Image 左下角, uv (1,1) = Image 右上角
-			// CanvasToLocal: localPoint = canvasPoint * zoom + panOffset
-			// UV ↔ localPoint:     uv = localPoint / rectSize + 0.5f
-			//                        ^^^^^ pivot(0.5,0.5) 的 UV 偏移
-			// 代入: uv = (canvasPoint * zoom + panOffset) / rectSize + 0.5f
-			// 目标: gridPos = canvasPoint / GridSize = uv * scale + offset
-			// 解出: scale = rectSize / (zoom * GridSize)
-			//      offset = -(panOffset + 0.5 * rectSize) / (zoom * GridSize)
 			float sx = rectSize.x / (zoom * GridSize);
 			float sy = rectSize.y / (zoom * GridSize);
 			float ox = -(panOffset.x + 0.5f * rectSize.x) / (zoom * GridSize);
 			float oy = -(panOffset.y + 0.5f * rectSize.y) / (zoom * GridSize);
 			mat.SetVector("_Transform", new Vector4(sx, sy, ox, oy));
 
-			// ── 网格线参数 ──
 			mat.SetFloat("_GridOverlayPower", GridOverlayPower);
 			mat.SetFloat("_GridLineThreshold", GridLineThreshold);
 			mat.SetFloat("_GridExp", GridExp);
 
-			// ── 颜色 ──
 			mat.SetColor("_GridColor", GridColor);
 			mat.SetColor("_GridBackgroundColor", GridBackgroundColor);
 		}

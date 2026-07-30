@@ -9,17 +9,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ab3d3829c73815468ed8c5ae306a6ee, type: 3}
+  m_Script: {fileID: 11500000, guid: 8038bf45323375b46a3a2820ddfe212e, type: 3}
   m_Name: QuickGraphNodeRenderConfig
   m_EditorClassIdentifier: 
-  NodeWidth: 120
-  NodeHeight: 80
-  BorderThickness: 5
-  ChamferSize: 0.4
-  ChamferSegments: 7
-  DefaultBackgroundColor: {r: 0.16037738, g: 0.16037738, b: 0.16037738, a: 1}
-  DefaultTextColor: {r: 0.6156863, g: 0.6156863, b: 0.6156863, a: 1}
-  TitleFontSize: 20
+  NodeWidth: 90
+  NodeHeight: 130
+  BorderThickness: 3
+  ChamferSize: 0.2
+  ChamferSegments: 4
+  DefaultBackgroundColor: {r: 0.16, g: 0.16, b: 0.16, a: 1}
+  DefaultTextColor: {r: 1, g: 1, b: 1, a: 1}
+  TitleFontSize: 14
   TitleFont: {fileID: 0}
-  Lod0Threshold: 0.1
-  Lod1Threshold: 0.15
+  Lod0Threshold: 0.3
+  Lod1Threshold: 0.7

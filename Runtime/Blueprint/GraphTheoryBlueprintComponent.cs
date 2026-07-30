@@ -1,11 +1,7 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
-#endif
-#if UNITY_EDITOR
-using UnityEditor;
 #endif
 using XericLibrary.Runtime.Blueprint.Canvas;
 using XericLibrary.Runtime.Blueprint.Element;
@@ -13,10 +9,8 @@ using XericLibrary.Runtime.Blueprint.Element;
 namespace XericLibrary.Runtime.Blueprint
 {
 	/// <summary>
-	/// 图论蓝图组件 —— 在一个 UGUI Canvas 上挂载蓝图系统。
-	/// <para>驱动方式：
-	///  - 编辑器非运行态：EditorApplication.update → EditorTick
-	///  - 运行时：MonoBehaviour.Update</para>
+	/// 图论蓝图组件：Unity Inspector 配置、画布创建及调试入口。
+	/// 帧驱动完全由 <see cref="BlueprintGraphSystem"/> 承担。
 	/// </summary>
 	[DisallowMultipleComponent]
 	[ExecuteAlways]
@@ -29,9 +23,12 @@ namespace XericLibrary.Runtime.Blueprint
 		[Tooltip("世界空间画布的相机引用")]
 		[SerializeField] private Camera _worldCamera;
 
-		[Header("Theme")]
-		[Tooltip("蓝图主题名称。留空使用默认（所有 QuickGraph 工具可见）。")]
-		[SerializeField] private string _themeName = string.Empty;
+		[Tooltip("屏幕空间模式实际可见区域；留空时使用蓝图宿主 RectTransform。")]
+		[SerializeField] private RectTransform _viewportRectTransform;
+
+		[Header("Blueprint Context")]
+		[Tooltip("嵌入式图配置：主题与按 TargetToolType 解析的工具配置资产。")]
+		[SerializeField] private BlueprintGraphContext _context = new BlueprintGraphContext();
 
 		[Header("Input")]
 		[Tooltip("新输入系统 InputActionAsset。留空则仅支持鼠标基础操作（中键拖动平移、滚轮缩放）。")]
@@ -63,10 +60,6 @@ namespace XericLibrary.Runtime.Blueprint
 			}
 		}
 
-		[Header("Tool Config Overrides")]
-		[Tooltip("拖拽配置资产到此，渲染时自动按工具类型+主题匹配。")]
-		[SerializeField] private List<BlueprintToolConfigBase> _toolConfigAssets = new List<BlueprintToolConfigBase>();
-
 		[Header("Test")]
 		[Tooltip("是否自动生成测试节点")]
 		[SerializeField] public bool _autoGenerateTestNodes = true;
@@ -81,17 +74,16 @@ namespace XericLibrary.Runtime.Blueprint
 		/// <summary>当前画布</summary>
 		public IBlueprintCanvas Canvas { get; private set; }
 
+		public BlueprintGraphContext Context => _context;
 		public string ThemeName
 		{
-			get { return _themeName; }
+			get { return _context?.ThemeName ?? string.Empty; }
 			set
 			{
-				_themeName = value ?? string.Empty;
-				if (Graph != null)
-				{
-					Graph.ThemeName = _themeName;
-					Graph.RefreshTheme();
-				}
+				if (_context == null)
+					_context = new BlueprintGraphContext();
+				_context.ThemeName = value ?? string.Empty;
+				Graph?.RequestContextRefresh(_context);
 			}
 		}
 
@@ -99,12 +91,8 @@ namespace XericLibrary.Runtime.Blueprint
 
 		private void Awake()
 		{
-#if UNITY_EDITOR
-			// 编辑器下提前注册 tick
-			if (!Application.isPlaying)
-				EditorApplication.update += EditorTick;
-#endif
-
+			if (_context == null)
+				_context = new BlueprintGraphContext();
 			CreateCanvas();
 			CreateGraph();
 			SetupInput();
@@ -132,6 +120,18 @@ namespace XericLibrary.Runtime.Blueprint
 					canvasGo.transform.SetParent(transform.parent, false);
 					canvasGo.transform.SetAsLastSibling();
 					transform.SetParent(canvasGo.transform, false);
+
+					// 将组件自身的 RectTransform 撑满整个 Canvas，
+					// 确保 __Bp_RenderRoot 的尺寸与屏幕一致，
+					// 避免 GetViewportRect() 基于默认 (100x100) 尺寸错误裁剪节点。
+					var selfRt = GetComponent<RectTransform>();
+					if (selfRt == null)
+						selfRt = gameObject.AddComponent<RectTransform>();
+					selfRt.anchorMin = Vector2.zero;
+					selfRt.anchorMax = Vector2.one;
+					selfRt.offsetMin = Vector2.zero;
+					selfRt.offsetMax = Vector2.zero;
+
 					parentCanvas = cc;
 				}
 
@@ -146,25 +146,17 @@ namespace XericLibrary.Runtime.Blueprint
 				renderRootRt.offsetMin = Vector2.zero;
 				renderRootRt.offsetMax = Vector2.zero;
 
-				// 3) 以父级 Canvas + 渲染根构建画布适配器
-				Canvas = new ScreenSpaceBlueprintCanvas(parentCanvas, renderRootRt);
+				// 3) 以父级 Canvas + 渲染根构建画布适配器；实际视口默认是宿主自身而非 RenderRoot。
+				var hostRect = GetComponent<RectTransform>();
+				Canvas = new ScreenSpaceBlueprintCanvas(parentCanvas, renderRootRt,
+					_viewportRectTransform != null ? _viewportRectTransform : hostRect);
 			}
 		}
 
 		private void CreateGraph()
 		{
-			var system = BlueprintGraphSystem.GlobalInstance;
-			Graph = system.CreateGraph(Canvas);
-			Graph.ConfigAssets = _toolConfigAssets;
-
-			if (!string.IsNullOrEmpty(_themeName))
-			{
-				Graph.ThemeName = _themeName;
-				Graph.RefreshTheme();
-			}
-
-			// 立即执行一次渲染，确保背景等基础设施在首帧 OnUpdate 前就绪
-			Graph.LateUpdate();
+			// System 是唯一帧驱动；Context 在 Initialize/工具构建之前绑定。
+			Graph = BlueprintGraphSystem.GlobalInstance.CreateGraph(Canvas, _context);
 		}
 
 		private void SetupInput()
@@ -250,42 +242,14 @@ namespace XericLibrary.Runtime.Blueprint
 				GenerateTestNodes();
 		}
 
-		// ===== 驱动：Update（运行时）=====
-
-		private void Update()
-		{
-#if UNITY_EDITOR
-			if (!Application.isPlaying) return;
-#endif
-
-			if (Graph == null) return;
-			Graph.Update();
-			Graph.LateUpdate();
-			SyncDebugVisibility();
-		}
-
-#if UNITY_EDITOR
-		// ===== 驱动：EditorTick（编辑器非运行态）=====
-
-		private void EditorTick()
-		{
-			if (this == null || Graph == null) return;
-
-			Graph.ConfigAssets = _toolConfigAssets;
-			Graph.InvalidateToolConfigCache();
-
-			Graph.Update();
-			Graph.LateUpdate();
-			SyncDebugVisibility();
-		}
-
+		// 组件仅承担 Inspector 配置与调试入口；图的 Update/LateUpdate 只由 BlueprintGraphSystem 驱动。
 		private void OnValidate()
 		{
-			if (Graph == null || Application.isPlaying) return;
-			Graph.ConfigAssets = _toolConfigAssets;
-			Graph.InvalidateToolConfigCache();
+			if (_context == null)
+				_context = new BlueprintGraphContext();
+			Graph?.RequestContextRefresh(_context);
+			SyncDebugVisibility();
 		}
-#endif
 
 		// ===== 测试节点生成 =====
 
@@ -334,10 +298,6 @@ namespace XericLibrary.Runtime.Blueprint
 
 		private void OnDestroy()
 		{
-#if UNITY_EDITOR
-			EditorApplication.update -= EditorTick;
-#endif
-
 			if (Graph != null)
 			{
 				var system = BlueprintGraphSystem.LazyInstance;

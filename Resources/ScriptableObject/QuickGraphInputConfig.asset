@@ -9,15 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cfce52570fac4f5488becd85ce4f023b, type: 3}
+  m_Script: {fileID: 11500000, guid: 4735b93342f4fde4a8ed46dd28b46d4c, type: 3}
   m_Name: QuickGraphInputConfig
   m_EditorClassIdentifier: 
-  PanLerpSpeed: 8
-  ZoomLerpSpeed: 8.2
-  ZoomDivisor: 53
+  ZoomDivisor: 30
   DragPanSpeed: 1
   MinZoom: 0.1
   MaxZoom: 3
   KeyboardPanSpeed: 600
   KeyboardZoomSpeed: 0.05
-  BoxSelectThreshold: 10

@@ -1,0 +1,59 @@
+// ==================================================
+// Xeric Style Sheet (XSSS) - 超级干燥样式表 - 默认样式
+// ==================================================
+
+namespace: default
+
+button/TargetGraphic/ColorTint:UnityEngine.UI.ColorBlock/ {
+.NormalColor = (1,1,1,1)
+.HighlightedColor = (0.96,0.96,0.96,1)
+.PressedColor = (0.78,0.78,0.78,1)
+.SelectedColor = (0.96,0.96,0.96,1)
+.DisabledColor = (0.6,0.6,0.6,0.8)
+}
+
+button/TargetGraphic/SpriteState:UnityEngine.UI.SpriteState/ {
+.NormalColor = guid::UnityEngine.Sprite
+.HighlightedColor = guid::UnityEngine.Sprite
+.PressedColor = guid::UnityEngine.Sprite
+.SelectedColor = guid::UnityEngine.Sprite
+.DisabledColor = guid::UnityEngine.Sprite
+}
+
+button/TargetGraphic/Animation/ {
+.NormalColor = None
+.HighlightedColor = None
+.PressedColor = None
+.SelectedColor = None
+.DisabledColor = None
+}
+
+toggle/TargetGraphic/ColorTint:UnityEngine.UI.ColorBlock/ {
+.NormalColor = (1,1,1,1)
+.HighlightedColor = (0.96,0.96,0.96,1)
+.PressedColor = (0.78,0.78,0.78,1)
+.SelectedColor = (0.96,0.96,0.96,1)
+.DisabledColor = (0.6,0.6,0.6,0.8)
+}
+
+toggle/TargetGraphic/SpriteState:UnityEngine.UI.SpriteState/ {
+.NormalColor = guid::UnityEngine.Sprite
+.HighlightedColor = guid::UnityEngine.Sprite
+.PressedColor = guid::UnityEngine.Sprite
+.SelectedColor = guid::UnityEngine.Sprite
+.DisabledColor = guid::UnityEngine.Sprite
+}
+
+toggle/TargetGraphic/Animation/ {
+.NormalColor = None
+.HighlightedColor = None
+.PressedColor = None
+.SelectedColor = None
+.DisabledColor = None
+}
+
+image/ColorTint:UnityEngine.UI.ColorBlock/ {
+.NormalColor = (1,1,1,1)
+.Sprite = guid::UnityEngine.Sprite
+.Material = guid::UnityEngine.Material
+}

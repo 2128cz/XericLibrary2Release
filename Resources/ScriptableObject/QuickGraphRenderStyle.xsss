@@ -1,0 +1,41 @@
+// QuickGraph runtime render style
+
+
+
+
+
+namespace: quickgraph
+
+quickgraph/node/ {
+  width = 130:float
+  height = 80:float
+  border = 3:float
+  chamfer = 0.2:float
+  chamferSegments = 4:int
+  titleFontSize = 14:float
+}
+
+quickgraph/wire/ {
+  width = 5:float
+  hitRadius = 8:float
+  sourceHandle = 80:float
+  targetHandle = 80:float
+  arrowWidth = 12:float
+  arrowHeight = 10:float
+  arrowProgress = 1:float
+  arrowDepth = -1:float
+  tessellation = 32:int
+  arrowShape = Triangle:XericLibrary.Runtime.UIGraph.ArrowShape
+  arrowReversed = false:bool
+}
+
+quickgraph/grid/ {
+  material = guid:c16d74b277ae17c479319990fca9477b:UnityEngine.Material:UnityEngine.Material @ResourceSoftReference:Packages/com.lrss3.deconstruction/Resources/Material/Graph/UI/Blueprint/BlueprintBackgound_GridLine.mat
+  shader = res:XericLibrary/BluePrint/BlueprintBackgound_GridLine:string
+  size = 100:float
+  overlayPower = 5:float
+  threshold = 0.99:float
+  exp = 0.001:float
+  color = #A7ABB3FF:UnityEngine.Color
+  background = #DDE2EEFF:UnityEngine.Color
+}

@@ -66,14 +66,10 @@ Xeric Library 是一个专注代码的 Unity 扩展库。
 | `PlayerController/` | 第一/三人称及上帝视角控制器 |
 | `SuperStyleSheet/` | XSSS 样式表运行时 |
 | `Debugger/` | Gizmos 调试绘制 |
-| `Nav/` | A* 寻路 |
 | `Net/` | LAN 局域网通信 |
-| `Generation/` | 程序化生成（楼梯、平面开孔等） |
-| `Security/` | 程序流安全控制 |
-| `CollisionLOD/` | 碰撞体 LOD 系统 |
+| `Generation/` | 程序化生成（2DUGUI图元，线条，曲线渲染器） |
 | `XericComponent/` | 组件系统（样条曲线、网格布局、生命周期核心） |
-| `RegistrationActivation/` | 注册激活码校验 |
-| `MachineID/` | 机器码验证授权 |
+| `RegistrationActivation/` | 注册激活码校验(提供局域网授权分发功能，插件本身并无需要授权激活的功能) |
 
 ---
 
@@ -91,9 +87,9 @@ Xeric Library 是一个专注代码的 Unity 扩展库。
 
 ## 示例文件
 
-- **Roslyn 检查器**：位于 `Release/Samples~/XericUnityAnalyzer/`，包含编译后的分析器 DLL 及安装说明。提供组件搜索、命名规范、对象关系、富文本检测等代码分析规则，源码见 `Developer/XericUnityAnalyzer/`。
-- **配置界面 UI**：`Release/Samples~/ConfigUIElement/`，自动化配置界面的预制体与脚本示例。
-- **轨迹线路**：`Release/Samples~/HorizonLineOrbit/`，平面线路绘制与导航示例。
+- **Roslyn 检查器**：，包含编译后的分析器 DLL 及安装说明。提供组件搜索、命名规范、对象关系、富文本检测等代码分析规则。
+- **配置界面 UI**：自动化配置界面的预制体与脚本示例。
+- **轨迹线路**：平面线路绘制与导航示例。
 
 ---
 

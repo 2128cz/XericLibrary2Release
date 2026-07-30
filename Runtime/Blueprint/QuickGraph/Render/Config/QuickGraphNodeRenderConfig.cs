@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace XericLibrary.Runtime.Blueprint.Render
+namespace XericLibrary.Runtime.Blueprint.QuickGraph
 {
 	/// <summary>
 	/// QuickGraph 节点渲染配置表 —— 控制节点矩形、边框、圆角等视觉参数。
@@ -50,12 +50,10 @@ namespace XericLibrary.Runtime.Blueprint.Render
 		[Tooltip("节点标题字体（留空使用默认 TMP 字体）")]
 		public TMPro.TMP_FontAsset TitleFont;
 
-		[Header("LOD（缩放等级细节）")]
-		[Tooltip("归一化缩放值低于此阈值时触发 LOD 0（极简：纯色节点，无文本）。0~1。默认 0.3。")]
-		[Range(0f, 1f)]
-		public float Lod0Threshold = 0.3f;
-		[Tooltip("归一化缩放值低于此阈值时触发 LOD 1（简化：节点+边框，无文本）；高于此值为 LOD 2（完整渲染）。0~1。默认 0.7。")]
-		[Range(0f, 1f)]
-		public float Lod1Threshold = 0.7f;
+		[Header("已弃用的 LOD 兼容字段")]
+		[Obsolete("节点 LOD 已迁移至 BlueprintRenderLodConfig（绝对 Zoom + 滞回），此字段不再参与渲染。")]
+		[HideInInspector] public float Lod0Threshold = 0.3f;
+		[Obsolete("节点 LOD 已迁移至 BlueprintRenderLodConfig（绝对 Zoom + 滞回），此字段不再参与渲染。")]
+		[HideInInspector] public float Lod1Threshold = 0.7f;
 	}
 }

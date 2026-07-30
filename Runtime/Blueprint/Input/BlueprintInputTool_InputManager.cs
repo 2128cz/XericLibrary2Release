@@ -10,12 +10,12 @@ namespace XericLibrary.Runtime.Blueprint
 	/// 通过 <c>KfsStyle</c> + <c>KeyFlippingStampSheet</c> 状态机驱动拖拽识别。
 	/// </summary>
 	[BlueprintTool(phase: ToolPhase.PreUpdate, order: 1)]
-	[BlueprintTheme("QuickGraph")]
 	public class BlueprintInputTool_InputManager : BlueprintInputTool_UGUI
 	{
 		// ===== 三键的 sheet 状态表 =====
 		private readonly MacroKey.KeyFlippingStampSheet[] _sheets = new MacroKey.KeyFlippingStampSheet[3];
 		private readonly Vector2[] _lastCanvasPos = new Vector2[3];
+		private readonly Vector2[] _lastLocalPos = new Vector2[3];
 
 		// ===== 快捷键轮询常量 =====
 		private static readonly KeyCode[] s_modifierKeys = new[]
@@ -76,16 +76,16 @@ namespace XericLibrary.Runtime.Blueprint
 			}
 
 			// 键盘 Pan / Zoom
-			GraphInputTool.LastPanDirection = Vector2.zero;
+			PanDirection = Vector2.zero;
 			float x = 0f, y = 0f;
 			if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W))    y += 1f;
 			if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S))  y -= 1f;
 			if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))  x -= 1f;
 			if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)) x += 1f;
-			GraphInputTool.LastPanDirection = new Vector2(x, y);
-			GraphInputTool.LastZoomAxis = 0f;
-			if (Input.GetKey(KeyCode.Equals) || Input.GetKey(KeyCode.KeypadPlus))    GraphInputTool.LastZoomAxis = 1f;
-			if (Input.GetKey(KeyCode.Minus) || Input.GetKey(KeyCode.KeypadMinus))    GraphInputTool.LastZoomAxis = -1f;
+			PanDirection = new Vector2(x, y);
+			ZoomAxis = 0f;
+			if (Input.GetKey(KeyCode.Equals) || Input.GetKey(KeyCode.KeypadPlus))    ZoomAxis = 1f;
+			if (Input.GetKey(KeyCode.Minus) || Input.GetKey(KeyCode.KeypadMinus))    ZoomAxis = -1f;
 		}
 
 		/// <summary>
@@ -104,6 +104,7 @@ namespace XericLibrary.Runtime.Blueprint
 			{
 				var pt = canvas.ScreenToCanvas(Input.mousePosition);
 				_lastCanvasPos[button] = pt;
+				_lastLocalPos[button] = canvas.ScreenToLocal(Input.mousePosition);
 				BlueprintToolProvider.DispatchPointerDown(Graph, this, pt, button);
 			}
 
@@ -111,10 +112,13 @@ namespace XericLibrary.Runtime.Blueprint
 			if (sheet.IsDragging)
 			{
 				var current = canvas.ScreenToCanvas(Input.mousePosition);
+				var currentLocal = canvas.ScreenToLocal(Input.mousePosition);
 				var delta = current - _lastCanvasPos[button];
+				PointerLocalDelta = currentLocal - _lastLocalPos[button];
 				_lastCanvasPos[button] = current;
+				_lastLocalPos[button] = currentLocal;
 
-				if (delta.sqrMagnitude > 0.0001f)
+				if (delta.sqrMagnitude > 0.0001f || PointerLocalDelta.sqrMagnitude > 0.0001f)
 				{
 					BlueprintToolProvider.DispatchPointerDrag(Graph, this, current, delta, button);
 				}

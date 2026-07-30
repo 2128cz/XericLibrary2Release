@@ -9,16 +9,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21208cffd6108e04d815bb385f0af3fc, type: 3}
+  m_Script: {fileID: 11500000, guid: c95f6e1f1ece40444839f0a29ac371e5, type: 3}
   m_Name: QuickGraphWireRenderConfig
   m_EditorClassIdentifier: 
   WireWidth: 5
-  SourceHandleLength: 120
-  TargetHandleLength: 120
+  SourceHandleLength: 80
+  TargetHandleLength: 80
   ArrowShape: 0
   ArrowReversed: 0
   ArrowProgress: 1
-  ArrowWidth: 20
-  ArrowHeight: 30
+  ArrowWidth: 12
+  ArrowHeight: 10
   ArrowDepthCompensation: -1
-  TessellationSegments: 24
+  TessellationSegments: 32

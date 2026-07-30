@@ -19,6 +19,7 @@ namespace XericLibrary.Runtime.Blueprint.Canvas
 	{
 		private readonly UnityEngine.Canvas _unityCanvas;
 		private readonly RectTransform _renderRoot;
+		private readonly RectTransform _viewport;
 
 		/// <summary>动态获取摄像机引用（不缓存），
 		/// 自动适应 Canvas.renderMode 运行时的变化。</summary>
@@ -29,10 +30,11 @@ namespace XericLibrary.Runtime.Blueprint.Canvas
 		/// </summary>
 		/// <param name="unityCanvas">所属的 Unity UGUI Canvas 组件</param>
 		/// <param name="renderRoot">蓝图渲染根 RectTransform，所有蓝图层容器和背景挂载于此</param>
-		public ScreenSpaceBlueprintCanvas(UnityEngine.Canvas unityCanvas, RectTransform renderRoot)
+		public ScreenSpaceBlueprintCanvas(UnityEngine.Canvas unityCanvas, RectTransform renderRoot, RectTransform viewport = null)
 		{
 			_unityCanvas = unityCanvas;
 			_renderRoot = renderRoot;
+			_viewport = viewport != null ? viewport : renderRoot;
 		}
 
 		/// <summary>
@@ -41,11 +43,27 @@ namespace XericLibrary.Runtime.Blueprint.Canvas
 		/// 以 <see cref="_renderRoot"/> 为参照转换，
 		/// 自动处理 Canvas 渲染模式和 RenderRoot 的偏移。
 		/// </summary>
-		public override Vector2 ScreenToCanvas(Vector2 screenPoint)
+		public override Vector2 ScreenToLocal(Vector2 screenPoint)
 		{
 			RectTransformUtility.ScreenPointToLocalPointInRectangle(
 				_renderRoot, screenPoint, WorldCamera, out Vector2 localPoint);
-			return (localPoint - _panOffset) / _zoomLevel;
+			return localPoint;
+		}
+
+		public override Rect GetViewportLocalRect()
+		{
+			if (_viewport == null || _renderRoot == null) return base.GetViewportLocalRect();
+			var corners = new Vector3[4];
+			_viewport.GetWorldCorners(corners);
+			Vector2 min = new Vector2(float.PositiveInfinity, float.PositiveInfinity);
+			Vector2 max = new Vector2(float.NegativeInfinity, float.NegativeInfinity);
+			for (int i = 0; i < 4; i++)
+			{
+				Vector3 local = _renderRoot.InverseTransformPoint(corners[i]);
+				min = Vector2.Min(min, local);
+				max = Vector2.Max(max, local);
+			}
+			return Rect.MinMaxRect(min.x, min.y, max.x, max.y);
 		}
 
 		/// <summary>
