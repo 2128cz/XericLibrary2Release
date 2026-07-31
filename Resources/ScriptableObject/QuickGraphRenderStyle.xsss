@@ -4,6 +4,12 @@
 
 
 
+
+
+
+
+
+
 namespace: quickgraph
 
 quickgraph/node/ {
@@ -12,7 +18,7 @@ quickgraph/node/ {
   border = 3:float
   chamfer = 0.2:float
   chamferSegments = 4:int
-  titleFontSize = 14:float
+  titleFontSize = 20:float
 }
 
 quickgraph/wire/ {
