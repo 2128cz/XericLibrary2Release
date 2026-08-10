@@ -6,7 +6,7 @@ namespace XericLibrary.Runtime.Blueprint
 	/// 蓝图视口控制器 —— 管理视图状态（Pan/Zoom/范围），提供外部 API 供工具和外部代码读写。
 	/// <para>
 	/// 在 <c>ToolPhase.PreUpdate, order: 40</c> 执行，每帧直接将目标值写入 <see cref="IBlueprintCanvas"/>，
-	/// 不做插值平滑。输入工具通过写入 <see cref="TargetPanOffset"/> / <see cref="TargetZoomLevel"/>
+	/// 不做插值平滑或消费端缩放钳制。输入工具通过写入 <see cref="TargetPanOffset"/> / <see cref="TargetZoomLevel"/>
 	/// 来驱动视图，外部代码可通过 <c>BlueprintToolProvider.GetTool&lt;BlueprintViewportController&gt;(graph)</c>
 	/// 获取实例直接控制视图。
 	/// </para>
@@ -23,13 +23,7 @@ namespace XericLibrary.Runtime.Blueprint
 		public Vector2 TargetPanOffset = Vector2.zero;
 
 		/// <summary>目标缩放级别。外部代码直接设置此值即可控制视图缩放。</summary>
-		public float TargetZoomLevel = 1f;
-
-		/// <summary>最小缩放限制。</summary>
-		public float MinZoom = 0.1f;
-
-		/// <summary>最大缩放限制。</summary>
-		public float MaxZoom = 3f;
+		public float TargetZoomLevel;
 
 		// ── 帧间脏检测 ──
 
@@ -43,22 +37,19 @@ namespace XericLibrary.Runtime.Blueprint
 
 			var canvas = Graph.Canvas;
 
-			// 首次同步
+			// 首次同步使用样式默认缩放。
 			if (!_initialized)
 			{
 				TargetPanOffset = canvas.PanOffset;
-				TargetZoomLevel = canvas.ZoomLevel;
+				TargetZoomLevel = Graph.GetRenderStyleValue<float>("/quickgraph/input/defaultZoom");
 				_prevPanOffset = TargetPanOffset;
 				_prevZoomLevel = TargetZoomLevel;
 				_initialized = true;
 			}
 
-			// 同步范围到 Canvas
-			canvas.MinZoom = MinZoom;
-			canvas.MaxZoom = MaxZoom;
-
-			// 钳制目标值
-			TargetZoomLevel = Mathf.Clamp(TargetZoomLevel, MinZoom, MaxZoom);
+			// 缩放范围由样式写入 Canvas，由 Canvas 负责约束。
+			canvas.MinZoom = Graph.GetRenderStyleValue<float>("/quickgraph/input/minZoom");
+			canvas.MaxZoom = Graph.GetRenderStyleValue<float>("/quickgraph/input/maxZoom");
 
 			// 直接写入 Canvas（无插值）
 			canvas.PanOffset = TargetPanOffset;
@@ -77,18 +68,18 @@ namespace XericLibrary.Runtime.Blueprint
 		//  公共 API
 		// ====================================================================
 
-		/// <summary>重置视图到原点，缩放归 1。</summary>
+		/// <summary>重置视图到原点和样式默认缩放。</summary>
 		public void ResetView()
 		{
 			TargetPanOffset = Vector2.zero;
-			TargetZoomLevel = 1f;
+			TargetZoomLevel = Graph.GetRenderStyleValue<float>("/quickgraph/input/defaultZoom");
 			Graph?.MarkDirty();
 		}
 
-		/// <summary>聚焦到某个画布坐标点。</summary>
-		public void FocusOn(Vector2 canvasCenter, float zoom = 1f)
+		/// <summary>聚焦到某个画布坐标点；省略缩放时使用样式聚焦缩放。</summary>
+		public void FocusOn(Vector2 canvasCenter, float? zoom = null)
 		{
-			TargetZoomLevel = Mathf.Clamp(zoom, MinZoom, MaxZoom);
+			TargetZoomLevel = zoom ?? Graph.GetRenderStyleValue<float>("/quickgraph/input/focusZoom");
 			if (Graph?.Canvas != null)
 			{
 				// local = canvas * zoom + pan；令目标画布点落在实际 viewport 的 RenderRoot local 中心。
@@ -98,11 +89,13 @@ namespace XericLibrary.Runtime.Blueprint
 			Graph?.MarkDirty();
 		}
 
-		/// <summary>聚焦到一组元素的包围盒区域。</summary>
-		public void FocusOnElements(System.Collections.Generic.IReadOnlyList<IBlueprintElement> elements, float padding = 100f)
+		/// <summary>聚焦到一组元素的包围盒区域，使用样式聚焦边距。</summary>
+		public void FocusOnElements(System.Collections.Generic.IReadOnlyList<IBlueprintElement> elements)
 		{
 			if (elements == null || elements.Count == 0) return;
 			if (Graph?.Canvas == null) return;
+
+			float padding = Graph.GetRenderStyleValue<float>("/quickgraph/input/focusPadding");
 
 			// 计算所有元素的包围盒
 			Rect bounds = elements[0].BoundingBox;
@@ -122,10 +115,9 @@ namespace XericLibrary.Runtime.Blueprint
 
 			// 以实际 viewport 的 RenderRoot local 尺寸适配；再复用 FocusOn 的统一公式。
 			var viewportLocal = Graph.Canvas.GetViewportLocalRect();
-			float zoomX = bounds.width > 0.0001f ? viewportLocal.width / bounds.width : MaxZoom;
-			float zoomY = bounds.height > 0.0001f ? viewportLocal.height / bounds.height : MaxZoom;
-			float zoom = Mathf.Clamp(Mathf.Min(zoomX, zoomY), MinZoom, MaxZoom);
-			FocusOn(bounds.center, zoom);
+			float zoomX = bounds.width > 0.0001f ? viewportLocal.width / bounds.width : Graph.GetRenderStyleValue<float>("/quickgraph/input/maxZoom");
+			float zoomY = bounds.height > 0.0001f ? viewportLocal.height / bounds.height : Graph.GetRenderStyleValue<float>("/quickgraph/input/maxZoom");
+			FocusOn(bounds.center, Mathf.Min(zoomX, zoomY));
 		}
 	}
 }

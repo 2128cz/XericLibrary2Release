@@ -107,8 +107,8 @@ namespace XericLibrary.Runtime.Blueprint
 		/// <summary>
 		/// 确保场景中存在 EventSystem 和合适的 InputModule。
 		/// 旧输入系统 → StandaloneInputModule。
-		/// 新输入系统 → InputSystemUIInputModule（由 GraphTheoryBlueprintComponent 创建）。
-		/// 不会重复创建模块（通过 GetComponent 检查）。
+		/// 新输入系统 → InputSystemUIInputModule；无蓝图资产配置时使用模块默认动作兜底。
+		/// 不会覆盖 GraphTheoryBlueprintComponent 已配置的模块。
 		/// </summary>
 		private static void EnsureEventSystemExists()
 		{
@@ -119,7 +119,17 @@ namespace XericLibrary.Runtime.Blueprint
 				es = go.AddComponent<EventSystem>();
 			}
 
-#if !ENABLE_INPUT_SYSTEM
+#if ENABLE_INPUT_SYSTEM
+			if (es.GetComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>() == null)
+			{
+				var standalone = es.GetComponent<StandaloneInputModule>();
+				if (standalone != null)
+					Object.DestroyImmediate(standalone);
+
+				var uiModule = es.gameObject.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
+				uiModule.AssignDefaultActions();
+			}
+#else
 			if (es.GetComponent<StandaloneInputModule>() == null)
 			{
 				es.gameObject.AddComponent<StandaloneInputModule>();

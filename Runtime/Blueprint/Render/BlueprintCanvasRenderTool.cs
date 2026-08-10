@@ -14,6 +14,8 @@ namespace XericLibrary.Runtime.Blueprint.Render
 		protected RectTransform ViewportRect;
 		private Vector2 _prevPan;
 		private float _prevZoom;
+		private readonly HashSet<ulong> _chunkRendererFailureLogged = new HashSet<ulong>();
+		private readonly HashSet<ulong> _zeroAcceptedSubmissionLogged = new HashSet<ulong>();
 
 		protected abstract TChildRenderer BuildChunkRenderer(GameObject chunkGo);
 		/// <summary>当前模板方法提交；子类不得重新计算 chunk 本地偏移。</summary>
@@ -40,13 +42,21 @@ namespace XericLibrary.Runtime.Blueprint.Render
 			{
 				if (submission.Kind == ChunkSubmissionKind.Exited) { RecycleChunk(submission.ChunkId); continue; }
 				var renderer = GetOrCreateChunk(submission.ChunkId);
-				if (renderer == null) continue;
+				if (renderer == null)
+				{
+					if (_chunkRendererFailureLogged.Add(submission.ChunkId))
+						Debug.LogError($"[BlueprintCanvasRenderTool] 创建 chunk renderer 失败: renderer={GetType().Name}, GraphId={Graph.GraphId}, chunk={submission.ChunkId}。");
+					continue;
+				}
 				ClearChunkData(renderer);
 				BeginChunkSubmission(submission.ChunkId, renderer);
 				var session = new RenderSession(Graph, submission);
+				int acceptedCount = 0;
 				if (submission.Elements != null)
 					foreach (var element in submission.Elements)
-						if (AcceptsElement(element)) { CurrentElementSubmission = session.CreateElementSubmission(element); AppendElementData(renderer, element, submission.ChunkId); }
+						if (AcceptsElement(element)) { acceptedCount++; CurrentElementSubmission = session.CreateElementSubmission(element); AppendElementData(renderer, element, submission.ChunkId); }
+				if (submission.Elements != null && submission.Elements.Count != 0 && acceptedCount == 0 && _zeroAcceptedSubmissionLogged.Add(submission.ChunkId))
+					Debug.LogWarning($"[BlueprintCanvasRenderTool] chunk 提交未接受任何元素: renderer={GetType().Name}, GraphId={Graph.GraphId}, chunk={submission.ChunkId}, elements={submission.Elements.Count}。");
 				CurrentElementSubmission = null;
 				EndChunkSubmission(submission.ChunkId, renderer);
 				SetChunkDirty(renderer);
@@ -123,11 +133,15 @@ namespace XericLibrary.Runtime.Blueprint.Render
 			if (ChunkPool.Count < MaxPoolSize) { renderer.gameObject.SetActive(false); ChunkPool.Push(renderer); }
 			else UnityEngine.Object.Destroy(renderer.gameObject);
 			ActiveChunks.Remove(id);
+			_chunkRendererFailureLogged.Remove(id);
+			_zeroAcceptedSubmissionLogged.Remove(id);
 		}
 		protected virtual void DestroyAllChunks()
 		{
 			foreach (var pair in ActiveChunks) if (pair.Value != null) UnityEngine.Object.Destroy(pair.Value.gameObject);
 			ActiveChunks.Clear();
+			_chunkRendererFailureLogged.Clear();
+			_zeroAcceptedSubmissionLogged.Clear();
 			while (ChunkPool.Count > 0) { var item = ChunkPool.Pop(); if (item != null) UnityEngine.Object.Destroy(item.gameObject); }
 		}
 	}

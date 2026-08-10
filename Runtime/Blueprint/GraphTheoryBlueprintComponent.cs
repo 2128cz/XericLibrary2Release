@@ -50,8 +50,10 @@ namespace XericLibrary.Runtime.Blueprint
 #endif
 				_inputActions = value;
 #if ENABLE_INPUT_SYSTEM
-				if (Graph != null && value is InputActionAsset newAsset)
+				if (Graph != null)
 				{
+					var newAsset = value as InputActionAsset;
+					EnsureEventSystem(newAsset);
 					var newTool = BlueprintToolProvider.GetToolByType<BlueprintInputTool_InputSystem>(Graph);
 					if (newTool != null)
 						newTool.InputActionAsset = newAsset;
@@ -162,14 +164,12 @@ namespace XericLibrary.Runtime.Blueprint
 		private void SetupInput()
 		{
 #if ENABLE_INPUT_SYSTEM
-			if (_inputActions is InputActionAsset asset)
-			{
-				EnsureEventSystem(asset);
-				// 将 InputActionAsset 传递给输入工具（由工具自身管理绑定）
-				var tool = BlueprintToolProvider.GetToolByType<BlueprintInputTool_InputSystem>(Graph);
-				if (tool != null)
-					tool.InputActionAsset = asset;
-			}
+			var asset = _inputActions as InputActionAsset;
+			EnsureEventSystem(asset);
+			// 将 InputActionAsset 传递给输入工具（由工具自身管理绑定）。
+			var tool = BlueprintToolProvider.GetToolByType<BlueprintInputTool_InputSystem>(Graph);
+			if (tool != null)
+				tool.InputActionAsset = asset;
 #endif
 		}
 
@@ -192,28 +192,63 @@ namespace XericLibrary.Runtime.Blueprint
 			}
 
 #if ENABLE_INPUT_SYSTEM
-			if (actionsAsset != null)
+			var uiModule = eventSys.GetComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
+			if (uiModule == null)
 			{
-				var uiModule = eventSys.GetComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
-				if (uiModule == null)
-				{
-					var standalone = eventSys.GetComponent<StandaloneInputModule>();
-					if (standalone != null)
-						DestroyImmediate(standalone);
+				var standalone = eventSys.GetComponent<StandaloneInputModule>();
+				if (standalone != null)
+					DestroyImmediate(standalone);
 
-					uiModule = eventSys.gameObject.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
-				}
-				uiModule.actionsAsset = actionsAsset;
+				uiModule = eventSys.gameObject.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
 			}
+
+			if (actionsAsset != null)
+				ConfigureBlueprintUiActions(uiModule, actionsAsset);
 			else
-#endif
 			{
-				if (eventSys.GetComponent<StandaloneInputModule>() == null)
-				{
-					eventSys.gameObject.AddComponent<StandaloneInputModule>();
-				}
+				// 未提供蓝图资产时使用 Input System 内置 UI 动作，仍可产生指针事件。
+				uiModule.actionsAsset = null;
+				uiModule.AssignDefaultActions();
 			}
+#else
+			if (eventSys.GetComponent<StandaloneInputModule>() == null)
+			{
+				eventSys.gameObject.AddComponent<StandaloneInputModule>();
+			}
+#endif
 		}
+
+#if ENABLE_INPUT_SYSTEM
+		/// <summary>
+		/// 将 Blueprint map 的鼠标动作显式映射到 UI 模块。
+		/// InputSystemUIInputModule 不会仅凭 actionsAsset 自动推断这些引用。
+		/// </summary>
+		private static void ConfigureBlueprintUiActions(
+			UnityEngine.InputSystem.UI.InputSystemUIInputModule uiModule,
+			InputActionAsset actionsAsset)
+		{
+			var map = actionsAsset.FindActionMap(BlueprintInputConstants.MapName);
+			var point = map?.FindAction("Point");
+			var leftClick = map?.FindAction("LeftClick");
+			var rightClick = map?.FindAction("RightClick");
+			var middleClick = map?.FindAction("MiddleClick");
+			var scrollWheel = map?.FindAction("ScrollWheel");
+			if (point == null || leftClick == null || rightClick == null ||
+				middleClick == null || scrollWheel == null)
+			{
+				uiModule.actionsAsset = null;
+				uiModule.AssignDefaultActions();
+				return;
+			}
+
+			uiModule.actionsAsset = actionsAsset;
+			uiModule.point = InputActionReference.Create(point);
+			uiModule.leftClick = InputActionReference.Create(leftClick);
+			uiModule.rightClick = InputActionReference.Create(rightClick);
+			uiModule.middleClick = InputActionReference.Create(middleClick);
+			uiModule.scrollWheel = InputActionReference.Create(scrollWheel);
+		}
+#endif
 
 		// ===== 调试可见性 =====
 

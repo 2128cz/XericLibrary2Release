@@ -1,59 +1,24 @@
 // ==================================================
-// Xeric Style Sheet (XSSS) - 超级干燥样式表 - 默认样式
+// Xeric Style Sheet (XSSS) - 默认 UI 样式
 // ==================================================
+// 规范声明：路径:组件类型/.字段路径 = 值:值类型 @标记:参数
+// 未配置实际资源时，不保留空 guid: 或 None 占位声明。
 
 namespace: default
 
-button/TargetGraphic/ColorTint:UnityEngine.UI.ColorBlock/ {
-.NormalColor = (1,1,1,1)
-.HighlightedColor = (0.96,0.96,0.96,1)
-.PressedColor = (0.78,0.78,0.78,1)
-.SelectedColor = (0.96,0.96,0.96,1)
-.DisabledColor = (0.6,0.6,0.6,0.8)
-}
+// UnityEngine.UI.Button 的 ColorBlock。
+Button:UnityEngine.UI.Button/.colors.normalColor = #FFFFFFFF:UnityEngine.Color
+Button:UnityEngine.UI.Button/.colors.highlightedColor = #F5F5F5FF:UnityEngine.Color
+Button:UnityEngine.UI.Button/.colors.pressedColor = #C7C7C7FF:UnityEngine.Color
+Button:UnityEngine.UI.Button/.colors.selectedColor = #F5F5F5FF:UnityEngine.Color
+Button:UnityEngine.UI.Button/.colors.disabledColor = #999999CC:UnityEngine.Color
 
-button/TargetGraphic/SpriteState:UnityEngine.UI.SpriteState/ {
-.NormalColor = guid::UnityEngine.Sprite
-.HighlightedColor = guid::UnityEngine.Sprite
-.PressedColor = guid::UnityEngine.Sprite
-.SelectedColor = guid::UnityEngine.Sprite
-.DisabledColor = guid::UnityEngine.Sprite
-}
+// UnityEngine.UI.Toggle 的 ColorBlock。
+Toggle:UnityEngine.UI.Toggle/.colors.normalColor = #FFFFFFFF:UnityEngine.Color
+Toggle:UnityEngine.UI.Toggle/.colors.highlightedColor = #F5F5F5FF:UnityEngine.Color
+Toggle:UnityEngine.UI.Toggle/.colors.pressedColor = #C7C7C7FF:UnityEngine.Color
+Toggle:UnityEngine.UI.Toggle/.colors.selectedColor = #F5F5F5FF:UnityEngine.Color
+Toggle:UnityEngine.UI.Toggle/.colors.disabledColor = #999999CC:UnityEngine.Color
 
-button/TargetGraphic/Animation/ {
-.NormalColor = None
-.HighlightedColor = None
-.PressedColor = None
-.SelectedColor = None
-.DisabledColor = None
-}
-
-toggle/TargetGraphic/ColorTint:UnityEngine.UI.ColorBlock/ {
-.NormalColor = (1,1,1,1)
-.HighlightedColor = (0.96,0.96,0.96,1)
-.PressedColor = (0.78,0.78,0.78,1)
-.SelectedColor = (0.96,0.96,0.96,1)
-.DisabledColor = (0.6,0.6,0.6,0.8)
-}
-
-toggle/TargetGraphic/SpriteState:UnityEngine.UI.SpriteState/ {
-.NormalColor = guid::UnityEngine.Sprite
-.HighlightedColor = guid::UnityEngine.Sprite
-.PressedColor = guid::UnityEngine.Sprite
-.SelectedColor = guid::UnityEngine.Sprite
-.DisabledColor = guid::UnityEngine.Sprite
-}
-
-toggle/TargetGraphic/Animation/ {
-.NormalColor = None
-.HighlightedColor = None
-.PressedColor = None
-.SelectedColor = None
-.DisabledColor = None
-}
-
-image/ColorTint:UnityEngine.UI.ColorBlock/ {
-.NormalColor = (1,1,1,1)
-.Sprite = guid::UnityEngine.Sprite
-.Material = guid::UnityEngine.Material
-}
+// UnityEngine.UI.Image 的默认色。
+Image:UnityEngine.UI.Image/.color = #FFFFFFFF:UnityEngine.Color

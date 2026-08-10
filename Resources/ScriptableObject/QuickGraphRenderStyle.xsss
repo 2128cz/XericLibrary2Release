@@ -1,47 +1,102 @@
 // QuickGraph runtime render style
-
-
-
-
-
-
-
-
-
-
-
 namespace: quickgraph
 
 quickgraph/node/ {
-  width = 130:float
-  height = 80:float
-  border = 3:float
-  chamfer = 0.2:float
-  chamferSegments = 4:int
-  titleFontSize = 20:float
+  width = 130:float @MinMaxRange:0,4096
+  height = 80:float @MinMaxRange:0,4096
+  border = 3:float @MinMaxRange:0,1024
+  chamfer = 0.2:float @MinMaxRange:0,1
+  chamferSegments = 4:int @MinMaxRange:0,128,1
+  titleFontSize = 20:float @MinMaxRange:0,512
+  titleAlignment = Center:TMPro.TextAlignmentOptions
+  showTitle/full = true:bool
+  outerColor = #00000000:UnityEngine.Color
+  axisScaleX = 1:float @MinMaxRange:0,100
+  axisScaleY = 1:float @MinMaxRange:0,100
+  sideCount = 4:int @MinMaxRange:0,128,1
+  fillColor = #333333FF:UnityEngine.Color
+  borderColor = #FFFFFFFF:UnityEngine.Color
+  titleColor = #FFFFFFFF:UnityEngine.Color
 }
-
+quickgraph/port/ {
+  inputSide = -0.5:float @MinMaxRange:-1,1
+  outputSide = 0.5:float @MinMaxRange:-1,1
+  topRatio = 0.5:float @MinMaxRange:-1,1
+  bottomRatio = -0.5:float @MinMaxRange:-1,1
+}
 quickgraph/wire/ {
-  width = 5:float
-  hitRadius = 8:float
-  sourceHandle = 80:float
-  targetHandle = 80:float
-  arrowWidth = 12:float
-  arrowHeight = 10:float
-  arrowProgress = 1:float
-  arrowDepth = -1:float
-  tessellation = 32:int
+  width = 5:float @MinMaxRange:0,4096
+  hitRadius = 8:float @MinMaxRange:0,4096
+  sourceHandle = 80:float @MinMaxRange:0,4096
+  targetHandle = 80:float @MinMaxRange:0,4096
+  arrowWidth = 12:float @MinMaxRange:0,4096
+  arrowHeight = 10:float @MinMaxRange:0,4096
+  arrowProgress = 1:float @MinMaxRange:0,1
+  arrowDepth = -1:float @MinMaxRange:-4096,4096
+  tessellation = 32:int @MinMaxRange:0,1024,1
+  minTessellation = 2:int @MinMaxRange:0,1024,1
   arrowShape = Triangle:XericLibrary.Runtime.UIGraph.ArrowShape
   arrowReversed = false:bool
+  useNodeColorGradient = true:bool
+  color = #FFFFFFFF:UnityEngine.Color
 }
-
 quickgraph/grid/ {
   material = guid:c16d74b277ae17c479319990fca9477b:UnityEngine.Material:UnityEngine.Material @ResourceSoftReference:Packages/com.lrss3.deconstruction/Resources/Material/Graph/UI/Blueprint/BlueprintBackgound_GridLine.mat
   shader = res:XericLibrary/BluePrint/BlueprintBackgound_GridLine:string
-  size = 100:float
-  overlayPower = 5:float
-  threshold = 0.99:float
-  exp = 0.001:float
+  size = 100:float @MinMaxRange:0.000001,1000000
+  overlayPower = 5:float @MinMaxRange:0,1000000
+  threshold = 0.99:float @MinMaxRange:0,1
+  exp = 0.001:float @MinMaxRange:0,1000000
   color = #A7ABB3FF:UnityEngine.Color
   background = #DDE2EEFF:UnityEngine.Color
+  raycastTarget = true:bool
+  maskable = false:bool
+  lodTransitionThreshold = 200:float @MinMaxRange:0,1000000
+  lodTransitionStart = -0.8:float @MinMaxRange:-100,100
+  lodTransitionEnd = 1:float @MinMaxRange:-100,100
+  cellCenter = (0.5,0.5):UnityEngine.Vector2
+  lineShapeScale = 1.1:float @MinMaxRange:0,100
+}
+quickgraph/input/ {
+  zoomDivisor = 100:float @MinMaxRange:0.000001,1000000
+  dragPanSpeed = 1:float @MinMaxRange:0,1000000
+  minZoom = 0.2:float @MinMaxRange:0,1000000
+  maxZoom = 2:float @MinMaxRange:0,1000000
+  defaultZoom = 1:float @MinMaxRange:0,1000000
+  focusZoom = 1:float @MinMaxRange:0,1000000
+  focusPadding = 100:float @MinMaxRange:0,1000000
+  keyboardPanSpeed = 100:float @MinMaxRange:0,1000000
+  keyboardZoomSpeed = 0.01:float @MinMaxRange:0,1000000
+  panMouseButton = 2:int @MinMaxRange:0,2,1
+}
+quickgraph/lod/minimal/ {
+  enterZoom = 0:float @MinMaxRange:0,1000000
+  exitZoom = 0:float @MinMaxRange:0,1000000
+  wireTessellationMultiplier = 0.35:float @MinMaxRange:0,100
+  nodeBorder = 0:float @MinMaxRange:0,1024
+  useNodeColorAsBackground = true:bool
+  showTitle = false:bool
+}
+quickgraph/lod/simplified/ {
+  enterZoom = 0.65:float @MinMaxRange:0,1000000
+  exitZoom = 0.55:float @MinMaxRange:0,1000000
+  wireTessellationMultiplier = 0.65:float @MinMaxRange:0,100
+  nodeBorder = 3:float @MinMaxRange:0,1024
+  useNodeColorAsBackground = false:bool
+  showTitle = false:bool
+}
+quickgraph/lod/full/ {
+  enterZoom = 1.15:float @MinMaxRange:0,1000000
+  exitZoom = 1:float @MinMaxRange:0,1000000
+  wireTessellationMultiplier = 1:float @MinMaxRange:0,100
+  nodeBorder = 3:float @MinMaxRange:0,1024
+  useNodeColorAsBackground = false:bool
+  showTitle = true:bool
+}
+quickgraph/selection/ {
+  dragThreshold = 10:float @MinMaxRange:0,1000000
+  fillColor = #3380FF26:UnityEngine.Color
+  outlineColor = #FFFFFFFF:UnityEngine.Color
+  outlineOffset = (1,-1):UnityEngine.Vector2
+  raycastTarget = false:bool
 }
