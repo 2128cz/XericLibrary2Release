@@ -48,6 +48,6 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _GridBackgroundColor: {r: 0.8666667, g: 0.8862745, b: 0.93333334, a: 1}
     - _GridColor: {r: 0.8666667, g: 0.8862745, b: 0.93333334, a: 1}
-    - _Transform: {r: 9.787723, g: 8.369877, b: -4.381715, a: -3.846801}
+    - _Transform: {r: 14.84472, g: 12.69432, b: 32.392414, a: -6.6925216}
     - _Vector0: {r: 0.95, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []
