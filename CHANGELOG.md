@@ -1,9 +1,48 @@
 # Changelog
 
-## [Unrealse]
+## [0.6.6] 2026-11-03
 
-* 添加win10+右下角消息框
-* 修复文件对话框中筛选器格式
+> 0.6.4 之后的内容分两段记：0.6.5 覆盖 2026-08-13 ~ 09-30（当时漏写，这里补上），
+> 本条覆盖 2026-10-15 之后。`Release/package.json` 从 0.6.4 直接到 0.6.6。
+
+修复：
+* 切块后整条线不显示：子块是运行时新建的独立 Graphic，而 UGUI 的 `Graphic` 并不要求 `CanvasRenderer`，
+  缺了它 `Graphic.Rebuild` 首句直接返回（静默不画、也不报错）。
+* 线段渲染器切块时中间块"有顶点没三角形"：每段索引起点表在生成索引之后才扩容，中间块读出 0。
+* WebGL 构建下部分类型没有同步命名空间。
+
+变更：
+* **UGUI 缓存渲染器切块**：曲线 / 线段 / 图元三类渲染器按顶点预算分块，避开单 Graphic 的 65535 顶点上限；
+  块承接宿主材质与贴图，宿主停用时同步停画，运行时新建的块不写入场景/预制体。
+* 彻底完成 `Type` 命名空间移除：`XericLibrary.Type.*` 统一到 `XericLibrary.Runtime.*`
+  （0.6.5 里已开始，这一版收口），升级后可能需要按编译错误补 `using`。
+
+## [0.6.5] 2026-09-30
+
+添加：
+* **界面样条与曲线进度条**：2D 矩形样条 / 3D 样条的编辑器交互 —— 端点增删（`+<| +< del >+ |>+`，删除按钮更窄且标红）、
+  插入后自动选中并聚焦、逐点参数面板（颜色/位置/手柄/额外参数/缩放/旋转）、场景内悬停与点击拾取；
+  增删/改参数/拖手柄五类操作全部进撤销栈。
+* `UISplineCurveRenderer`：按样条生成面片，`headTailPairs` 驱动多段头尾进度；弧长校正支持参数/烘焙两种映射，
+  满轨 `{1,0}` 精确贴到曲线两端；烘焙可在"编辑停下/每次重建/手动"之间切换，采样细分等系数开放配置。
+* 新增 `GameObject/Xeric Library/Spline/` 菜单：2D Spline、3D Spline、Spline Curve Renderer、Progress Bar Demo。
+* **LitJson 定制版**（`Type/LitJson/`）：NaN/±Infinity 双向读写、不可空值成员遇 null 回退 default、
+  long→ulong 补齐、静态成员过滤；并与 MacroFile 统一成一条编解码链。
+* 菜单路径统一管理：新增 `MenuPath` 常量类与 `XericLibrary/Menu Path Audit` 巡检窗口，全部 `[MenuItem]` 收敛到常量。
+* 预编译宏支持 `[MacroDefine]` 特性动态注册。
+* 新增多精度旋钮结构 `FloatKnobPanel`（含编辑器绘制器）。
+* 纳入公有领域 `XericSimpleUILineRenderer`（含 Sample 场景与渐变贴图）。
+* XSSS 支持语法版本门控（`@Config:version`）、不透明多行值、全局样式表导出；Inspector 保存按最新语法版本写回。
+* 部分设置页迁到 `Project/Xeric Library/*` 与 `Preferences/Xeric Library/*`（含新增的宏定义设置页）。
+* win10+ 右下角消息框；补充文件对话框的筛选格式。
+
+修复：
+* 进度条满轨不闭合：弧长重映射拿"采样点数"当分母（进度 1 落在 (N-1)/N）；面片 uv 的分母与分子不同源，跨尾会回跳。
+* XSSS：0.1 多注解只摘最后一条导致注解丢进值里；解析时重复标记之间的内容被忽略。
+* TextBlock 界面树形图显示；蓝图网格材质与分析器 dll 重新生成。
+
+变更：
+* 开始移除 `Type` 命名空间（`XericLibrary.Type.*` → `XericLibrary.Runtime.*`）；构建/编译流程与 dll 支持调整。
 
 ## [0.6.4] 2026-08-10
 

@@ -30,6 +30,8 @@ Xeric Library 是一个专注代码的 Unity 扩展库。
 
 **常用脚本**：游戏交互、界面适配、弱扩展、绘制工厂、SQL 扩展。
 
+**界面与样条**：2D/3D 样条编辑（端点增删、逐点参数、场景内点选、整轮撤销）与样条驱动的 UI 曲线/进度条绘制。
+
 **兼容不规范程序**：针对无设计规则的代码，提供基于反射、CIL 特性等底层语法的程序扩展：
 - **超级单例**：无需声明继承，径直调用即为单例。
 - **软接口 (SoftInterface)**：快速反射获取/设置，方法委托与字段属性一行调用。
@@ -52,6 +54,15 @@ Xeric Library 是一个专注代码的 Unity 扩展库。
 
 自研 Xeric Super Style Sheet (XSSS) 系统，使用 `.xsss` 自定义文本格式，类 CSS/USS 语法，专为 Unity 组件样式设计。基于字典树进行样式路径查找与匹配，支持命名空间隔离、动态监听热重载。提供完整的编辑器导入、Inspector 编辑及 PropertyDrawer 支持。
 
+## 样条 (Spline)
+
+2D 矩形样条（`XericRectSplinePath`）与 3D 样条（`XericSplinePath`）共用一套编辑器交互：端点增删、逐点参数编辑、
+场景内点选与悬停、按操作粒度进撤销栈。`UISplineCurveRenderer` 在此基础上按面片绘制 UI 曲线，
+`headTailPairs` 为每个面片提供一对头/尾进度，可直接驱动进度条；弧长校正可选参数映射或烘焙映射
+（烘焙时机可选"编辑停下 / 每次重建 / 手动"）。
+
+创建入口：`GameObject/Xeric Library/Spline/` 下的 2D Spline / 3D Spline / Spline Curve Renderer / Progress Bar Demo。
+
 ---
 
 ## 扩展库结构
@@ -61,7 +72,8 @@ Xeric Library 是一个专注代码的 Unity 扩展库。
 | 模块 | 说明 |
 | --- | --- |
 | `MacroLibrary/` | 核心工具集，含 ~60 个分类宏文件，覆盖数学、几何、天文、排序、编码等 |
-| `Type/` | 特殊数据类型：四叉树/八叉树、字典树、多维布尔、软引用、卡尔曼滤波器等 |
+| `Type/` | 特殊数据类型：四叉树/八叉树、字典树、多维布尔、软引用、卡尔曼滤波器等（命名空间统一在 `XericLibrary.Runtime` 下） |
+| `Type/LitJson/` | 定制版 LitJson：NaN/±Infinity 双向读写、类型互转，MacroFile 的编解码链 |
 | `AI/Chat/` | DeepSeek AI 聊天接口封装 |
 | `PlayerController/` | 第一/三人称及上帝视角控制器 |
 | `SuperStyleSheet/` | XSSS 样式表运行时 |
@@ -71,13 +83,18 @@ Xeric Library 是一个专注代码的 Unity 扩展库。
 | `XericComponent/` | 组件系统（样条曲线、网格布局、生命周期核心） |
 | `RegistrationActivation/` | 注册激活码校验(提供局域网授权分发功能，插件本身并无需要授权激活的功能) |
 
+`Release/` 层是由 asmdef 直接编译的公开运行时，另有：`Runtime/Generation/` 下的 UGUI 曲线 / 线段 / 图元缓存渲染器
+（超限自动按顶点预算切块）、`Runtime/Generation/Curve/UISplineCurveRenderer.cs`（样条驱动的曲线与进度条）、
+`Runtime/UI/UILineRenderer/`（含 Sample 场景），以及 `Editor/` 下的样条创建菜单、渲染器 Inspector 等编辑器扩展。
+
 ---
 
 ## 编辑器界面
 
 - **太阳系模拟界面**：注册激活窗口内嵌的日心说太阳系动画，在编辑器上也能看到漂亮的天体（地球、月球、大气等）。
-- **预编译宏管理**：`XericLibrary/Define Symbols/预设宏管理` 菜单入口，勾选框式增删编译标记。
-- **DeepSeek AI 对话**：编辑器内 AI 聊天窗口。
+- **预编译宏管理**：`XericLibrary/Precompiled Symbols Management` 菜单入口，勾选框式增删编译标记（设置页在 `Project/Xeric Library/Macro Defines`）。
+- **菜单路径巡检**：`XericLibrary/Menu Path Audit`，反射扫描已注册菜单，标红重复路径、标黄未收敛到 `MenuPath` 的手写字面量。
+- **DeepSeek AI 对话**：编辑器内 AI 聊天窗口（`XericLibrary/Xeric AI Chat`，偏好设置页 `Preferences/Xeric Library/AI Chat`）。
 - **生命周期性能分析**：`XLifeCycleProfile` 窗口，分析组件生命周期耗时。
 - **Hierarchy 面板定制**：增强的 Hierarchy 显示。
 - **颜色渐变编辑器**：线性颜色渐变编辑窗口。
@@ -119,4 +136,5 @@ Xeric Library 是一个专注代码的 Unity 扩展库。
 ## 注意事项
 
 - 插件涉及多平台切换时，可能提供多种自动或手动切换方案，或默认使用 Windows 平台，请注意辨别。
+- 0.6.6 起数据类型的命名空间统一在 `XericLibrary.Runtime` 下（`XericLibrary.Type.*` 已移除），升级后可按编译错误补 `using`。
 - 如发现版本兼容性、计算错误、调用错误、使用问题，可通过发布页 Issues 或其他联系方式获得帮助。

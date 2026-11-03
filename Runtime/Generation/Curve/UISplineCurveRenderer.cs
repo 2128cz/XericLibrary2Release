@@ -434,6 +434,8 @@ namespace XericLibrary.Runtime.UIGraph
 			}
 
 			SetVerticesDirty();
+			// 几何现在画在子块上：uv 是直接改缓存的，块不重取就还是改写前那一份
+			MarkChunksDirty();
 		}
 
 		#endregion

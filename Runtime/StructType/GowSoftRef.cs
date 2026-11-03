@@ -14,7 +14,7 @@ using Object = UnityEngine.Object;
 using UnityEditor;
 #endif
 
-namespace XericLibrary.Runtime.Type.Base
+namespace XericLibrary.Runtime
 {
     /// <summary>
     /// 游戏对象与软引用 (gameobject with soft refrence)。

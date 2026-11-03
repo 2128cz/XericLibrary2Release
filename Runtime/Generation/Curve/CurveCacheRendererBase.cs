@@ -61,6 +61,59 @@ namespace XericLibrary.Runtime.UIGraph
         /// <summary>脏标记范围终点（曲线索引）</summary>
         protected int m_DirtyEndIndex = -1;
 
+        /// <summary>报表用：这一帧真正提交的顶点数（＝缓存收缩后的大小，不是历史最高水位）</summary>
+        public int LiveVertexCount { get; private set; }
+
+        /// <summary>
+        /// 每块顶点上限：UGUI 的 65535 是**每个 Graphic 各自**的上限，而这里是按数据条数长的
+        /// （散点一个点一个图元 / 一条曲线一个条目）⇒ 必须按预算切块，否则条数一多就撞。
+        /// </summary>
+        public const int ChunkVertexBudget = 16000;
+
+        /// <summary>一块：只画条目 [FirstEntry, LastEntry)，顶点数受预算约束</summary>
+        [RequireComponent(typeof(CanvasRenderer))]
+        private sealed class CurveChunk : MaskableGraphic
+        {
+            public CurveCacheRendererBase Owner;
+            public int FirstEntry;
+            public int LastEntry;
+
+            /// <summary>贴图跟宿主走：宿主换进度贴图，块也得跟着换</summary>
+            public override Texture mainTexture
+                => Owner != null ? Owner.mainTexture : base.mainTexture;
+
+            protected override void OnEnable()
+            {
+                base.OnEnable();
+                raycastTarget = false;
+                SyncOwnerVisual();
+            }
+
+            /// <summary>
+            /// 块是**独立的 Graphic**：宿主身上的材质不会自动继承。
+            /// 注意 Graphic.material 的 getter 在没有用户材质时返回的是 defaultMaterial，
+            /// 所以这里读到/写下的都是“宿主实际会用的那一份”（曲线基类那份就是 XericUICurve）。
+            /// </summary>
+            public void SyncOwnerVisual()
+            {
+                if (Owner == null) return;
+                if (material != Owner.material) material = Owner.material;
+            }
+
+            protected override void OnPopulateMesh(VertexHelper vh)
+            {
+                vh.Clear();
+                if (Owner != null) Owner.PopulateSlice(vh, FirstEntry, LastEntry);
+            }
+        }
+
+        private readonly List<CurveChunk> m_Chunks = new List<CurveChunk>();
+        private int[] m_ChunkStarts = new int[8];
+
+        /// <summary>报表用：切了几块 / 最大的那块有多少顶点</summary>
+        public int ChunkCount => m_Chunks.Count;
+        public int MaxChunkVertices { get; private set; }
+
         #endregion
 
         #region API
@@ -125,6 +178,7 @@ namespace XericLibrary.Runtime.UIGraph
             m_MeshIndexCache.Clear();
             m_DirtyStartIndex = -1;
             m_DirtyEndIndex = -1;
+            DisableChunks();
             SetVerticesDirty();
         }
 
@@ -209,6 +263,15 @@ namespace XericLibrary.Runtime.UIGraph
             for (int i = 0; i < tempIndices.Count; i++)
                 m_MeshIndexCache[preIndexCount + i] = tempIndices[i] + preVertexCount;
 
+            // 跟着当前内容**收缩**：缓存只增不减时，OnPopulateMesh 会把整个列表交给 VertexHelper，
+            // 提交的顶点数就变成"历史最高水位"——一旦超过 UGUI 的 65535 就永久报错（数据降回来也不回落）。
+            if (m_MeshVertexCache.Count > totalVertices)
+                m_MeshVertexCache.RemoveRange(totalVertices, m_MeshVertexCache.Count - totalVertices);
+            if (m_MeshIndexCache.Count > totalIndices)
+                m_MeshIndexCache.RemoveRange(totalIndices, m_MeshIndexCache.Count - totalIndices);
+            LiveVertexCount = totalVertices;
+            RebuildChunks();
+
             SetVerticesDirty();
             m_DirtyStartIndex = -1;
             m_DirtyEndIndex = -1;
@@ -220,9 +283,133 @@ namespace XericLibrary.Runtime.UIGraph
 
         protected override void OnPopulateMesh(VertexHelper vh)
         {
+            // 本体不画：所有条目都交给受顶点预算约束的子块（每块一个 Graphic，各自远低于 65535）
             vh.Clear();
-            if (m_MeshVertexCache.Count == 0 || m_MeshIndexCache.Count == 0) return;
-            vh.AddUIVertexStream(m_MeshVertexCache, m_MeshIndexCache);
+        }
+
+        /// <summary>
+        /// 按顶点预算把条目切成若干块（顺序不变：块按提交顺序排、块内也按顺序，画家序不受影响）。
+        /// </summary>
+        private void RebuildChunks()
+        {
+            int count = m_Curves.Count;
+            if (m_ChunkStarts.Length < count + 1) m_ChunkStarts = new int[count + 1];
+
+            int chunks = 0;
+            int start = 0;
+            int used = 0;
+            for (int i = 0; i < count; i++)
+            {
+                int vertices = Mathf.Max(1, m_Curves[i].vertexCount);
+                if (used > 0 && used + vertices > ChunkVertexBudget)
+                {
+                    m_ChunkStarts[chunks++] = start;
+                    start = i;
+                    used = 0;
+                }
+                used += vertices;
+            }
+            if (count > 0) m_ChunkStarts[chunks++] = start;
+
+            MaxChunkVertices = 0;
+            for (int c = 0; c < chunks; c++)
+            {
+                int end = (c + 1 < chunks) ? m_ChunkStarts[c + 1] : count;
+                int sum = 0;
+                for (int i = m_ChunkStarts[c]; i < end; i++) sum += Mathf.Max(1, m_Curves[i].vertexCount);
+                if (sum > MaxChunkVertices) MaxChunkVertices = sum;
+            }
+
+            EnsureChunkCount(chunks);
+            for (int c = 0; c < chunks; c++)
+            {
+                m_Chunks[c].FirstEntry = m_ChunkStarts[c];
+                m_Chunks[c].LastEntry = (c + 1 < chunks) ? m_ChunkStarts[c + 1] : count;
+                m_Chunks[c].enabled = true;
+                m_Chunks[c].SyncOwnerVisual();
+                m_Chunks[c].SetVerticesDirty();
+            }
+            for (int c = chunks; c < m_Chunks.Count; c++) m_Chunks[c].enabled = false;
+        }
+
+        /// <summary>
+        /// 缓存被**块以外**的人改过之后调用（例如渲染器补写 uv0）。
+        /// 只标脏宿主不够：几何现在长在子块上，宿主那份 VertexHelper 是空的。
+        /// </summary>
+        protected void MarkChunksDirty()
+        {
+            for (int c = 0; c < m_Chunks.Count; c++)
+            {
+                if (m_Chunks[c] != null && m_Chunks[c].enabled) m_Chunks[c].SetVerticesDirty();
+            }
+        }
+
+        private void EnsureChunkCount(int count)
+        {
+            while (m_Chunks.Count < count)
+            {
+                // Graphic 的 CanvasRenderer 是**懒创建**的（只在属性被访问时补），而 UGUI 的 Graphic
+                // 自己并不要求它 —— 三个基类都是显式贴了 RequireComponent 才有的。块这里直接建出来，
+                // 不依赖"哪天 Rebuild 恰好被调到"（没有它 Rebuild 第一句就 return，静默不画）。
+                var chunkGo = new GameObject("Chunk" + m_Chunks.Count,
+                    typeof(RectTransform), typeof(CanvasRenderer));
+                // 先挂父级再 AddComponent：OnEnable 里的 CacheCanvas 与注册看的是**当时**的父级
+                var rect = (RectTransform)chunkGo.transform;
+                rect.SetParent(transform, false);
+                rect.anchorMin = Vector2.zero;
+                rect.anchorMax = Vector2.one;
+                rect.offsetMin = Vector2.zero;
+                rect.offsetMax = Vector2.zero;
+                // 块是运行时建的，不标 DontSave 的话 Play 里存一下就会把它们写进场景/预制体
+                chunkGo.hideFlags = HideFlags.DontSave;
+                var chunk = chunkGo.AddComponent<CurveChunk>();
+                chunk.Owner = this;
+                chunk.raycastTarget = false;
+                m_Chunks.Add(chunk);
+            }
+        }
+
+        private void DisableChunks()
+        {
+            for (int c = 0; c < m_Chunks.Count; c++)
+            {
+                if (m_Chunks[c] != null) m_Chunks[c].enabled = false;
+            }
+        }
+
+        /// <summary>把条目 [first, last) 的顶点与三角形写进这个块（索引按块内起点重基）</summary>
+        internal void PopulateSlice(VertexHelper vh, int firstEntry, int lastEntry)
+        {
+            if (firstEntry < 0) firstEntry = 0;
+            if (lastEntry > m_Curves.Count) lastEntry = m_Curves.Count;
+            if (firstEntry >= lastEntry) return;
+
+            int vertexStart = 0;
+            int indexStart = 0;
+            for (int i = 0; i < firstEntry; i++)
+            {
+                vertexStart += m_Curves[i].vertexCount;
+                indexStart += m_Curves[i].triangleCount * 3;
+            }
+
+            int vertexEnd = vertexStart;
+            int indexEnd = indexStart;
+            for (int i = firstEntry; i < lastEntry; i++)
+            {
+                vertexEnd += m_Curves[i].vertexCount;
+                indexEnd += m_Curves[i].triangleCount * 3;
+            }
+
+            if (vertexEnd > m_MeshVertexCache.Count) vertexEnd = m_MeshVertexCache.Count;
+            if (indexEnd > m_MeshIndexCache.Count) indexEnd = m_MeshIndexCache.Count;
+
+            for (int v = vertexStart; v < vertexEnd; v++) vh.AddVert(m_MeshVertexCache[v]);
+            for (int i = indexStart; i + 2 < indexEnd; i += 3)
+            {
+                vh.AddTriangle(m_MeshIndexCache[i] - vertexStart,
+                    m_MeshIndexCache[i + 1] - vertexStart,
+                    m_MeshIndexCache[i + 2] - vertexStart);
+            }
         }
 
         #endregion
@@ -235,9 +422,37 @@ namespace XericLibrary.Runtime.UIGraph
             RebuildAll();
         }
 
+        protected override void OnDisable()
+        {
+            // 几何长在子块上，宿主关掉不等于它们停了：Graphic 停用只影响自己那份 VertexHelper
+            DisableChunks();
+            base.OnDisable();
+        }
+
         protected override void OnDestroy()
         {
+            DestroyChunks();
             base.OnDestroy();
+        }
+
+        /// <summary>
+        /// 块是宿主运行时建的子物体：只删组件不删它们，会留下一堆孤儿块，
+        /// 组件再挂回来时 EnsureChunkCount 又建一组同名的 ⇒ 两组块叠着画。
+        /// </summary>
+        private void DestroyChunks()
+        {
+            for (int c = 0; c < m_Chunks.Count; c++)
+            {
+                var chunk = m_Chunks[c];
+                if (chunk == null) continue;
+                var chunkGo = chunk.gameObject;
+#if UNITY_EDITOR
+                if (!Application.isPlaying) DestroyImmediate(chunkGo); else Destroy(chunkGo);
+#else
+                Destroy(chunkGo);
+#endif
+            }
+            m_Chunks.Clear();
         }
 
         #endregion

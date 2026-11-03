@@ -5,8 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using XericLibrary.Runtime.MacroLibrary;
-using XericLibrary.Runtime.Type;
-using XericLibrary.Runtime.Type.Base;
 
 namespace XericLibrary.Runtime.MacroLibrary
 {

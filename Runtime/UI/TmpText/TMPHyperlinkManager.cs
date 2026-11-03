@@ -10,7 +10,6 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Pool;
 using XericLibrary.Runtime.MacroLibrary;
-using XericLibrary.Runtime.Type;
 
 namespace Deconstruction.UI.TmpText
 {
